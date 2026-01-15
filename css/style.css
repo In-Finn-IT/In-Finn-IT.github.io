@@ -296,6 +296,18 @@ text-align: center;
 ========================= */
 
 /* Hover-Effekte NUR für Geräte mit echter Maus */
+@media (hover: none) {
+  .main-nav a {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .main-nav a:active,
+  .main-nav a:focus {
+    transform: none !important;
+  }
+}
+
 @media (hover: hover) {
 .main-nav a {
    transform: rotate(-18deg);
@@ -374,5 +386,6 @@ text-align: center;
 .site-footer a:hover {
   text-decoration: underline;
 }
+
 
 
