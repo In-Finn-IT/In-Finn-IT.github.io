@@ -1,17 +1,11 @@
 /* =========================
    Global & Hintergrund
 ========================= */
-
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background:
-    linear-gradient(
-      rgba(255,255,255,0.7),
-      rgba(255,255,255,0.7)
-    ),
-    url("../bilder/infinity2.png");
+  background: url("../bilder/infinity2.png");
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -336,6 +330,7 @@ section {
   }   
 
 }
+
 
 
 
