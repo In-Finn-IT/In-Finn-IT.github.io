@@ -241,13 +241,12 @@ section {
 ========================= */
 
 .projekt-layout {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;   
-  gap: 2rem;
-  align-items: center;
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;     
+  gap: 1.5rem;
+  align-items: center;  
 }
 
 .projekt-text {
@@ -256,11 +255,11 @@ section {
 
 .projekt-media {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .projekt-bild {
-  width: 80%;
+  width: 100%;
   height: auto;
   max-height: 350px;
   object-fit: contain;
@@ -305,7 +304,9 @@ section {
   max-width: 600px;
   margin: 0 auto 2.5rem;
   line-height: 1.6;
-  color:
+  color: #374151;
+}
+
 
 
 
