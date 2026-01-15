@@ -308,6 +308,12 @@ text-align: center;
   }
 }
 
+@media (hover: none) {
+  .main-nav a:hover {
+    transform: none !important;
+  }
+}
+
 @media (hover: hover) {
 .main-nav a {
    transform: rotate(-18deg);
@@ -386,6 +392,7 @@ text-align: center;
 .site-footer a:hover {
   text-decoration: underline;
 }
+
 
 
 
