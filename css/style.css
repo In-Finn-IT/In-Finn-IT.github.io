@@ -11,7 +11,7 @@ body::before {
       rgba(255,255,255,0.7),
       rgba(255,255,255,0.7)
     ),
-    url("../bilder/infinity.png");
+    url("../bilder/infinity2.png");
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -336,6 +336,7 @@ section {
   }   
 
 }
+
 
 
 
