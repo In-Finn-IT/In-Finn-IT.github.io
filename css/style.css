@@ -245,7 +245,7 @@ section {
   margin: 0 auto;
   display: flex;       
   gap: 1.5rem;
-  align-items: flex-start;  
+  align-items: center;  
   text-align: left;
 }
 
@@ -336,6 +336,7 @@ section {
   }   
 
 }
+
 
 
 
