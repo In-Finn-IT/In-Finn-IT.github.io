@@ -17,6 +17,12 @@ body::before {
   z-index: -1;
 }
 
+/* Scroll-Anker unter Sticky Header */
+section {
+  scroll-margin-top: 120px;
+}
+
+/* Fade-in Animation */
 .fade-in {
   opacity: 0;
   transform: translateY(20px);
@@ -72,18 +78,37 @@ body::before {
   display: inline-block;
   font-size: 1.2rem;
   font-weight: 600;
-  transform: rotate(-18deg);
   transition: transform 0.2s ease, color 0.2s ease;
 }
+
+
+
+/* =========================
+   Hover nur für Mausgeräte
+========================= */
+
+@media (hover: hover) {
+  .main-nav a {
+    transform: rotate(-18deg);
+  }
+
+  .main-nav a:hover {
+    color: #2563eb;
+    transform: rotate(-18deg) scale(1.05);
+  }
+}
+
+
 
 /* =========================
    Hero
 ========================= */
 
-.hero {  
+.hero {
   max-width: 900px;
   margin: 0 auto;
   padding: 6rem 1.5rem 4rem;
+  text-align: center;
 }
 
 .hero h1 {
@@ -91,7 +116,6 @@ body::before {
   font-weight: 600;
   line-height: 1.2;
   margin-bottom: 1.5rem;
-text-align: center;
 }
 
 .hero-subline {
@@ -99,8 +123,13 @@ text-align: center;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #6b7280;
-text-align: center;
 }
+
+
+
+/* =========================
+   Über mich
+========================= */
 
 .ueber-mich {
   max-width: 1000px;
@@ -143,6 +172,7 @@ text-align: center;
 .arbeitsweise-list li {
   line-height: 1.6;
 }
+
 
 
 /* =========================
@@ -204,6 +234,7 @@ text-align: center;
 }
 
 
+
 /* =========================
    Projekt Layout
 ========================= */
@@ -235,8 +266,10 @@ text-align: center;
   transition: transform 0.3s ease;
 }
 
-.projekt-bild:hover {
-  transform: scale(1.02);
+@media (hover: hover) {
+  .projekt-bild:hover {
+    transform: scale(1.02);
+  }
 }
 
 .projekt-bild.klein {
@@ -248,6 +281,8 @@ text-align: center;
   padding-top: 3rem;
   border-top: 1px solid #e5e7eb;
 }
+
+
 
 /* =========================
    Kontakt
@@ -268,108 +303,9 @@ text-align: center;
   max-width: 600px;
   margin: 0 auto 2.5rem;
   line-height: 1.6;
-  color: #374151;
-}
-
-.kontakt-daten p {
-  margin-bottom: 0.75rem;
-  font-size: 1rem;
-}
-
-.kontakt a {
-  color: #2563eb;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.kontakt a:hover {
-  text-decoration: underline;
-}
+  color:
 
 
-/* =========================
-   Responsive
-========================= */
-
-/* Hover-Effekte NUR für Geräte mit echter Maus */
-@media (hover: hover) {
-.main-nav a {
-   transform: rotate(-18deg);
-   transition: transform 0.2s ease, color 0.2 ease;
-}
-   
-  .main-nav a:hover {
-    color: #2563eb;
-    transform: rotate(-18deg) scale(1.05);
-  }
-}
-
-@media (max-width: 768px) {
-  
-.nav-toggle {
-    display: block;
-    font-size: 1.8rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin: 0 auto 1rem;
-  }
-
-  .nav-list {
-    display: none;
-    flex-direction: column;
-    gap: 1.5rem;
-    text-align: center;
-  }
-
-  .nav-list a {
-    transform: rotate(0deg);
-    font-size: 1.2rem;
-  }
- 
-
-  .nav-list.open {
-    display: flex;
-  }
-
-  .hero {
-    padding-top: 4rem;
-  }
-
-  .hero h1 {
-    font-size: 2rem;
-  }
-
-  .projekt-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .projekt-bild {
-    max-width: 80%;
-    margin: 1.5rem auto 0;
-    display: block;
-  }
-}
-
-/* =========================
-   Footer
-========================= */
-
-.site-footer {
-  text-align: center;
-  padding: 2rem 1.5rem;
-  font-size: 0.9rem;
-  color: #6b7280;
-}
-
-.site-footer a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.site-footer a:hover {
-  text-decoration: underline;
-}
 
 
 
