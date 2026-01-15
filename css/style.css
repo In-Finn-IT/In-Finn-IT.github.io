@@ -69,16 +69,12 @@ body::before {
 }
 
 .main-nav a {
-  display: inline-block;  
+  display: inline-block;
   font-size: 1.2rem;
   font-weight: 600;
+  transform: rotate(-18deg);
+  transition: transform 0.2s ease, color 0.2s ease;
 }
-
-.main-nav a:hover {
-  color: #2563eb;
-  transform: rotate(-18deg) scale(1.05);
-}
-
 
 /* =========================
    Hero
@@ -296,24 +292,6 @@ text-align: center;
 ========================= */
 
 /* Hover-Effekte NUR für Geräte mit echter Maus */
-@media (hover: none) {
-  .main-nav a {
-    transform: none !important;
-    transition: none !important;
-  }
-
-  .main-nav a:active,
-  .main-nav a:focus {
-    transform: none !important;
-  }
-}
-
-@media (hover: none) {
-  .main-nav a:hover {
-    transform: none !important;
-  }
-}
-
 @media (hover: hover) {
 .main-nav a {
    transform: rotate(-18deg);
@@ -392,6 +370,7 @@ text-align: center;
 .site-footer a:hover {
   text-decoration: underline;
 }
+
 
 
 
