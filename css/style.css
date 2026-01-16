@@ -201,8 +201,10 @@ section {
 ========================= */
 
 .projekt {
-  margin-bottom: 5rem;
-  padding: 0 1.5rem;
+   background: rgba(255,255,255,0.6); /* ← NEU */
+  border-radius: 1rem;              /* ← NEU */
+  padding: 3rem 1.5rem;
+  margin-bottom: 5rem;  
 }
 
 .projekt h3 {
@@ -328,6 +330,7 @@ section {
   }   
 
 }
+
 
 
 
