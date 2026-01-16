@@ -103,7 +103,7 @@ section {
   }
 
   .main-nav a:hover {
-    color: #2563eb;
+    color: #1e40af;
     transform: rotate(-18deg) scale(1.05);
   }
 }
@@ -345,6 +345,7 @@ section {
   }   
 
 }
+
 
 
 
