@@ -14,10 +14,15 @@
   <!-- Header / Navigation -->
   <header class="site-header">
     <nav class="main-nav" aria-label="Hauptnavigation">
-      <button class="nav-toggle" aria-label="Menü öffnen">
-      ☰
-    </button>
-    <ul class="nav-list">
+<button
+  class="nav-toggle"
+  aria-label="Menü öffnen"
+  aria-expanded="false"
+  aria-controls="hauptnavigation">
+  ☰
+</button>
+
+    <ul class="nav-list" id="hauptnavigation">    
       <li><a href="#home">Home</a></li>
       <li><a href="#ueber-mich">Über mich</a></li>
       <li><a href="#portfolio">Portfolio</a></li>
@@ -29,18 +34,21 @@
 
   <!-- Hauptinhalt -->
   <main>
-    <section class="hero fade-in" id="home">
-    <h1>
-      Softwareentwicklerin mit Fokus auf konzentriertes Arbeiten,
-      klare Strukturen und effiziente Remote-Zusammenarbeit
-    </h1>
+    <section class="hero fade-in" id="home" aria-labelledby="hero-heading">
+      <h1 id="hero-heading">
+        Softwareentwicklerin mit Fokus auf konzentriertes Arbeiten,
+        klare Strukturen und effiziente Remote-Zusammenarbeit
+      </h1>
 
     <p class="hero-subline">
       Eigenständig · fokussiert · remote
     </p>
-    </section>
+  </section>    
+   
 
     <section class="ueber-mich" id="ueber-mich">
+      <h2>Über mich</h2>
+      
       <p>
     Ich entwickle Software und kleinere Anwendungen mit Fokus auf strukturierte Logik,
     saubere Umsetzung und konzentriertes Arbeiten.
@@ -94,8 +102,10 @@
     <section class="portfolio" id="portfolio">
       <h2>Ausgewählte Projekte</h2>
 
-      <article class="projekt projekt-haupt fade-in">
-      <h3>Eigenständig entwickeltes Lernprogramm (Bachelorarbeit)</h3>
+      <article class="projekt projekt-haupt fade-in" aria-labelledby="projekt-bachelor">
+        <h3 id="projekt-bachelor">
+          Eigenständig entwickeltes Lernprogramm (Bachelorarbeit)
+        </h3>      
 
       <div class="projekt-layout">
         <div class="projekt-text">
@@ -221,13 +231,16 @@
 
   <!-- Footer -->
 <footer class="site-footer">
-  <a href="#home">Start</a> ·
-  <a href="#kontakt">Kontakt</a> ·
-  <a href="impressum.html">Impressum</a> ·
-  <a href="datenschutz.html">Datenschutz</a>
+  <nav aria-label="Footer-Navigation">
+    <a href="#home">Start</a> ·
+    <a href="#kontakt">Kontakt</a> ·
+    <a href="impressum.html">Impressum</a> ·
+    <a href="datenschutz.html">Datenschutz</a>
+  </nav>
 </footer>
 
   <script src="script.js"></script>
 
 </body>
 </html>
+
