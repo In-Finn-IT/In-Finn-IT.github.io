@@ -295,13 +295,6 @@ section {
   margin-bottom: 1.5rem;
 }
 
-.kontakt-text {
-  max-width: 600px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.6;
-  color: #374151;
-}
-
 /* =========================
    Mobile Anpassungen
 ========================= */
@@ -331,6 +324,7 @@ section {
   }   
 
 }
+
 
 
 
