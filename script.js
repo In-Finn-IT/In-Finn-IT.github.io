@@ -5,6 +5,13 @@ toggle.addEventListener("click", () => {
   nav.classList.toggle("open");
 });
 
+document.querySelectorAll(".nav-list a").forEach((link) => {
+  link.addEventListener("click", () => {
+    nav.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+});
+
 //Kontaktdaten
 document.addEventListener("DOMContentLoaded", () => {
   const user = "mack.katrin83";
@@ -41,4 +48,5 @@ document.querySelectorAll(".fade-in").forEach((element) => {
   observer.observe(element);
 
 });
+
 
