@@ -7,8 +7,8 @@ body::before {
   inset: 0;
   background:
     linear-gradient(
-      rgba(255,255,255,0.2),
-      rgba(255,255,255,0.2)
+      rgba(255,255,255,0.3),
+      rgba(255,255,255,0.3)
     ),
     url("../bilder/infinity4.png");
   background-size: cover;
@@ -394,6 +394,7 @@ section {
   }   
 
 }
+
 
 
 
