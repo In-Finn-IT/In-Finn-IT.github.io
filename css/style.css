@@ -42,6 +42,12 @@ section {
   transform: translateY(0);
 }
 
+.content-box {
+  background: rgba(255,255,255,0.55);
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+}
+
 /* =========================
    Header & Navigation
 ========================= */
@@ -355,9 +361,25 @@ section {
 
 @media (max-width: 768px) {
 
-   .nav-list {
-      gap: 1.2rem;
-   }
+   .nav-toggle {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #2563eb;
+  }
+
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .nav-list.open {
+    display: flex;
+  }
 
    .main-nav a {
       font-size: 1.05rem;
@@ -378,6 +400,7 @@ section {
   }   
 
 }
+
 
 
 
