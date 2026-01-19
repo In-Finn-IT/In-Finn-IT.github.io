@@ -295,6 +295,11 @@ section {
   margin-bottom: 1.5rem;
 }
 
+#email a {
+  font-weight: 500;
+}
+
+
 /* =========================
    Mobile Anpassungen
 ========================= */
@@ -324,6 +329,7 @@ section {
   }   
 
 }
+
 
 
 
