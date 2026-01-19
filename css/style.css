@@ -62,6 +62,11 @@ section {
 }
 
 .main-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+   
   max-width: 900px;
   margin: 0 auto;
   padding: 1.5rem;
@@ -393,6 +398,7 @@ section {
   }   
 
 }
+
 
 
 
