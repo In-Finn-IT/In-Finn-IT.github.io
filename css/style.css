@@ -340,6 +340,13 @@ section {
   background: #1e40af;
 }
 
+.form-hinweis {
+  max-width: 600px;
+  margin: 1rem auto 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-align: center;
+}
 
 
 /* =========================
@@ -371,6 +378,7 @@ section {
   }   
 
 }
+
 
 
 
