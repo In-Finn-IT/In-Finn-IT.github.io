@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   emailLink.href = `mailto:${email}`;
   emailLink.textContent = email;
 
-  const emailContainer = document.getElementById("email");
+  const emailContainer = document.getElementById("email-link");
   emailContainer.appendChild(emailLink);
 });
 
@@ -41,3 +41,4 @@ document.querySelectorAll(".fade-in").forEach((element) => {
   observer.observe(element);
 
 });
+
