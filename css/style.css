@@ -369,10 +369,19 @@ section {
   }
 
   .nav-list {
-    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+
     flex-direction: column;
     gap: 1rem;
-    margin-top: 1rem;
+
+    background: rgba(255,255,255,0.9);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+
+    display: none;
   }
 
   .nav-list.open {
@@ -398,6 +407,7 @@ section {
   }   
 
 }
+
 
 
 
