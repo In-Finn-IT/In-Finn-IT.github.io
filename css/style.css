@@ -246,8 +246,7 @@ section {
    Projekt Layout
 ========================= */
 
-.projekt-layout {
-  max-width: 1000px;
+.projekt-layout {  
   margin: 0 auto;
   display: flex;       
   gap: 1.5rem;
@@ -366,6 +365,8 @@ section {
   text-align: center;
   padding: 2rem 1.5rem;
   color: #1f2937;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
 }
 
 .site-footer a {
@@ -440,6 +441,7 @@ section {
   }   
 
 }
+
 
 
 
