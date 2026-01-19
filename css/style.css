@@ -295,6 +295,52 @@ section {
   margin-bottom: 1.5rem;
 }
 
+/* =========================
+   Formular
+========================= */
+
+.kontakt-form {
+  max-width: 600px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-field label {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.form-field input,
+.form-field textarea {
+  padding: 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+}
+
+.kontakt-form button {
+  align-self: center;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: #2563eb;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.kontakt-form button:hover {
+  background: #1e40af;
+}
+
+
 
 /* =========================
    Mobile Anpassungen
@@ -325,6 +371,7 @@ section {
   }   
 
 }
+
 
 
 
