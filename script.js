@@ -5,6 +5,20 @@ toggle.addEventListener("click", () => {
   nav.classList.toggle("open");
 });
 
+//Kontaktdaten
+document.addEventListener("DOMContentLoaded", () => {
+  const user = "mack.katrin83";
+  const domain = "gmail.com";
+  const email = `${user}@${domain}`;
+
+  const emailLink = document.createElement("a");
+  emailLink.href = `mailto:${email}`;
+  emailLink.textContent = email;
+
+  const emailContainer = document.getElementById("email");
+  emailContainer.appendChild(emailLink);
+});
+
 
 
 // Scroll Fade-In Animation
@@ -25,4 +39,5 @@ const observer = new IntersectionObserver(
 
 document.querySelectorAll(".fade-in").forEach((element) => {
   observer.observe(element);
+
 });
