@@ -42,12 +42,6 @@ section {
   transform: translateY(0);
 }
 
-.content-box {
-  background: rgba(255,255,255,0.55);
-  border-radius: 1rem;
-  padding: 3rem 2rem;
-}
-
 /* =========================
    Header & Navigation
 ========================= */
@@ -400,6 +394,7 @@ section {
   }   
 
 }
+
 
 
 
