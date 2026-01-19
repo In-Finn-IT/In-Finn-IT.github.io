@@ -2,7 +2,8 @@ const toggle = document.querySelector(".nav-toggle");
 const nav = document.querySelector(".nav-list");
 
 toggle.addEventListener("click", () => {
-  nav.classList.toggle("open");
+  const isOpen = nav.classList.toggle("open");
+  toggle.setAttribute("aria-expanded", isOpen);
 });
 
 document.querySelectorAll(".nav-list a").forEach((link) => {
@@ -32,6 +33,7 @@ document.querySelectorAll(".fade-in").forEach((element) => {
   observer.observe(element);
 
 });
+
 
 
 
