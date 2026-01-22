@@ -141,8 +141,29 @@
 
     </form>
 
+    <div id="notizAnzeige" style="margin-top: 1.5rem;">
+      <h3>Aktuelle Notiz</h3>
+      <p id="notizText" style="white-space: pre-wrap;"></p>
+    </div>
+
+
     <p class="demo-note">Diese Demo speichert keine echten Patientendaten. Inhalte werden nicht dauerhaft gespeichert.</p>
   </main>
+  
+<script>
+  const form = document.getElementById('noteForm');
+  const notizText = document.getElementById('notizText');
 
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const bereich = document.getElementById('bereich').value;
+    const text = document.getElementById('notiz').value;
+
+    notizText.textContent = `${bereich}: ${text}`;
+    form.reset();
+  });
+</script>
+  
 </body>
 </html>
