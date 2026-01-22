@@ -151,19 +151,31 @@
   </main>
   
 <script>
-  const form = document.getElementById('noteForm');
-  const notizText = document.getElementById('notizText');
+  const form = document.getElementById('simpledoc-form');
+  const output = document.getElementById('notizText');
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const bereich = document.getElementById('bereich').value;
-    const text = document.getElementById('notiz').value;
+    const date = document.getElementById('date').value;
+    const type = document.getElementById('type').value;
+    const notes = document.getElementById('notes').value;
 
-    notizText.textContent = `${bereich}: ${text}`;
+    // Checkboxen einsammeln
+    const checked = Array.from(
+      form.querySelectorAll('input[type="checkbox"]:checked')
+    ).map(cb => cb.parentElement.textContent.trim());
+
+    output.textContent =
+      `Datum: ${date}\n` +
+      `Terminart: ${type}\n\n` +
+      `Beobachtungen:\n- ${checked.join('\n- ')}\n\n` +
+      `Notiz:\n${notes || '—'}`;
+
     form.reset();
   });
 </script>
+
   
 </body>
 </html>
