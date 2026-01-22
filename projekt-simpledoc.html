@@ -97,15 +97,15 @@
       <!-- Termin -->
       <div class="form-group">
         <label for="date">Termin-Datum</label>
-        <input type="date" id="date" required>
+        <input type="date" id="date" name="date" required>
       </div>
 
       <div class="form-group">
         <label for="type">Terminart</label>
-        <select id="type">
-          <option>Ersttermin</option>
-          <option>Folgetermin</option>
-          <option>Kontrolle</option>
+        <select id="type" name="type">
+          <option name="hint" value="Ersttermin">Ersttermin</option>
+          <option name="hint" value="Folgetermin">Folgetermin</option>
+          <option name="hint" value="Kontrolle">Kontrolle</option>
         </select>
       </div>
 
@@ -113,10 +113,10 @@
       <div class="form-group">
         <label>Beobachtungen / Status</label>
         <div class="checkbox-group">
-          <label><input type="checkbox"> empfindliche Haut</label>
-          <label><input type="checkbox"> Druckschmerz vorhanden</label>          
-          <label><input type="checkbox"> Bereich mit Vorbefund</label>
-          <label><input type="checkbox"> unauffälliger Verlauf</label>
+          <label><input type="checkbox" name="status" value="empfindliche Haut">empfindliche Haut</label>
+          <label><input type="checkbox" name="status" value="Druckschmerz vorhanden"> Druckschmerz vorhanden</label>          
+          <label><input type="checkbox" name="status" value="Bereich mit Vorbefund"> Bereich mit Vorbefund</label>
+          <label><input type="checkbox" name="status" value="unauffälliger Verlauf"> unauffälliger Verlauf</label>
         </div>
       </div>
 
@@ -124,17 +124,18 @@
       <div class="form-group">
         <label>Häufige Hinweise</label>
         <div class="checkbox-group">
-          <label><input type="checkbox"> bevorzugt Vormittagstermine</label>
-          <label><input type="checkbox"> empfindlich auf Hitze</label>
-          <label><input type="checkbox"> braucht Pausen</label>
-          <label><input type="checkbox"> wiederkehrend</label>
+          <label><input type="checkbox" name="status" value="bevorzugt Vormittagstermine"> bevorzugt Vormittagstermine</label>
+          <label><input type="checkbox" name="status" value="empfindlich auf Hitze"> empfindlich auf Hitze</label>
+          <label><input type="checkbox" name="status" value="braucht Pausen"> braucht Pausen</label>
+          <label><input type="checkbox" name="status" value="wiederkehrend"> wiederkehrend</label>
         </div>
       </div>
 
       <!-- Freitext -->
       <div class="form-group">
-        <label for="notes">Kurze Ergänzung (optional)</label>
-        <textarea id="notes" rows="3" maxlength="200" placeholder="Kurze Ergänzung (optional)"></textarea>
+        <label for="notes">Kurze Ergänzung (optional)</label>       
+
+        <textarea id="notes" name="notes" rows="3" maxlength="200" placeholder="Kurze Ergänzung (optional)"></textarea>
       </div>
 
       <button type="submit">Notiz übernehmen (Demo)</button>
@@ -145,6 +146,9 @@
       <h3>Aktuelle Notiz</h3>
       <p id="notizText" style="white-space: pre-wrap;"></p>
     </div>
+    <section id="notes-output">
+      <h2>Aktuelle Notizen</h2>
+    </section>
 
 
     <p class="demo-note">Diese Demo speichert keine echten Patientendaten. Inhalte werden nicht dauerhaft gespeichert.</p>
