@@ -103,9 +103,9 @@
       <div class="form-group">
         <label for="type">Terminart</label>
         <select id="type" name="type">
-          <option name="hint" value="Ersttermin">Ersttermin</option>
-          <option name="hint" value="Folgetermin">Folgetermin</option>
-          <option name="hint" value="Kontrolle">Kontrolle</option>
+          <option>Ersttermin</option>
+          <option>Folgetermin</option>
+          <option>Kontrolle</option>
         </select>
       </div>
 
@@ -124,10 +124,10 @@
       <div class="form-group">
         <label>Häufige Hinweise</label>
         <div class="checkbox-group">
-          <label><input type="checkbox" name="status" value="bevorzugt Vormittagstermine"> bevorzugt Vormittagstermine</label>
-          <label><input type="checkbox" name="status" value="empfindlich auf Hitze"> empfindlich auf Hitze</label>
-          <label><input type="checkbox" name="status" value="braucht Pausen"> braucht Pausen</label>
-          <label><input type="checkbox" name="status" value="wiederkehrend"> wiederkehrend</label>
+          <label><input type="checkbox" name="hint" value="bevorzugt Vormittagstermine"> bevorzugt Vormittagstermine</label>
+          <label><input type="checkbox" name="hint" value="empfindlich auf Hitze"> empfindlich auf Hitze</label>
+          <label><input type="checkbox" name="hint" value="braucht Pausen"> braucht Pausen</label>
+          <label><input type="checkbox" name="hint" value="wiederkehrend"> wiederkehrend</label>
         </div>
       </div>
 
@@ -155,56 +155,40 @@
   </main>
   
 <script>
-const form = document.getElementById('simpledoc-form');
-const container = document.createElement('div');
-container.id = 'notizenContainer';
-container.style.marginTop = '2rem';
-form.after(container);
+  const form = document.getElementById("simpledoc-form");
+  const output = document.getElementById("notes-output");
 
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-form.addEventListener('submit', function (e) {
-e.preventDefault();
+    const date = form.date.value;
+    const type = form.type.value;
+    const notes = form.notes.value;
 
+    const statuses = [...form.querySelectorAll('input[name="status"]:checked')]
+      .map(cb => cb.value);
 
-const date = document.getElementById('date').value;
-const type = document.getElementById('type').value;
-const notes = document.getElementById('notes').value;
+    const hints = [...form.querySelectorAll('input[name="hint"]:checked')]
+      .map(cb => cb.value);
 
+    const entry = document.createElement("div");
+    entry.style.marginBottom = "1rem";
+    entry.style.padding = "1rem";
+    entry.style.border = "1px solid #ddd";
+    entry.style.borderRadius = "8px";
 
-const checked = Array.from(
-form.querySelectorAll('input[type="checkbox"]:checked')
-).map(cb => cb.parentElement.textContent.trim());
+    entry.innerHTML = `
+      <strong>${date}</strong> – ${type}<br>
+      <em>Status:</em> ${statuses.join(", ") || "—"}<br>
+      <em>Hinweise:</em> ${hints.join(", ") || "—"}<br>
+      ${notes ? `<em>Notiz:</em> ${notes}` : ""}
+    `;
 
-
-const entry = document.createElement('div');
-entry.style.padding = '1rem';
-entry.style.marginBottom = '1rem';
-entry.style.border = '1px solid #ddd';
-entry.style.borderRadius = '8px';
-entry.style.background = '#fafafa';
-
-
-entry.textContent =
-`Datum: ${date}
-` +
-`Terminart: ${type}
-
-
-` +
-`Beobachtungen:
-- ${checked.join('
-- ')}
-
-
-` +
-`Notiz:
-${notes || '—'}`;
-
-
-container.prepend(entry);
-form.reset();
-});
+    output.prepend(entry);
+    form.reset();
+  });
 </script>
+
 
   
 </body>
