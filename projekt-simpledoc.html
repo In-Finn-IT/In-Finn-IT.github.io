@@ -175,8 +175,7 @@
       
       
       <section id="notes-output">
-         <h2>Aktuelle Notizen</h2>
-         <small>erstellt am ${timestamp}</small>
+         <h2>Aktuelle Notizen</h2>         
       </section>
 
     </form>
@@ -191,7 +190,10 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const timestamp = new Date().toLocaleString("de-DE");
+    const timestamp = new Date().toLocaleString("de-DE", {
+        dateStyle: "short",
+        timeStyle: "short"
+      });  
     const date = form.date.value;
     const type = form.type.value;
     const notes = form.notes.value;
@@ -209,10 +211,15 @@
     entry.style.borderRadius = "8px";
 
     entry.innerHTML = `
+    <div class="note-header">
+        <strong>${ref || "ohne Kennung"}</strong>
+        <span>${type}</span>
+    </div>
       <strong>${date}</strong> – ${type}<br>
       <em>Status:</em> ${statuses.join(", ") || "—"}<br>
       <em>Hinweise:</em> ${hints.join(", ") || "—"}<br>
       ${notes ? `<em>Notiz:</em> ${notes}` : ""}
+      <small>erstellt am ${timestamp}</small>
     `;
 
     output.prepend(entry);
