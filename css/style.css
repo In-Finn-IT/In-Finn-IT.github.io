@@ -57,6 +57,15 @@ section {
   transform: translateY(0);
 }
 
+.site-notice {
+  background: #fef3c7;           
+  color: #92400e;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  text-align: center;
+}
+
+
 /* =========================
    Header & Navigation
 ========================= */
@@ -508,6 +517,7 @@ section {
   }   
 
 }
+
 
 
 
