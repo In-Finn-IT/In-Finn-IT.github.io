@@ -151,29 +151,55 @@
   </main>
   
 <script>
-  const form = document.getElementById('simpledoc-form');
-  const output = document.getElementById('notizText');
+const form = document.getElementById('simpledoc-form');
+const container = document.createElement('div');
+container.id = 'notizenContainer';
+container.style.marginTop = '2rem';
+form.after(container);
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
 
-    const date = document.getElementById('date').value;
-    const type = document.getElementById('type').value;
-    const notes = document.getElementById('notes').value;
+form.addEventListener('submit', function (e) {
+e.preventDefault();
 
-    // Checkboxen einsammeln
-    const checked = Array.from(
-      form.querySelectorAll('input[type="checkbox"]:checked')
-    ).map(cb => cb.parentElement.textContent.trim());
 
-    output.textContent =
-      `Datum: ${date}\n` +
-      `Terminart: ${type}\n\n` +
-      `Beobachtungen:\n- ${checked.join('\n- ')}\n\n` +
-      `Notiz:\n${notes || '—'}`;
+const date = document.getElementById('date').value;
+const type = document.getElementById('type').value;
+const notes = document.getElementById('notes').value;
 
-    form.reset();
-  });
+
+const checked = Array.from(
+form.querySelectorAll('input[type="checkbox"]:checked')
+).map(cb => cb.parentElement.textContent.trim());
+
+
+const entry = document.createElement('div');
+entry.style.padding = '1rem';
+entry.style.marginBottom = '1rem';
+entry.style.border = '1px solid #ddd';
+entry.style.borderRadius = '8px';
+entry.style.background = '#fafafa';
+
+
+entry.textContent =
+`Datum: ${date}
+` +
+`Terminart: ${type}
+
+
+` +
+`Beobachtungen:
+- ${checked.join('
+- ')}
+
+
+` +
+`Notiz:
+${notes || '—'}`;
+
+
+container.prepend(entry);
+form.reset();
+});
 </script>
 
   
