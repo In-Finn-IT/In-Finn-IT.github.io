@@ -83,6 +83,25 @@
       margin-top: 2rem;
       font-size: 0.85rem;
       color: #666;
+
+      .note-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.note-card small {
+  color: #6b7280;
+}
+
     }
   </style>
 </head>
@@ -93,6 +112,12 @@
     <p class="hint">Geführte Kurznotizen für den Praxisalltag (Demo-Version)</p>
 
     <form id="simpledoc-form">
+
+      <!-- Interne Nummer -->
+      <div class="form-group">
+        <label for="ref">Kürzel / interne Nummer</label>
+        <input type="text" id="ref" name="ref" placeholder="z. B. K-102" maxlength="20">
+      </div>
 
       <!-- Termin -->
       <div class="form-group">
@@ -120,6 +145,12 @@
         </div>
       </div>
 
+      
+      <!-- Neue Checkbox hinzufügen -->
+      <input type="text" id="new-status" placeholder="neue Beobachtung">
+      <button type="button" id="add-status">+</button>
+
+
       <!-- Häufige Hinweise -->
       <div class="form-group">
         <label>Häufige Hinweise</label>
@@ -137,6 +168,8 @@
 
         <textarea id="notes" name="notes" rows="3" maxlength="200" placeholder="Kurze Ergänzung (optional)"></textarea>
       </div>
+      
+      <small>erstellt am ${timestamp}</small>
 
       <button type="submit">Notiz übernehmen (Demo)</button>
 
@@ -157,6 +190,7 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    const timestamp = new Date().toLocaleString("de-DE");
     const date = form.date.value;
     const type = form.type.value;
     const notes = form.notes.value;
@@ -183,6 +217,18 @@
     output.prepend(entry);
     form.reset();
   });
+  
+  document.getElementById("add-status").addEventListener("click", () => {
+  const text = document.getElementById("new-status").value.trim();
+  if (!text) return;
+
+  const label = document.createElement("label");
+  label.innerHTML = `<input type="checkbox" name="status" value="${text}"> ${text}`;
+
+  document.querySelector(".checkbox-group").appendChild(label);
+  document.getElementById("new-status").value = "";
+});
+
 </script>
 
 
