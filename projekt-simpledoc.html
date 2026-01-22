@@ -80,11 +80,12 @@
     }
 
     .demo-note {
-      margin-top: 2rem;
-      font-size: 0.85rem;
-      color: #666;
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: #666;
+}
 
-      .note-card {
+.note-card {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
@@ -188,43 +189,43 @@
   const output = document.getElementById("notes-output");
 
   form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const timestamp = new Date().toLocaleString("de-DE", {
-        dateStyle: "short",
-        timeStyle: "short"
-      });  
-    const date = form.date.value;
-    const type = form.type.value;
-    const notes = form.notes.value;
-
-    const statuses = [...form.querySelectorAll('input[name="status"]:checked')]
-      .map(cb => cb.value);
-
-    const hints = [...form.querySelectorAll('input[name="hint"]:checked')]
-      .map(cb => cb.value);
-
-    const entry = document.createElement("div");
-    entry.style.marginBottom = "1rem";
-    entry.style.padding = "1rem";
-    entry.style.border = "1px solid #ddd";
-    entry.style.borderRadius = "8px";
-
-    entry.innerHTML = `
-    <div class="note-header">
-        <strong>${ref || "ohne Kennung"}</strong>
-        <span>${type}</span>
-    </div>
-      <strong>${date}</strong> – ${type}<br>
-      <em>Status:</em> ${statuses.join(", ") || "—"}<br>
-      <em>Hinweise:</em> ${hints.join(", ") || "—"}<br>
-      ${notes ? `<em>Notiz:</em> ${notes}` : ""}
-      <small>erstellt am ${timestamp}</small>
-    `;
-
-    output.prepend(entry);
-    form.reset();
+  const timestamp = new Date().toLocaleString("de-DE", {
+    dateStyle: "short",
+    timeStyle: "short"
   });
+
+  const ref = form.ref.value.trim();
+  const date = form.date.value;
+  const type = form.type.value;
+  const notes = form.notes.value;
+
+  const statuses = [...form.querySelectorAll('input[name="status"]:checked')]
+    .map(cb => cb.value);
+
+  const hints = [...form.querySelectorAll('input[name="hint"]:checked')]
+    .map(cb => cb.value);
+
+  const entry = document.createElement("div");
+  entry.className = "note-card";
+
+  entry.innerHTML = `
+    <div class="note-header">
+      <strong>${ref || "ohne Kennung"}</strong>
+      <span>${type}</span>
+    </div>
+    <strong>${date}</strong><br>
+    <em>Status:</em> ${statuses.join(", ") || "—"}<br>
+    <em>Hinweise:</em> ${hints.join(", ") || "—"}<br>
+    ${notes ? `<em>Notiz:</em> ${notes}<br>` : ""}
+    <small>erstellt am ${timestamp}</small>
+  `;
+
+  output.prepend(entry);
+  form.reset();
+});
+
   
   document.getElementById("add-status").addEventListener("click", () => {
   const text = document.getElementById("new-status").value.trim();
