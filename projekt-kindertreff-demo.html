@@ -193,7 +193,7 @@
     const container = document.getElementById("week");
     container.innerHTML = "";
 
-    const entries = load().filter(isActive);
+    const entries = load();
     const days = getNextDays();
 
     days.forEach((date, index) {
