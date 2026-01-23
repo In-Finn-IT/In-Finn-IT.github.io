@@ -75,15 +75,32 @@
     }
 
     /* Wochenansicht */
-    .week {
-      display: grid;
-      gap: 1rem;
-    }
+    #week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+}
 
-    .day {
-      border-top: 1px solid var(--border);
-      padding-top: 0.75rem;
-    }
+/* Tablet */
+@media (max-width: 900px) {
+  #week {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Handy */
+@media (max-width: 600px) {
+  #week {
+    grid-template-columns: 1fr;
+  }
+}
+
+.day {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
 
     .day h3 {
       font-size: 0.9rem;
@@ -96,6 +113,11 @@
       border-radius: 10px;
       padding: 0.6rem;
       margin-bottom: 0.5rem;
+    }
+
+    .entry.expired {
+      opacity: 0.5;
+      text-decoration: line-through;
     }
 
     .entry small {
@@ -170,15 +192,25 @@
   ========================= */
 
   function getNextDays() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const days = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    return [...Array(7)].map((_, i) => {
-      const d = new Date(today);
-      d.setDate(today.getDate() + i);
-      return d.toISOString().slice(0, 10);
-    });
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+
+    const localDate =
+      d.getFullYear() + "-" +
+      String(d.getMonth() + 1).padStart(2, "0") + "-" +
+      String(d.getDate()).padStart(2, "0");
+
+    days.push(localDate);
   }
+
+  return days;
+}
+
 
   function formatDay(dateStr, index) {
     if (index === 0) return "Heute";
@@ -191,11 +223,21 @@
     });
   }
 
+  function isExpired(entry) {
+    return new Date(entry.date + "T" + entry.end) < new Date(); 
+  }
+
+  function cleanupExpired() {
+  save(load().filter(e => !isExpired(e)));
+}
+
+
   /* =========================
      Render
   ========================= */
 
   function render() {
+    cleanupExpired(); 
     const container = document.getElementById("week");
     container.innerHTML = "";
 
@@ -214,21 +256,23 @@
       `;
 
       list.forEach(e => {
-        const el = document.createElement("div");
-        el.className = "entry";
+  const expired = isExpired(e);
 
-        el.innerHTML = `
-          <strong>${e.name}</strong> (${e.start}–${e.end})<br>
-          <small>${e.group}${e.note ? " · " + e.note : ""}</small><br>
-          <button class="secondary" data-id="${e.id}">Entfernen</button>
-        `;
+  const el = document.createElement("div");
+  el.className = "entry";
+  if (expired) el.classList.add("expired");
 
-        el.querySelector("button").addEventListener("click", () => {
-          remove(e.id);
-        });
+  el.innerHTML = `
+    <strong>${e.name}</strong>
+    ${expired ? " <em>(inzwischen verplant)</em>" : ""}
+    <br>
+    (${e.start}–${e.end})<br>
+    <small>${e.group}${e.note ? " · " + e.note : ""}</small>
+  `;
 
-        dayEl.appendChild(el);
-      });
+  dayEl.appendChild(el);
+});
+
 
       container.appendChild(dayEl);
     });
@@ -270,7 +314,7 @@
   /* =========================
      Init
   ========================= */
-
+  
   render();
 </script>
 
