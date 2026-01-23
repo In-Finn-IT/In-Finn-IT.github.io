@@ -99,11 +99,6 @@
   margin-bottom: 0.5rem;
 }
 
-.note-card small {
-  color: #6b7280;
-}
-
-    }
   </style>
 </head>
 <body>
@@ -149,10 +144,12 @@
       
       <!-- Neue Checkbox hinzufügen -->
       <div class="form-group">
-        <input type="text" id="new-status" placeholder="neue Beobachtung">
-        <button type="button" id="add-status">+</button>
+        <label for="new-status">Neue Beobachtung hinzufügen</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="new-status" placeholder="z. B. Rötung nach Belastung">
+            <button type="button" id="add-status">+</button>
+          </div>
       </div>
-
 
       <!-- Häufige Hinweise -->
       <div class="form-group">
@@ -177,7 +174,7 @@
 
       
       
-      <section id="notes-output">
+      <section id="notes-output" aria-live="polite">
          <h2>Aktuelle Notizen</h2>         
       </section>
 
@@ -226,6 +223,8 @@
 
   output.prepend(entry);
   form.reset();
+    form.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+
 });
 
   
