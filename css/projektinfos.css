@@ -51,3 +51,19 @@ ul {
   color: #374151;
 }
 
+.project-nav {
+  margin-bottom: 1.5rem;
+}
+
+.back-link {
+  font-size: 0.9rem;
+  color: #4b5563;
+  text-decoration: none;
+}
+
+/* Zurück-Button */
+.back-link:hover {
+  text-decoration: underline;
+}
+
+
