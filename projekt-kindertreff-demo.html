@@ -263,12 +263,16 @@
   if (expired) el.classList.add("expired");
 
   el.innerHTML = `
-    <strong>${e.name}</strong>
-    ${expired ? " <em>(inzwischen verplant)</em>" : ""}
-    <br>
-    (${e.start}–${e.end})<br>
-    <small>${e.group}${e.note ? " · " + e.note : ""}</small>
-  `;
+  <strong>${e.name}</strong>
+  ${expired ? " <em>(inzwischen verplant)</em>" : ""}
+  <br>
+  (${e.start}–${e.end})<br>
+  <small>${e.group}${e.note ? " · " + e.note : ""}</small>
+  <div class="entry-actions">
+    <button class="secondary" onclick="remove('${e.id}')">Entfernen</button>
+  </div>
+`;
+
 
   dayEl.appendChild(el);
 });
