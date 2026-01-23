@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kindertreff – Spielverabredungen ohne Stress</title>
+
+  <!-- Moderne, systemnahe Schrift – ruhig & performant -->
+  <style>
+    /* ==========================
+       Design-Grundlagen
+       ========================== */
+    :root {
+      --bg: #f6f7f8;
+      --surface: #ffffff;
+      --text-main: #1f2933;
+      --text-muted: #6b7280;
+      --accent: #4f6ef7;
+      --border: #e5e7eb;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    /* ==========================
+       Layout
+       ========================== */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    section h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    /* ==========================
+       Karten / Inhalte
+       ========================== */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .name {
+      font-weight: 500;
+    }
+
+    .time {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .meta {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================
+       Formular
+       ========================== */
+    form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    input, select, button {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    /* ==========================
+       Footer Hinweis
+       ========================== */
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Kindertreff</h1>
+  </header>
+
+  <main>
+
+    <!-- Aktuelle Verfügbarkeiten -->
+    <section>
+      <h2>Heute verfügbar</h2>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="name">Mia</span>
+          <span class="time">15:00 – 18:00</span>
+        </div>
+        <div class="meta">Spielplatz am Park</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="name">Jonas</span>
+          <span class="time">ab 16:30</span>
+        </div>
+        <div class="meta">bei uns zuhause</div>
+      </div>
+
+    </section>
+
+    <!-- Verfügbarkeit eintragen -->
+    <section>
+      <h2>Verfügbarkeit eintragen</h2>
+
+      <div class="card">
+        <form>
+          <div>
+            <label for="name">Name des Kindes</label>
+            <input id="name" type="text" placeholder="z. B. Mia" />
+          </div>
+
+          <div>
+            <label for="day">Wann?</label>
+            <select id="day">
+              <option>Heute</option>
+              <option>Morgen</option>
+              <option>Diese Woche</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="time">Uhrzeit (optional)</label>
+            <input id="time" type="text" placeholder="z. B. 15–18 Uhr" />
+          </div>
+
+          <div>
+            <label for="place">Ort (optional)</label>
+            <input id="place" type="text" placeholder="Spielplatz, zuhause …" />
+          </div>
+
+          <button type="submit">Eintragen</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Einträge verschwinden automatisch. Keine Profile. Keine Werbung.
+  </footer>
+
+</body>
+</html>
