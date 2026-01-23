@@ -161,37 +161,49 @@
     localStorage.setItem(STORAGE, JSON.stringify(data));
   }
 
-  function getWeek() {
-    const today = new Date();
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+  function getNextDays() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    return [...Array(7)].map((_, i) => {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      return d.toISOString().slice(0, 10);
-    });
-  }
+  return [...Array(7)].map((_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    return d.toISOString().slice(0, 10);
+  });
+}
+
 
   function isActive(entry) {
     return new Date(entry.date + "T" + entry.end) > new Date();
   }
+
+  function formatDay(dateStr, index) {
+  if (index === 0) return "Heute";
+  if (index === 1) return "Morgen";
+
+  return new Date(dateStr).toLocaleDateString("de-DE", {
+    weekday: "short",
+    day: "numeric",
+    month: "numeric"
+  });
+}
+
 
   function render() {
     const container = document.getElementById("week");
     container.innerHTML = "";
 
     const entries = load().filter(isActive);
-    const days = getWeek();
+    const days = getNextDays();
 
-    days.forEach(date => {
+    days.forEach((date, index) {
       const dayEl = document.createElement("div");
       dayEl.className = "day";
 
       const list = entries.filter(e => e.date === date);
 
       dayEl.innerHTML = `
-        <h3>${new Date(date).toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "numeric" })}</h3>
+        <h3>${formatDay(date, index)}</h3>
         ${list.length ? "" : "<small>Keine Einträge</small>"}
       `;
 
