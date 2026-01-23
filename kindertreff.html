@@ -226,9 +226,23 @@
     const entriesContainer = document.getElementById('entries');
     const groupFilter = document.getElementById('groupFilter');
 
+    function cleanupExpired(entries) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      return entries.filter(entry => {
+        if (entry.day !== 'Heute') return true;
+        const created = new Date(entry.createdAt);
+        created.setHours(0, 0, 0, 0);
+        return created.getTime() === today.getTime();
+      });
+    }
+
     function loadEntries() {
       const group = groupFilter.value;
-      const data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+      let data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+      data = cleanupExpired(data);
+      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
 
       entriesContainer.innerHTML = '';
 
@@ -241,6 +255,7 @@
             <span class="time">${entry.time || ''}</span>
           </div>
           <div class="meta">${entry.place || ''}</div>
+          <button class="delete" data-id="${entry.id}" type="button">Eintrag entfernen</button>
         `;
         entriesContainer.appendChild(card);
       });
@@ -250,11 +265,13 @@
       e.preventDefault();
 
       const entry = {
+        id: crypto.randomUUID(),
         name: document.getElementById('name').value,
         group: document.getElementById('group').value,
         day: document.getElementById('day').value,
         time: document.getElementById('time').value,
-        place: document.getElementById('place').value
+        place: document.getElementById('place').value,
+        createdAt: new Date().toISOString()
       };
 
       const data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
