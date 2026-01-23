@@ -79,9 +79,17 @@
     }
 
     button.secondary {
-      background: #e5e7eb;
-      color: #111;
-    }
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+}
+
+button.secondary:hover {
+  background: #f3f4f6;
+  color: var(--text-main);
+}
 
     /* Wochenansicht */
     #week {
@@ -105,29 +113,35 @@
 }
 
 .day {
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
   padding: 1rem;
+  border: 1px solid var(--border);
 }
 
 
+
     .day h3 {
-      font-size: 0.9rem;
-      margin: 0 0 0.5rem;
-      color: var(--text-muted);
-    }
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 0 0 0.6rem;
+  color: var(--text-muted);
+}
+
 
     .entry {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.6rem;
-      margin-bottom: 0.5rem;
-    }
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.6rem;
+  margin-bottom: 0.5rem;
+  background: #fafafa;
+}
+
 
     .entry.expired {
-      opacity: 0.5;
-      text-decoration: line-through;
-    }
+  opacity: 0.45;
+  text-decoration: line-through;
+}
 
     .entry small {
       color: var(--text-muted);
@@ -171,6 +185,10 @@
 
   <section>
     <h2>Diese Woche</h2>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-0.5rem;">
+        Ab heute · automatisch bereinigt
+      </p>
+
     <div id="week" class="week"></div>
   </section>
 
