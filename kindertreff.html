@@ -154,24 +154,20 @@
 
     <!-- Aktuelle Verfügbarkeiten -->
     <section>
+      <h2>Gruppe auswählen</h2>
+      <div class="card">
+        <select id="groupFilter">
+          <option value="Kindi">Kindi</option>
+          <option value="Turnen">Turnen</option>
+          <option value="Musik">Musik</option>
+          <option value="Sonstiges">Sonstiges</option>
+        </select>
+      </div>
+    </section>
+
+    <section>
       <h2>Heute verfügbar</h2>
-
-      <div class="card">
-        <div class="card-header">
-          <span class="name">Mia</span>
-          <span class="time">15:00 – 18:00</span>
-        </div>
-        <div class="meta">Spielplatz am Park</div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <span class="name">Jonas</span>
-          <span class="time">ab 16:30</span>
-        </div>
-        <div class="meta">bei uns zuhause</div>
-      </div>
-
+      <div id="entries"></div>
     </section>
 
     <!-- Verfügbarkeit eintragen -->
@@ -179,10 +175,20 @@
       <h2>Verfügbarkeit eintragen</h2>
 
       <div class="card">
-        <form>
+        <form id="entryForm">
           <div>
             <label for="name">Name des Kindes</label>
             <input id="name" type="text" placeholder="z. B. Mia" />
+          </div>
+
+          <div>
+            <label for="group">Gruppe</label>
+            <select id="group">
+              <option>Kindi</option>
+              <option>Turnen</option>
+              <option>Musik</option>
+              <option>Sonstiges</option>
+            </select>
           </div>
 
           <div>
@@ -215,5 +221,53 @@
     Einträge verschwinden automatisch. Keine Profile. Keine Werbung.
   </footer>
 
+<script>
+    const form = document.getElementById('entryForm');
+    const entriesContainer = document.getElementById('entries');
+    const groupFilter = document.getElementById('groupFilter');
+
+    function loadEntries() {
+      const group = groupFilter.value;
+      const data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+
+      entriesContainer.innerHTML = '';
+
+      data.filter(e => e.group === group && e.day === 'Heute').forEach(entry => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span class="name">${entry.name}</span>
+            <span class="time">${entry.time || ''}</span>
+          </div>
+          <div class="meta">${entry.place || ''}</div>
+        `;
+        entriesContainer.appendChild(card);
+      });
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const entry = {
+        name: document.getElementById('name').value,
+        group: document.getElementById('group').value,
+        day: document.getElementById('day').value,
+        time: document.getElementById('time').value,
+        place: document.getElementById('place').value
+      };
+
+      const data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+      data.push(entry);
+      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
+
+      form.reset();
+      loadEntries();
+    });
+
+    groupFilter.addEventListener('change', loadEntries);
+
+    loadEntries();
+  </script>
 </body>
 </html>
