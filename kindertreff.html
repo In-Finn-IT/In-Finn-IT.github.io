@@ -166,7 +166,18 @@
     </section>
 
     <section>
-      <h2>Heute verfügbar</h2>
+      <h2>Verfügbarkeit anzeigen</h2>
+      <div class="card">
+        <select id="dayFilter">
+          <option value="Heute">Heute</option>
+          <option value="Morgen">Morgen</option>
+          <option value="Diese Woche">Diese Woche</option>
+        </select>
+      </div>
+    </section>
+
+    <section>
+      <h2>Verfügbar
       <div id="entries"></div>
     </section>
 
@@ -218,13 +229,17 @@
   </main>
 
   <footer>
-    Einträge verschwinden automatisch. Keine Profile. Keine Werbung.
+    Einträge werden nur lokal auf diesem Gerät gespeichert und automatisch gelöscht.
+    <br />
+    Sie gehen verloren, wenn Browserdaten oder Cache dieses Browsers gelöscht werden
+    oder ein anderes Gerät bzw. ein anderer Browser verwendet wird.
   </footer>
 
 <script>
     const form = document.getElementById('entryForm');
     const entriesContainer = document.getElementById('entries');
     const groupFilter = document.getElementById('groupFilter');
+    const dayFilter = document.getElementById('dayFilter');
 
     function cleanupExpired(entries) {
       const today = new Date();
@@ -241,23 +256,42 @@
     function loadEntries() {
       const group = groupFilter.value;
       let data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+
       data = cleanupExpired(data);
       localStorage.setItem('kindertreffEntries', JSON.stringify(data));
 
       entriesContainer.innerHTML = '';
 
-      data.filter(e => e.group === group && e.day === 'Heute').forEach(entry => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card-header">
-            <span class="name">${entry.name}</span>
-            <span class="time">${entry.time || ''}</span>
-          </div>
-          <div class="meta">${entry.place || ''}</div>
-          <button class="delete" data-id="${entry.id}" type="button">Eintrag entfernen</button>
-        `;
-        entriesContainer.appendChild(card);
+      data
+        .filter(e => e.group === group && e.day === dayFilter.value)
+        .forEach(entry => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <div class="card-header">
+              <span class="name">${entry.name}</span>
+              <span class="time">${entry.time || ''}</span>
+            </div>
+            <div class="meta">${entry.place || ''}</div>
+            <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+              <button class="edit" data-id="${entry.id}" type="button">Bearbeiten</button>
+              <button class="delete" data-id="${entry.id}" type="button">Entfernen</button>
+            </div>
+          `;
+          entriesContainer.appendChild(card);
+
+          card.querySelector('.delete').addEventListener('click', () => {
+            deleteEntry(entry.id);
+          });
+
+          card.querySelector('.edit').addEventListener('click', () => {
+            editEntry(entry.id);
+          });
+        });
+    }(card);
+        card.querySelector('.delete').addEventListener('click', () => {
+          deleteEntry(entry.id);
+        });
       });
     }
 
@@ -282,9 +316,36 @@
       loadEntries();
     });
 
+    function editEntry(id) {
+      let data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+      const entry = data.find(e => e.id === id);
+      if (!entry) return;
+
+      document.getElementById('name').value = entry.name;
+      document.getElementById('group').value = entry.group;
+      document.getElementById('day').value = entry.day;
+      document.getElementById('time').value = entry.time;
+      document.getElementById('place').value = entry.place;
+
+      data = data.filter(e => e.id !== id);
+      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
+
+      loadEntries();
+    }
+
+    function deleteEntry(id) {(id) {
+      let data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+      data = data.filter(e => e.id !== id);
+      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
+      loadEntries();
+    }
+
+    dayFilter.addEventListener('change', loadEntries);
+
     groupFilter.addEventListener('change', loadEntries);
 
     loadEntries();
   </script>
 </body>
 </html>
+
