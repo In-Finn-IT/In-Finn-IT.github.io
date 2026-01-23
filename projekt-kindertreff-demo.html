@@ -153,6 +153,10 @@
 <script>
   const STORAGE = "kindertreff_entries";
 
+  /* =========================
+     Storage
+  ========================= */
+
   function load() {
     return JSON.parse(localStorage.getItem(STORAGE)) || [];
   }
@@ -161,33 +165,35 @@
     localStorage.setItem(STORAGE, JSON.stringify(data));
   }
 
+  /* =========================
+     Date Helpers
+  ========================= */
+
   function getNextDays() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  return [...Array(7)].map((_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    return d.toISOString().slice(0, 10);
-  });
-}
-
-
-  function isActive(entry) {
-    return new Date(entry.date + "T" + entry.end) > new Date();
+    return [...Array(7)].map((_, i) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      return d.toISOString().slice(0, 10);
+    });
   }
 
   function formatDay(dateStr, index) {
-  if (index === 0) return "Heute";
-  if (index === 1) return "Morgen";
+    if (index === 0) return "Heute";
+    if (index === 1) return "Morgen";
 
-  return new Date(dateStr).toLocaleDateString("de-DE", {
-    weekday: "short",
-    day: "numeric",
-    month: "numeric"
-  });
-}
+    return new Date(dateStr).toLocaleDateString("de-DE", {
+      weekday: "short",
+      day: "numeric",
+      month: "numeric"
+    });
+  }
 
+  /* =========================
+     Render
+  ========================= */
 
   function render() {
     const container = document.getElementById("week");
@@ -196,7 +202,7 @@
     const entries = load();
     const days = getNextDays();
 
-    days.forEach((date, index) {
+    days.forEach((date, index) => {
       const dayEl = document.createElement("div");
       dayEl.className = "day";
 
@@ -210,11 +216,17 @@
       list.forEach(e => {
         const el = document.createElement("div");
         el.className = "entry";
+
         el.innerHTML = `
           <strong>${e.name}</strong> (${e.start}–${e.end})<br>
           <small>${e.group}${e.note ? " · " + e.note : ""}</small><br>
-          <button class="secondary" onclick="remove('${e.id}')">Entfernen</button>
+          <button class="secondary" data-id="${e.id}">Entfernen</button>
         `;
+
+        el.querySelector("button").addEventListener("click", () => {
+          remove(e.id);
+        });
+
         dayEl.appendChild(el);
       });
 
@@ -222,31 +234,46 @@
     });
   }
 
+  /* =========================
+     Actions
+  ========================= */
+
   function remove(id) {
     save(load().filter(e => e.id !== id));
     render();
   }
 
-  document.getElementById("entryForm").addEventListener("submit", e => {
+  /* =========================
+     Form handling
+  ========================= */
+
+  const form = document.getElementById("entryForm");
+
+  form.addEventListener("submit", e => {
     e.preventDefault();
 
     const entry = {
       id: crypto.randomUUID(),
-      name: name.value,
-      group: group.value,
-      date: date.value,
-      start: start.value,
-      end: end.value,
-      note: note.value
+      name: form.name.value.trim(),
+      group: form.group.value.trim(),
+      date: form.date.value,
+      start: form.start.value,
+      end: form.end.value,
+      note: form.note.value.trim()
     };
 
     save([...load(), entry]);
-    e.target.reset();
+    form.reset();
     render();
   });
 
+  /* =========================
+     Init
+  ========================= */
+
   render();
 </script>
+
 
 </body>
 </html>
