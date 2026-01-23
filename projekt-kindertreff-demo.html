@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kindertreff – Spielverabredungen ohne Stress</title>
 
-  <!-- Moderne, systemnahe Schrift – ruhig & performant -->
   <style>
-    /* ==========================
-       Design-Grundlagen
-       ========================== */
     :root {
       --bg: #f6f7f8;
       --surface: #ffffff;
@@ -20,105 +16,50 @@
       --radius: 14px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, sans-serif;
-      background-color: var(--bg);
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
       color: var(--text-main);
-      line-height: 1.6;
     }
 
-    /* ==========================
-       Layout
-       ========================== */
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 1.25rem 1rem;
-    }
-
-    header h1 {
-      font-size: 1.25rem;
-      margin: 0;
-      font-weight: 600;
+      padding: 1.25rem;
     }
 
     main {
-      max-width: 720px;
-      margin: 0 auto;
+      max-width: 760px;
+      margin: auto;
       padding: 1.5rem 1rem 4rem;
     }
 
-    section {
-      margin-bottom: 2.5rem;
-    }
-
-    section h2 {
+    h2 {
       font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
-    /* ==========================
-       Karten / Inhalte
-       ========================== */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1rem 1.25rem;
+      padding: 1rem;
       margin-bottom: 1rem;
     }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.25rem;
-    }
-
-    .name {
-      font-weight: 500;
-    }
-
-    .time {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .meta {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* ==========================
-       Formular
-       ========================== */
     form {
       display: grid;
-      gap: 1rem;
-    }
-
-    label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      gap: 0.75rem;
     }
 
     input, select, button {
       font-family: inherit;
-      font-size: 1rem;
-      padding: 0.6rem 0.75rem;
+      padding: 0.6rem;
       border-radius: 10px;
       border: 1px solid var(--border);
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--accent);
     }
 
     button {
@@ -126,16 +67,41 @@
       color: white;
       border: none;
       cursor: pointer;
-      font-weight: 500;
     }
 
-    button:hover {
-      opacity: 0.9;
+    button.secondary {
+      background: #e5e7eb;
+      color: #111;
     }
 
-    /* ==========================
-       Footer Hinweis
-       ========================== */
+    /* Wochenansicht */
+    .week {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .day {
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+    }
+
+    .day h3 {
+      font-size: 0.9rem;
+      margin: 0 0 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .entry {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .entry small {
+      color: var(--text-muted);
+    }
+
     footer {
       text-align: center;
       font-size: 0.8rem;
@@ -146,206 +112,129 @@
 </head>
 <body>
 
-  <header>
-    <h1>Kindertreff</h1>
-  </header>
+<header>
+  <h1>Kindertreff</h1>
+</header>
 
-  <main>
+<main>
 
-    <!-- Aktuelle Verfügbarkeiten -->
-    <section>
-      <h2>Gruppe auswählen</h2>
-      <div class="card">
-        <select id="groupFilter">
-          <option value="Kindi">Kindi</option>
-          <option value="Turnen">Turnen</option>
-          <option value="Musik">Musik</option>
-          <option value="Sonstiges">Sonstiges</option>
+  <section>
+    <h2>Neue Verfügbarkeit</h2>
+    <div class="card">
+      <form id="entryForm">
+        <input id="name" placeholder="Name des Kindes" required />
+        <select id="group">
+          <option>Kindi</option>
+          <option>Turnen</option>
+          <option>Musik</option>
+          <option>Sonstiges</option>
         </select>
-      </div>
-    </section>
+        <input id="date" type="date" required />
+        <input id="start" type="time" required />
+        <input id="end" type="time" required />
+        <input id="note" placeholder="Ort / Hinweis (optional)" />
+        <button type="submit">Eintragen</button>
+      </form>
+    </div>
+  </section>
 
-    <section>
-      <h2>Verfügbarkeit anzeigen</h2>
-      <div class="card">
-        <select id="dayFilter">
-          <option value="Heute">Heute</option>
-          <option value="Morgen">Morgen</option>
-          <option value="Diese Woche">Diese Woche</option>
-        </select>
-      </div>
-    </section>
+  <section>
+    <h2>Diese Woche</h2>
+    <div id="week" class="week"></div>
+  </section>
 
-    <section>
-      <h2>Verfügbar
-      <div id="entries"></div>
-    </section>
+</main>
 
-    <!-- Verfügbarkeit eintragen -->
-    <section>
-      <h2>Verfügbarkeit eintragen</h2>
-
-      <div class="card">
-        <form id="entryForm">
-          <div>
-            <label for="name">Name des Kindes</label>
-            <input id="name" type="text" placeholder="z. B. Mia" />
-          </div>
-
-          <div>
-            <label for="group">Gruppe</label>
-            <select id="group">
-              <option>Kindi</option>
-              <option>Turnen</option>
-              <option>Musik</option>
-              <option>Sonstiges</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="day">Wann?</label>
-            <select id="day">
-              <option>Heute</option>
-              <option>Morgen</option>
-              <option>Diese Woche</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="time">Uhrzeit (optional)</label>
-            <input id="time" type="text" placeholder="z. B. 15–18 Uhr" />
-          </div>
-
-          <div>
-            <label for="place">Ort (optional)</label>
-            <input id="place" type="text" placeholder="Spielplatz, zuhause …" />
-          </div>
-
-          <button type="submit">Eintragen</button>
-        </form>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    Einträge werden nur lokal auf diesem Gerät gespeichert und automatisch gelöscht.
-    <br />
-    Sie gehen verloren, wenn Browserdaten oder Cache dieses Browsers gelöscht werden
-    oder ein anderes Gerät bzw. ein anderer Browser verwendet wird.
-  </footer>
+<footer>
+  Daten werden ausschließlich lokal im Browser gespeichert.<br>
+  Beim Löschen von Browserdaten gehen nur die eigenen Einträge verloren.
+</footer>
 
 <script>
-    const form = document.getElementById('entryForm');
-    const entriesContainer = document.getElementById('entries');
-    const groupFilter = document.getElementById('groupFilter');
-    const dayFilter = document.getElementById('dayFilter');
+  const STORAGE = "kindertreff_entries";
 
-    function cleanupExpired(entries) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+  function load() {
+    return JSON.parse(localStorage.getItem(STORAGE)) || [];
+  }
 
-      return entries.filter(entry => {
-        if (entry.day !== 'Heute') return true;
-        const created = new Date(entry.createdAt);
-        created.setHours(0, 0, 0, 0);
-        return created.getTime() === today.getTime();
-      });
-    }
+  function save(data) {
+    localStorage.setItem(STORAGE, JSON.stringify(data));
+  }
 
-    function loadEntries() {
-      const group = groupFilter.value;
-      let data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
+  function getWeek() {
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
 
-      data = cleanupExpired(data);
-      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
-
-      entriesContainer.innerHTML = '';
-
-      data
-        .filter(e => e.group === group && e.day === dayFilter.value)
-        .forEach(entry => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <div class="card-header">
-              <span class="name">${entry.name}</span>
-              <span class="time">${entry.time || ''}</span>
-            </div>
-            <div class="meta">${entry.place || ''}</div>
-            <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
-              <button class="edit" data-id="${entry.id}" type="button">Bearbeiten</button>
-              <button class="delete" data-id="${entry.id}" type="button">Entfernen</button>
-            </div>
-          `;
-          entriesContainer.appendChild(card);
-
-          card.querySelector('.delete').addEventListener('click', () => {
-            deleteEntry(entry.id);
-          });
-
-          card.querySelector('.edit').addEventListener('click', () => {
-            editEntry(entry.id);
-          });
-        });
-    }(card);
-        card.querySelector('.delete').addEventListener('click', () => {
-          deleteEntry(entry.id);
-        });
-      });
-    }
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-
-      const entry = {
-        id: crypto.randomUUID(),
-        name: document.getElementById('name').value,
-        group: document.getElementById('group').value,
-        day: document.getElementById('day').value,
-        time: document.getElementById('time').value,
-        place: document.getElementById('place').value,
-        createdAt: new Date().toISOString()
-      };
-
-      const data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
-      data.push(entry);
-      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
-
-      form.reset();
-      loadEntries();
+    return [...Array(7)].map((_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return d.toISOString().slice(0, 10);
     });
+  }
 
-    function editEntry(id) {
-      let data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
-      const entry = data.find(e => e.id === id);
-      if (!entry) return;
+  function isActive(entry) {
+    return new Date(entry.date + "T" + entry.end) > new Date();
+  }
 
-      document.getElementById('name').value = entry.name;
-      document.getElementById('group').value = entry.group;
-      document.getElementById('day').value = entry.day;
-      document.getElementById('time').value = entry.time;
-      document.getElementById('place').value = entry.place;
+  function render() {
+    const container = document.getElementById("week");
+    container.innerHTML = "";
 
-      data = data.filter(e => e.id !== id);
-      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
+    const entries = load().filter(isActive);
+    const days = getWeek();
 
-      loadEntries();
-    }
+    days.forEach(date => {
+      const dayEl = document.createElement("div");
+      dayEl.className = "day";
 
-    function deleteEntry(id) {(id) {
-      let data = JSON.parse(localStorage.getItem('kindertreffEntries') || '[]');
-      data = data.filter(e => e.id !== id);
-      localStorage.setItem('kindertreffEntries', JSON.stringify(data));
-      loadEntries();
-    }
+      const list = entries.filter(e => e.date === date);
 
-    dayFilter.addEventListener('change', loadEntries);
+      dayEl.innerHTML = `
+        <h3>${new Date(date).toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "numeric" })}</h3>
+        ${list.length ? "" : "<small>Keine Einträge</small>"}
+      `;
 
-    groupFilter.addEventListener('change', loadEntries);
+      list.forEach(e => {
+        const el = document.createElement("div");
+        el.className = "entry";
+        el.innerHTML = `
+          <strong>${e.name}</strong> (${e.start}–${e.end})<br>
+          <small>${e.group}${e.note ? " · " + e.note : ""}</small><br>
+          <button class="secondary" onclick="remove('${e.id}')">Entfernen</button>
+        `;
+        dayEl.appendChild(el);
+      });
 
-    loadEntries();
-  </script>
+      container.appendChild(dayEl);
+    });
+  }
+
+  function remove(id) {
+    save(load().filter(e => e.id !== id));
+    render();
+  }
+
+  document.getElementById("entryForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const entry = {
+      id: crypto.randomUUID(),
+      name: name.value,
+      group: group.value,
+      date: date.value,
+      start: start.value,
+      end: end.value,
+      note: note.value
+    };
+
+    save([...load(), entry]);
+    e.target.reset();
+    render();
+  });
+
+  render();
+</script>
+
 </body>
 </html>
-
