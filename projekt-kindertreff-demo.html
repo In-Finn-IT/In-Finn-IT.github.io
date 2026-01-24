@@ -200,6 +200,10 @@ button.secondary:hover {
 </footer>
 
 <script>
+/* =========================
+   PocketBase
+========================= */
+
 async function loadFromPocketBase() {
   const res = await fetch(
     "http://127.0.0.1:8090/api/collections/entries/records?perPage=200"
@@ -211,31 +215,19 @@ async function loadFromPocketBase() {
   }
 
   const data = await res.json();
-  return data.items || [];
+
+  // 🔑 Datum normalisieren: "YYYY-MM-DD"
+  return (data.items || []).map(e => ({
+    ...e,
+    date: e.date.split(" ")[0]
+  }));
 }
 
-  
+/* =========================
+   Date Helpers
+========================= */
 
-  
-  const STORAGE = "kindertreff_entries";
-
-  /* =========================
-     Storage
-  ========================= */
-
-  function load() {
-    return JSON.parse(localStorage.getItem(STORAGE)) || [];
-  }
-
-  function save(data) {
-    localStorage.setItem(STORAGE, JSON.stringify(data));
-  }
-
-  /* =========================
-     Date Helpers
-  ========================= */
-
-  function getNextDays() {
+function getNextDays() {
   const days = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -255,118 +247,74 @@ async function loadFromPocketBase() {
   return days;
 }
 
+function formatDay(dateStr, index) {
+  if (index === 0) return "Heute";
+  if (index === 1) return "Morgen";
 
-  function formatDay(dateStr, index) {
-    if (index === 0) return "Heute";
-    if (index === 1) return "Morgen";
-
-    return new Date(dateStr).toLocaleDateString("de-DE", {
-      weekday: "short",
-      day: "numeric",
-      month: "numeric"
-    });
-  }
-
-  function isExpired(entry) {
-    return new Date(entry.date + "T" + entry.end) < new Date(); 
-  }
-
-  function cleanupExpired() {
-  save(load().filter(e => !isExpired(e)));
+  return new Date(dateStr).toLocaleDateString("de-DE", {
+    weekday: "short",
+    day: "numeric",
+    month: "numeric"
+  });
 }
 
+function isExpired(entry) {
+  return new Date(entry.date + "T" + entry.end) < new Date();
+}
 
-  /* =========================
-     Render
-  ========================= */
+/* =========================
+   Render
+========================= */
 
-  async function render() {   
-    
+async function render() {
+  const container = document.getElementById("week");
+  container.innerHTML = "";
 
-    const container = document.getElementById("week");
-    container.innerHTML = "";
+  const entries = await loadFromPocketBase();
+  console.log("Geladene Einträge:", entries);
 
-    const entries = await loadFromPocketBase();
-    console.log("Geladene Einträge:", entries);
-    const days = getNextDays();
+  const days = getNextDays();
 
-    days.forEach((date, index) => {
-      const dayEl = document.createElement("div");
-      dayEl.className = "day";
+  days.forEach((date, index) => {
+    const dayEl = document.createElement("div");
+    dayEl.className = "day";
 
-      const list = entries.filter(e => e.date === date);
+    const list = entries.filter(e => e.date === date);
 
-      dayEl.innerHTML = `
-        <h3>${formatDay(date, index)}</h3>
-        ${list.length ? "" : "<small>Keine Einträge</small>"}
+    dayEl.innerHTML = `
+      <h3>${formatDay(date, index)}</h3>
+      ${list.length ? "" : "<small>Keine Einträge</small>"}
+    `;
+
+    list.forEach(e => {
+      const expired = isExpired(e);
+
+      const el = document.createElement("div");
+      el.className = "entry";
+      if (expired) el.classList.add("expired");
+
+      el.innerHTML = `
+        <strong>${e.name}</strong>
+        ${expired ? " <em>(inzwischen verplant)</em>" : ""}
+        <br>
+        (${e.start}–${e.end})<br>
+        <small>${e.group}${e.note ? " · " + e.note : ""}</small>
       `;
 
-      list.forEach(e => {
-  const expired = isExpired(e);
-
-  const el = document.createElement("div");
-  el.className = "entry";
-  if (expired) el.classList.add("expired");
-
-  el.innerHTML = `
-  <strong>${e.name}</strong>
-  ${expired ? " <em>(inzwischen verplant)</em>" : ""}
-  <br>
-  (${e.start}–${e.end})<br>
-  <small>${e.group}${e.note ? " · " + e.note : ""}</small>
-  <div class="entry-actions">
-    <button class="secondary" onclick="remove('${e.id}')">Entfernen</button>
-  </div>
-`;
-
-
-  dayEl.appendChild(el);
-});
-
-
-      container.appendChild(dayEl);
+      dayEl.appendChild(el);
     });
-  }
 
-  /* =========================
-     Actions
-  ========================= */
-
-  function remove(id) {
-    save(load().filter(e => e.id !== id));
-    render();
-  }
-
-  /* =========================
-     Form handling
-  ========================= */
-
-  const form = document.getElementById("entryForm");
-
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-
-    const entry = {
-      id: crypto.randomUUID(),
-      name: form.name.value.trim(),
-      group: form.group.value.trim(),
-      date: form.date.value,
-      start: form.start.value,
-      end: form.end.value,
-      note: form.note.value.trim()
-    };
-
-    save([...load(), entry]);
-    form.reset();
-    render();
+    container.appendChild(dayEl);
   });
+}
 
-  /* =========================
-     Init
-  ========================= */
-  
-  render();
+/* =========================
+   Init
+========================= */
+
+render();
 </script>
+
 
 
 </body>
