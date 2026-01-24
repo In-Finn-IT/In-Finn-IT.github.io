@@ -200,6 +200,21 @@ button.secondary:hover {
 </footer>
 
 <script>
+async function loadFromPocketBase() {
+  const res = await fetch(
+    "http://127.0.0.1:8090/api/collections/entries/records?perPage=200"
+  );
+
+  if (!res.ok) {
+    console.error("PocketBase nicht erreichbar");
+    return [];
+  }
+
+  const data = await res.json();
+  return data.items || [];
+}
+
+  
   const STORAGE = "kindertreff_entries";
 
   /* =========================
@@ -263,12 +278,12 @@ button.secondary:hover {
      Render
   ========================= */
 
-  function render() {
+  async function render() {
     cleanupExpired(); 
     const container = document.getElementById("week");
     container.innerHTML = "";
 
-    const entries = load();
+    const entries = await loadFromPocketBase();
     const days = getNextDays();
 
     days.forEach((date, index) => {
