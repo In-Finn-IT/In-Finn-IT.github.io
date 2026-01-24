@@ -214,6 +214,8 @@ async function loadFromPocketBase() {
   return data.items || [];
 }
 
+  console.log("PB entries:", entries);
+
   
   const STORAGE = "kindertreff_entries";
 
@@ -278,8 +280,7 @@ async function loadFromPocketBase() {
      Render
   ========================= */
 
-  async function render() {
-    cleanupExpired(); 
+  async function render() {    
     const container = document.getElementById("week");
     container.innerHTML = "";
 
