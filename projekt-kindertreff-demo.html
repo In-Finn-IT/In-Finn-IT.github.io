@@ -280,7 +280,9 @@ async function loadFromPocketBase() {
      Render
   ========================= */
 
-  async function render() {    
+  async function render() {   
+    console.log("Geladene Einträge:", entries);
+
     const container = document.getElementById("week");
     container.innerHTML = "";
 
