@@ -65,6 +65,12 @@ section {
   text-align: center;
 }
 
+/* Button disabled */
+.demo-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 /* =========================
    Header & Navigation
@@ -517,6 +523,7 @@ section {
   }   
 
 }
+
 
 
 
