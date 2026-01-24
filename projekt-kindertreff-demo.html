@@ -281,12 +281,13 @@ async function loadFromPocketBase() {
   ========================= */
 
   async function render() {   
-    console.log("Geladene Einträge:", entries);
+    
 
     const container = document.getElementById("week");
     container.innerHTML = "";
 
     const entries = await loadFromPocketBase();
+    console.log("Geladene Einträge:", entries);
     const days = getNextDays();
 
     days.forEach((date, index) => {
