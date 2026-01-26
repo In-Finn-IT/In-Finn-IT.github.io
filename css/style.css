@@ -280,7 +280,7 @@ section {
 }
 
 .project-main {
-  background: #f9fafb;
+  background: rgba(255,255,255,0.85);
   border: 1px solid #e5e7eb;
   padding: 1.2rem;
 }
@@ -529,6 +529,7 @@ section {
   }   
 
 }
+
 
 
 
