@@ -211,6 +211,13 @@ section {
 /* =========================
    Portfolio
 ========================= */
+.portfolio-einleitung {
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  color: #4b5563;
+}
+
 
 .portfolio {
   max-width: 1000px;
@@ -529,6 +536,7 @@ section {
   }   
 
 }
+
 
 
 
