@@ -181,6 +181,33 @@ section {
 }
 
 /* =========================
+   Angebot
+========================= */
+
+.angebot {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.angebot h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.angebot-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.angebot-list li {
+  line-height: 1.6;
+}
+
+/* =========================
    Arbeitsweise
 ========================= */
 
@@ -540,6 +567,7 @@ section {
   }   
 
 }
+
 
 
 
