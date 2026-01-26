@@ -249,10 +249,14 @@ section {
   margin-bottom: 5rem;  
 }
 
-.projekt h3 {
+.projekt h3,
+.projekt h4 {
   text-align: center;
   margin-bottom: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
+
 
 .projekt p {
   margin-bottom: 1rem;
@@ -536,6 +540,7 @@ section {
   }   
 
 }
+
 
 
 
