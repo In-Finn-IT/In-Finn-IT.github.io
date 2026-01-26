@@ -4,7 +4,12 @@ const nav = document.querySelector(".nav-list");
 toggle.addEventListener("click", () => {
   const isOpen = nav.classList.toggle("open");
   toggle.setAttribute("aria-expanded", isOpen);
+  toggle.setAttribute(
+    "aria-label",
+    isOpen ? "Menü schließen" : "Menü öffnen"
+  );
 });
+
 
 document.querySelectorAll(".nav-list a").forEach((link) => {
   link.addEventListener("click", () => {
@@ -33,6 +38,7 @@ document.querySelectorAll(".fade-in").forEach((element) => {
   observer.observe(element);
 
 });
+
 
 
 
