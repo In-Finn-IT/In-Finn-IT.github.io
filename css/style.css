@@ -279,13 +279,19 @@ section {
   margin-bottom: 3rem;
 }
 
-.project-main {  
+.project-main {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 2rem;
-  margin-bottom: 3rem;
+  padding: 1.2rem;
 }
+
+.project-inner {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
 
 .projekt-main h3 {
   margin-top: 0;
@@ -523,6 +529,7 @@ section {
   }   
 
 }
+
 
 
 
