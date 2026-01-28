@@ -199,28 +199,37 @@ button.secondary:hover {
   Beim Löschen von Browserdaten gehen nur die eigenen Einträge verloren.
 </footer>
 
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script>
 /* =========================
-   PocketBase
+   PocketBase Setup
 ========================= */
 
-async function loadFromPocketBase() {
-  const res = await fetch(
-    "http://127.0.0.1:8090/api/collections/entries/records?perPage=200"
-  );
+const pb = new PocketBase("http://127.0.0.1:8090");
+let currentUser = null;
 
-  if (!res.ok) {
-    console.error("PocketBase nicht erreichbar");
-    return [];
+/* =========================
+   Minimal Alias Login
+========================= */
+
+async function initUser() {
+  const savedUserId = localStorage.getItem("kindertreffUser");
+
+  if (savedUserId) {
+    try {
+      currentUser = await pb.collection("users").getOne(savedUserId);
+      return;
+    } catch {
+      localStorage.removeItem("kindertreffUser");
+    }
   }
 
-  const data = await res.json();
+  const alias = prompt("Bitte gib einen Alias oder Vornamen ein:");
+  if (!alias) return;
 
-  // 🔑 Datum normalisieren: "YYYY-MM-DD"
-  return (data.items || []).map(e => ({
-    ...e,
-    date: e.date.split(" ")[0]
-  }));
+  const user = await pb.collection("users").create({ username: alias });
+  localStorage.setItem("kindertreffUser", user.id);
+  currentUser = user;
 }
 
 /* =========================
@@ -235,15 +244,8 @@ function getNextDays() {
   for (let i = 0; i < 7; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-
-    const localDate =
-      d.getFullYear() + "-" +
-      String(d.getMonth() + 1).padStart(2, "0") + "-" +
-      String(d.getDate()).padStart(2, "0");
-
-    days.push(localDate);
+    days.push(d.toISOString().split("T")[0]);
   }
-
   return days;
 }
 
@@ -263,16 +265,25 @@ function isExpired(entry) {
 }
 
 /* =========================
-   Render
+   Load & Render
 ========================= */
+
+async function loadEntries() {
+  const res = await pb.collection("entries").getFullList({
+    sort: "date,start"
+  });
+
+  return res.map(e => ({
+    ...e,
+    date: e.date.split(" ")[0]
+  }));
+}
 
 async function render() {
   const container = document.getElementById("week");
   container.innerHTML = "";
 
-  const entries = await loadFromPocketBase();
-  console.log("Geladene Einträge:", entries);
-
+  const entries = await loadEntries();
   const days = getNextDays();
 
   days.forEach((date, index) => {
@@ -288,17 +299,17 @@ async function render() {
 
     list.forEach(e => {
       const expired = isExpired(e);
+      const isOwn = e.createdBy === currentUser.id;
 
       const el = document.createElement("div");
-      el.className = "entry";
-      if (expired) el.classList.add("expired");
+      el.className = "entry" + (expired ? " expired" : "");
 
       el.innerHTML = `
         <strong>${e.name}</strong>
         ${expired ? " <em>(inzwischen verplant)</em>" : ""}
-        <br>
-        (${e.start}–${e.end})<br>
+        <br>(${e.start}–${e.end})<br>
         <small>${e.group}${e.note ? " · " + e.note : ""}</small>
+        ${isOwn ? `<br><button class="secondary" data-id="${e.id}">Löschen</button>` : ""}
       `;
 
       dayEl.appendChild(el);
@@ -306,14 +317,46 @@ async function render() {
 
     container.appendChild(dayEl);
   });
+
+  document.querySelectorAll("button[data-id]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      await pb.collection("entries").delete(btn.dataset.id);
+      render();
+    });
+  });
 }
+
+/* =========================
+   Form Handling
+========================= */
+
+document.getElementById("entryForm").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  await pb.collection("entries").create({
+    name: name.value,
+    group: group.value,
+    date: date.value,
+    start: start.value,
+    end: end.value,
+    note: note.value,
+    createdBy: currentUser.id
+  });
+
+  e.target.reset();
+  render();
+});
 
 /* =========================
    Init
 ========================= */
 
-render();
+(async () => {
+  await initUser();
+  await render();
+})();
 </script>
+
 
 
 
