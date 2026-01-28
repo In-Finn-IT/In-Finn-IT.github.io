@@ -209,27 +209,29 @@ const pb = new PocketBase("http://127.0.0.1:8090");
 let currentUser = null;
 
 /* =========================
-   Minimal Alias Login
+   User Handling (ohne Popup)
 ========================= */
 
-async function initUser() {
+async function getOrCreateUser(alias) {
   const savedUserId = localStorage.getItem("kindertreffUser");
 
   if (savedUserId) {
     try {
       currentUser = await pb.collection("users").getOne(savedUserId);
-      return;
+      return currentUser;
     } catch {
       localStorage.removeItem("kindertreffUser");
     }
   }
 
-  const alias = prompt("Bitte gib einen Alias oder Vornamen ein:");
-  if (!alias) return;
+  // neuen User anlegen
+  const user = await pb.collection("users").create({
+    username: alias
+  });
 
-  const user = await pb.collection("users").create({ username: alias });
   localStorage.setItem("kindertreffUser", user.id);
   currentUser = user;
+  return user;
 }
 
 /* =========================
@@ -283,7 +285,13 @@ async function render() {
   const container = document.getElementById("week");
   container.innerHTML = "";
 
-  const entries = await loadEntries();
+  let entries = [];
+  try {
+    entries = await loadEntries();
+  } catch (e) {
+    console.warn("Keine Einträge geladen (PB evtl. offline)");
+  }
+
   const days = getNextDays();
 
   days.forEach((date, index) => {
@@ -299,7 +307,7 @@ async function render() {
 
     list.forEach(e => {
       const expired = isExpired(e);
-      const isOwn = e.createdBy === currentUser.id;
+      const isOwn = currentUser && e.createdBy === currentUser.id;
 
       const el = document.createElement("div");
       el.className = "entry" + (expired ? " expired" : "");
@@ -333,8 +341,16 @@ async function render() {
 document.getElementById("entryForm").addEventListener("submit", async e => {
   e.preventDefault();
 
+  const alias = name.value.trim();
+  if (!alias) {
+    alert("Bitte gib einen Namen oder Alias an.");
+    return;
+  }
+
+  await getOrCreateUser(alias);
+
   await pb.collection("entries").create({
-    name: name.value,
+    name: alias,
     group: group.value,
     date: date.value,
     start: start.value,
@@ -351,10 +367,7 @@ document.getElementById("entryForm").addEventListener("submit", async e => {
    Init
 ========================= */
 
-(async () => {
-  await initUser();
-  await render();
-})();
+render();
 </script>
 
 
