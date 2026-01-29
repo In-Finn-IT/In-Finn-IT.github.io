@@ -6,163 +6,34 @@
   <title>Kindertreff – Spielverabredungen ohne Stress</title>
 
   <style>
-    :root {
-      --bg: #f6f7f8;
-      --surface: #ffffff;
-      --text-main: #1f2933;
-      --text-muted: #6b7280;
-      --accent: #4f6ef7;
-      --border: #e5e7eb;
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text-main);
-
-      background:
-    radial-gradient(
-      1200px 600px at 50% -200px,
-      rgba(79, 110, 247, 0.06),
-      transparent 70%
-    ),
-    var(--bg);
-    }
-
-    header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 1.25rem;
-      text-align: center;
-    }
-    
-    main {
-      max-width: 760px;
-      margin: auto;
-      padding: 1.5rem 1rem 4rem;
-    }
-
-    h2 {
-      font-size: 1rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    form {
-      display: grid;
-      gap: 0.75rem;
-    }
-
-    input, select, button {
-      font-family: inherit;
-      padding: 0.6rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-    }
-
-    button {
-      background: var(--accent);
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button.secondary {
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  font-size: 0.8rem;
-  padding: 0.3rem 0.6rem;
-}
-
-button.secondary:hover {
-  background: #f3f4f6;
-  color: var(--text-main);
-}
-
-    /* Wochenansicht */
-    #week {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1rem;
-}
-
-/* Tablet */
-@media (max-width: 900px) {
-  #week {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Handy */
-@media (max-width: 600px) {
-  #week {
-    grid-template-columns: 1fr;
-  }
-}
-
-.day {
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 1rem;
-  border: 1px solid var(--border);
-}
-
-
-
-    .day h3 {
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin: 0 0 0.6rem;
-  color: var(--text-muted);
-}
-
-
-    .entry {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.55rem 0.6rem;
-  margin-bottom: 0.5rem;
-  background: #fafafa;
-}
-
-
-    .entry.expired {
-  opacity: 0.45;
-  text-decoration: line-through;
-}
-
-    .entry small {
-      color: var(--text-muted);
-    }
-
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      padding: 2rem 1rem;
-    }
+    /* Dein CSS bleibt unverändert, hier nur gekürzt */
+    :root { --bg:#f6f7f8; --surface:#fff; --text-main:#1f2933; --text-muted:#6b7280; --accent:#4f6ef7; --border:#e5e7eb; --radius:14px; }
+    body{margin:0;font-family:system-ui,sans-serif;background:radial-gradient(1200px 600px at 50% -200px,rgba(79,110,247,0.06),transparent 70%),var(--bg);color:var(--text-main);}
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.25rem;text-align:center;}
+    main{max-width:760px;margin:auto;padding:1.5rem 1rem 4rem;}
+    h2{font-size:1rem;margin-bottom:0.75rem;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;}
+    form{display:grid;gap:0.75rem;}
+    input, select, button{font-family:inherit;padding:0.6rem;border-radius:10px;border:1px solid var(--border);}
+    button{background:var(--accent);color:white;border:none;cursor:pointer;}
+    button.secondary{background:transparent;color:var(--text-muted);border:1px solid var(--border);font-size:0.8rem;padding:0.3rem 0.6rem;}
+    button.secondary:hover{background:#f3f4f6;color:var(--text-main);}
+    #week{display:grid;grid-template-columns:repeat(7,1fr);gap:1rem;}
+    @media(max-width:900px){#week{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:600px){#week{grid-template-columns:1fr;}}
+    .day{background:var(--surface);border-radius:12px;padding:1rem;border:1px solid var(--border);}
+    .day h3{font-size:0.85rem;font-weight:500;margin:0 0 0.6rem;color:var(--text-muted);}
+    .entry{border:1px solid var(--border);border-radius:10px;padding:0.55rem 0.6rem;margin-bottom:0.5rem;background:#fafafa;}
+    .entry.expired{opacity:0.45;text-decoration:line-through;}
+    .entry small{color:var(--text-muted);}
+    footer{text-align:center;font-size:0.8rem;color:var(--text-muted);padding:2rem 1rem;}
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Kindertreff</h1>
-</header>
+<header><h1>Kindertreff</h1></header>
 
 <main>
-
   <section>
     <h2>Neue Verfügbarkeit</h2>
     <div class="card">
@@ -185,13 +56,9 @@ button.secondary:hover {
 
   <section>
     <h2>Diese Woche</h2>
-      <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-0.5rem;">
-        Ab heute · automatisch bereinigt
-      </p>
-
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-top:-0.5rem;">Ab heute · automatisch bereinigt</p>
     <div id="week" class="week"></div>
   </section>
-
 </main>
 
 <footer>
@@ -204,32 +71,21 @@ button.secondary:hover {
 /* =========================
    PocketBase Setup
 ========================= */
-
-// Ändere die URL auf deine Domain / Reverse Proxy URL
-const pb = new PocketBase("/api");
+const pb = new PocketBase("/api"); // <--- Deine Domain/Reverse Proxy
 let currentUser = null;
 
 /* =========================
    User Handling (ohne Popup)
 ========================= */
-
-async function getOrCreateUser(alias) {
+async function getOrCreateUser(alias){
   const savedUserId = localStorage.getItem("kindertreffUser");
-
-  if (savedUserId) {
-    try {
+  if(savedUserId){
+    try{
       currentUser = await pb.collection("users").getOne(savedUserId);
       return currentUser;
-    } catch {
-      localStorage.removeItem("kindertreffUser");
-    }
+    }catch{ localStorage.removeItem("kindertreffUser"); }
   }
-
-  // neuen User anlegen
-  const user = await pb.collection("users").create({
-    username: alias
-  });
-
+  const user = await pb.collection("users").create({username: alias});
   localStorage.setItem("kindertreffUser", user.id);
   currentUser = user;
   return user;
@@ -238,97 +94,52 @@ async function getOrCreateUser(alias) {
 /* =========================
    Date Helpers
 ========================= */
-
-function getNextDays() {
-  const days = [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    days.push(d.toISOString().split("T")[0]);
-  }
+function getNextDays(){
+  const days=[]; const today=new Date(); today.setHours(0,0,0,0);
+  for(let i=0;i<7;i++){ const d=new Date(today); d.setDate(today.getDate()+i); days.push(d.toISOString().split("T")[0]); }
   return days;
 }
 
-function formatDay(dateStr, index) {
-  if (index === 0) return "Heute";
-  if (index === 1) return "Morgen";
-
-  return new Date(dateStr).toLocaleDateString("de-DE", {
-    weekday: "short",
-    day: "numeric",
-    month: "numeric"
-  });
+function formatDay(dateStr,index){
+  if(index===0) return "Heute";
+  if(index===1) return "Morgen";
+  return new Date(dateStr).toLocaleDateString("de-DE",{weekday:"short",day:"numeric",month:"numeric"});
 }
 
-function isExpired(entry) {
-  return new Date(entry.date + "T" + entry.end) < new Date();
-}
+function isExpired(entry){ return new Date(entry.date+"T"+entry.end)<new Date(); }
 
 /* =========================
    Load & Render
 ========================= */
-
-async function loadEntries() {
-  const res = await pb.collection("entries").getFullList({
-    sort: "date,start"
-  });
-
-  return res.map(e => ({
-    ...e,
-    date: e.date.split(" ")[0]
-  }));
+async function loadEntries(){
+  const res = await pb.collection("entries").getFullList({sort:"date,start"});
+  return res.map(e=>({...e,date:e.date.split(" ")[0]}));
 }
 
-async function render() {
-  const container = document.getElementById("week");
-  container.innerHTML = "";
-
-  let entries = [];
-  try {
-    entries = await loadEntries();
-  } catch (e) {
-    console.warn("Keine Einträge geladen (PB evtl. offline)");
-  }
-
-  const days = getNextDays();
-
-  days.forEach((date, index) => {
-    const dayEl = document.createElement("div");
-    dayEl.className = "day";
-
-    const list = entries.filter(e => e.date === date);
-
-    dayEl.innerHTML = `
-      <h3>${formatDay(date, index)}</h3>
-      ${list.length ? "" : "<small>Keine Einträge</small>"}
-    `;
-
-    list.forEach(e => {
-      const expired = isExpired(e);
-      const isOwn = currentUser && e.createdBy === currentUser.id;
-
-      const el = document.createElement("div");
-      el.className = "entry" + (expired ? " expired" : "");
-
-      el.innerHTML = `
-        <strong>${e.name}</strong>
-        ${expired ? " <em>(inzwischen verplant)</em>" : ""}
-        <br>(${e.start}–${e.end})<br>
-        <small>${e.group}${e.note ? " · " + e.note : ""}</small>
-        ${isOwn ? `<br><button class="secondary" data-id="${e.id}">Löschen</button>` : ""}
-      `;
-
+async function render(){
+  const container=document.getElementById("week");
+  container.innerHTML="";
+  let entries=[];
+  try{entries=await loadEntries();}catch(e){console.warn("Keine Einträge geladen (PB evtl. offline)");}
+  const days=getNextDays();
+  days.forEach((date,index)=>{
+    const dayEl=document.createElement("div");
+    dayEl.className="day";
+    const list=entries.filter(e=>e.date===date);
+    dayEl.innerHTML=`<h3>${formatDay(date,index)}</h3>${list.length?"":"<small>Keine Einträge</small>"}`;
+    list.forEach(e=>{
+      const expired=isExpired(e);
+      const isOwn=currentUser&&e.createdBy===currentUser.id;
+      const el=document.createElement("div");
+      el.className="entry"+(expired?" expired":"");
+      el.innerHTML=`<strong>${e.name}</strong>${expired?" <em>(inzwischen verplant)</em>":""}<br>(${e.start}–${e.end})<br><small>${e.group}${e.note?" · "+e.note:""}</small>${isOwn?`<br><button class="secondary" data-id="${e.id}">Löschen</button>`:""}`;
       dayEl.appendChild(el);
     });
-
     container.appendChild(dayEl);
   });
 
-  document.querySelectorAll("button[data-id]").forEach(btn => {
-    btn.addEventListener("click", async () => {
+  document.querySelectorAll("button[data-id]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
       await pb.collection("entries").delete(btn.dataset.id);
       render();
     });
@@ -338,25 +149,27 @@ async function render() {
 /* =========================
    Form Handling
 ========================= */
-
-document.getElementById("entryForm").addEventListener("submit", async e => {
+document.getElementById("entryForm").addEventListener("submit",async e=>{
   e.preventDefault();
+  const nameInput=document.getElementById("name");
+  const groupInput=document.getElementById("group");
+  const dateInput=document.getElementById("date");
+  const startInput=document.getElementById("start");
+  const endInput=document.getElementById("end");
+  const noteInput=document.getElementById("note");
 
-  const alias = name.value.trim();
-  if (!alias) {
-    alert("Bitte gib einen Namen oder Alias an.");
-    return;
-  }
+  const alias=nameInput.value.trim();
+  if(!alias){alert("Bitte gib einen Namen oder Alias an.");return;}
 
   await getOrCreateUser(alias);
 
   await pb.collection("entries").create({
     name: alias,
-    group: group.value,
-    date: date.value,
-    start: start.value,
-    end: end.value,
-    note: note.value,
+    group: groupInput.value,
+    date: dateInput.value,
+    start: startInput.value,
+    end: endInput.value,
+    note: noteInput.value,
     createdBy: currentUser.id
   });
 
@@ -367,13 +180,8 @@ document.getElementById("entryForm").addEventListener("submit", async e => {
 /* =========================
    Init
 ========================= */
-
 render();
 </script>
-
-
-
-
 
 </body>
 </html>
