@@ -68,149 +68,136 @@
 
 <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script>
-/* =========================
-   PocketBase Setup
-========================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-// PocketBase über Nginx-Reverse-Proxy
-const pb = new PocketBase("/api");
+  /* =========================
+     PocketBase Setup
+  ========================= */
+  const pb = new PocketBase("/api");
 
-/* =========================
-   User Handling (lokale Alias-ID)
-========================= */
-
-let currentUserId = localStorage.getItem("kindertreffUser");
-if (!currentUserId) {
-  currentUserId = crypto.randomUUID();
-  localStorage.setItem("kindertreffUser", currentUserId);
-}
-
-/* =========================
-   Date Helpers
-========================= */
-
-function getNextDays() {
-  const days = [];
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    days.push(d.toISOString().split("T")[0]);
+  /* =========================
+     User Handling (lokaler Alias)
+  ========================= */
+  let currentUserId = localStorage.getItem("kindertreffUser");
+  if (!currentUserId) {
+    currentUserId = crypto.randomUUID();
+    localStorage.setItem("kindertreffUser", currentUserId);
   }
-  return days;
-}
 
-function formatDay(dateStr, index) {
-  if (index === 0) return "Heute";
-  if (index === 1) return "Morgen";
-  return new Date(dateStr).toLocaleDateString("de-DE", {
-    weekday: "short",
-    day: "numeric",
-    month: "numeric"
-  });
-}
-
-function isExpired(entry) {
-  return new Date(entry.date + "T" + entry.end) < new Date();
-}
-
-/* =========================
-   Load & Render
-========================= */
-
-async function loadEntries() {
-  try {
-    const res = await pb.collection("entries").getFullList({ sort: "date,start" });
-    return res.map(e => ({ ...e, date: e.date.split(" ")[0] }));
-  } catch {
-    console.warn("Keine Einträge geladen (PB evtl. offline)");
-    return [];
+  /* =========================
+     Date Helpers
+  ========================= */
+  function getNextDays() {
+    const days = [];
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    for(let i=0;i<7;i++){
+      const d = new Date(today);
+      d.setDate(today.getDate()+i);
+      days.push(d.toISOString().split("T")[0]);
+    }
+    return days;
   }
-}
 
-async function render() {
+  function formatDay(dateStr,index){
+    if(index===0) return "Heute";
+    if(index===1) return "Morgen";
+    return new Date(dateStr).toLocaleDateString("de-DE", {
+      weekday: "short", day:"numeric", month:"numeric"
+    });
+  }
+
+  function isExpired(entry){
+    return new Date(entry.date + "T" + entry.end) < new Date();
+  }
+
+  /* =========================
+     Render Tage sofort
+  ========================= */
   const container = document.getElementById("week");
-  container.innerHTML = "";
-
-  const entries = await loadEntries();
   const days = getNextDays();
-
-  days.forEach((date, index) => {
+  const dayEls = {};
+  days.forEach((date,index)=>{
     const dayEl = document.createElement("div");
-    dayEl.className = "day";
+    dayEl.className="day";
+    dayEl.innerHTML=`<h3>${formatDay(date,index)}</h3><small>Keine Einträge</small>`;
+    container.appendChild(dayEl);
+    dayEls[date]=dayEl;
+  });
 
-    const list = entries.filter(e => e.date === date);
+  /* =========================
+     Load & Render Einträge
+  ========================= */
+  async function loadAndRenderEntries(){
+    let entries=[];
+    try{
+      entries=await pb.collection("entries").getFullList({sort:"date,start"});
+    }catch(e){
+      console.warn("Keine Einträge geladen (PB evtl. offline)");
+    }
 
-    dayEl.innerHTML = `
-      <h3>${formatDay(date,index)}</h3>
-      ${list.length ? "" : "<small>Keine Einträge</small>"}
-    `;
-
-    list.forEach(e => {
-      const expired = isExpired(e);
-      const isOwn = e.localUserId === currentUserId;
-
-      const el = document.createElement("div");
-      el.className = "entry" + (expired ? " expired" : "");
-
-      el.innerHTML = `
-        <strong>${e.name}</strong>
-        ${expired ? " <em>(inzwischen verplant)</em>" : ""}
+    // clear "Keine Einträge" für Tage mit Einträgen
+    entries.forEach(e=>{
+      const date=e.date.split(" ")[0];
+      const dayEl=dayEls[date];
+      if(!dayEl) return;
+      const expired=isExpired(e);
+      const isOwn=e.localUserId===currentUserId;
+      const el=document.createElement("div");
+      el.className="entry"+(expired?" expired":"");
+      el.innerHTML=`<strong>${e.name}</strong>${expired?" <em>(inzwischen verplant)</em>":""}
         <br>(${e.start}–${e.end})<br>
-        <small>${e.group}${e.note ? " · " + e.note : ""}</small>
-        ${isOwn ? `<br><button class="secondary" data-id="${e.id}">Löschen</button>` : ""}
-      `;
+        <small>${e.group}${e.note?" · "+e.note:""}</small>
+        ${isOwn?`<br><button class="secondary" data-id="${e.id}">Löschen</button>`:""}`;
+      if(dayEl.querySelector("small")) dayEl.querySelector("small").remove();
       dayEl.appendChild(el);
     });
 
-    container.appendChild(dayEl);
-  });
-
-  // Löschen eigener Einträge
-  document.querySelectorAll("button[data-id]").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      await pb.collection("entries").delete(btn.dataset.id);
-      render();
+    document.querySelectorAll("button[data-id]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        await pb.collection("entries").delete(btn.dataset.id);
+        loadAndRenderEntries();
+      });
     });
-  });
-}
-
-/* =========================
-   Form Handling
-========================= */
-
-document.getElementById("entryForm").addEventListener("submit", async e => {
-  e.preventDefault();
-
-  const alias = name.value.trim();
-  if (!alias) {
-    alert("Bitte gib einen Namen oder Alias an.");
-    return;
   }
 
-  // Eintrag erstellen mit lokalem User-Identifier
-  await pb.collection("entries").create({
-    name: alias,
-    group: group.value,
-    date: date.value,
-    start: start.value,
-    end: end.value,
-    note: note.value,
-    localUserId: currentUserId
+  /* =========================
+     Form Handling
+  ========================= */
+  const form=document.getElementById("entryForm");
+  form.addEventListener("submit", async e=>{
+    e.preventDefault();
+    const alias=document.getElementById("name").value.trim();
+    const group=document.getElementById("group").value;
+    const date=document.getElementById("date").value;
+    const start=document.getElementById("start").value;
+    const end=document.getElementById("end").value;
+    const note=document.getElementById("note").value;
+
+    if(!alias){ alert("Bitte gib einen Namen oder Alias an."); return; }
+
+    await pb.collection("entries").create({
+      name: alias,
+      group: group,
+      date: date,
+      start: start,
+      end: end,
+      note: note,
+      localUserId: currentUserId
+    });
+
+    form.reset();
+    loadAndRenderEntries();
   });
 
-  e.target.reset();
-  render();
+  /* =========================
+     Init
+  ========================= */
+  loadAndRenderEntries();
+
 });
-
-/* =========================
-   Init
-========================= */
-
-render();
 </script>
+
 
 
 </body>
