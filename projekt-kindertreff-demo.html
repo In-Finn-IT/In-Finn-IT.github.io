@@ -205,7 +205,8 @@ button.secondary:hover {
    PocketBase Setup
 ========================= */
 
-const pb = new PocketBase("http://127.0.0.1:8090");
+// Ändere die URL auf deine Domain / Reverse Proxy URL
+const pb = new PocketBase("https://in-finn-it.de/api"); // <- so sollte es sein
 let currentUser = null;
 
 /* =========================
@@ -369,6 +370,7 @@ document.getElementById("entryForm").addEventListener("submit", async e => {
 
 render();
 </script>
+
 
 
 
