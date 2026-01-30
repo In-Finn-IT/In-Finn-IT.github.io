@@ -39,10 +39,12 @@ footer{text-align:center;font-size:.8rem;color:var(--text-muted);padding:2rem 1r
 
 <header><h1>Kindertreff</h1></header>
 
-<p style="font-size:.85rem;color:var(--text-muted);max-width:600px;margin:auto;text-align:center;">
-Trage ein, wann dein Kind Zeit zum Spielen hat.  
-Alle sehen die Termine dieser Woche – nur du kannst deine eigenen löschen.
+<p class="hint">
+  Trage hier Termine für den Kindertreff ein.
+  Jeder kann seinen eigenen Eintrag später bearbeiten oder löschen.
+  Abgelaufene Termine werden automatisch entfernt.
 </p>
+
 
 <main>
 <section>
@@ -50,23 +52,29 @@ Alle sehen die Termine dieser Woche – nur du kannst deine eigenen löschen.
 <div class="card">
 <form id="entryForm">
 
-<input id="name" placeholder="Name des Kindes" required />
+<input type="text" id="name" placeholder="Name des Kindes" required />
 
 <select id="group">
 <option>Kindi</option><option>Turnen</option><option>Musik</option><option>Sonstiges</option>
 </select>
 
 <label>Datum</label>
-<input id="date" type="text" placeholder="TT.MM.JJJJ oder auswählen" />
+<input
+  type="date"
+  id="date"
+  placeholder="YYYY-MM-DD"
+  onfocus="this.showPicker && this.showPicker()"
+/>
+
 
 <div class="time-grid">
 <div>
-<label>Startzeit</label>
-<input id="start" type="time" required />
-</div>
-<div>
-<label>Endzeit</label>
-<input id="end" type="time" required />
+<label for="startTime"><strong>Startzeit</strong></label>
+<input type="time" id="startTime" />
+
+<label for="endTime"><strong>Endzeit</strong></label>
+<input type="time" id="endTime" />
+
 </div>
 </div>
 
@@ -97,6 +105,17 @@ if(!userId){
   userId=crypto.randomUUID();
   localStorage.setItem("kindertreffUser",userId);
 }
+
+/* Name */
+const nameInput = document.getElementById("name");
+
+if (!nameInput || !nameInput.value.trim()) {
+  alert("Bitte einen Namen eingeben");
+  return;
+}
+
+const name = nameInput.value.trim();
+
 
 /* Datum normalisieren */
 function normalizeDate(v){
