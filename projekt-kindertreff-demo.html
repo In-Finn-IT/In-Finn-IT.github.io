@@ -6,199 +6,275 @@
   <title>Kindertreff – Spielverabredungen ohne Stress</title>
 
   <style>
-    /* Dein CSS bleibt unverändert, hier nur gekürzt */
-    :root { --bg:#f6f7f8; --surface:#fff; --text-main:#1f2933; --text-muted:#6b7280; --accent:#4f6ef7; --border:#e5e7eb; --radius:14px; }
-    body{margin:0;font-family:system-ui,sans-serif;background:radial-gradient(1200px 600px at 50% -200px,rgba(79,110,247,0.06),transparent 70%),var(--bg);color:var(--text-main);}
-    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.25rem;text-align:center;}
-    main{max-width:760px;margin:auto;padding:1.5rem 1rem 4rem;}
+    :root {
+      --bg:#f6f7f8; --surface:#fff; --text-main:#1f2933;
+      --text-muted:#6b7280; --accent:#4f6ef7;
+      --border:#e5e7eb; --radius:14px;
+    }
+
+    body{
+      margin:0;
+      font-family:system-ui,sans-serif;
+      background:radial-gradient(1200px 600px at 50% -200px,rgba(79,110,247,0.06),transparent 70%),var(--bg);
+      color:var(--text-main);
+    }
+
+    header{
+      background:var(--surface);
+      border-bottom:1px solid var(--border);
+      padding:1.25rem;
+      text-align:center;
+    }
+
+    main{
+      max-width:760px;
+      margin:auto;
+      padding:1.5rem 1rem 4rem;
+    }
+
     h2{font-size:1rem;margin-bottom:0.75rem;}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;}
+
+    .card{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:1rem;
+      margin-bottom:1rem;
+    }
+
     form{display:grid;gap:0.75rem;}
-    input, select, button{font-family:inherit;padding:0.6rem;border-radius:10px;border:1px solid var(--border);}
-    button{background:var(--accent);color:white;border:none;cursor:pointer;}
-    button.secondary{background:transparent;color:var(--text-muted);border:1px solid var(--border);font-size:0.8rem;padding:0.3rem 0.6rem;}
-    button.secondary:hover{background:#f3f4f6;color:var(--text-main);}
-    #week{display:grid;grid-template-columns:repeat(7,1fr);gap:1rem;}
+
+    label{
+      font-size:0.75rem;
+      color:var(--text-muted);
+      margin-bottom:-0.3rem;
+    }
+
+    input, select, button{
+      font-family:inherit;
+      padding:0.6rem;
+      border-radius:10px;
+      border:1px solid var(--border);
+    }
+
+    .time-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0.75rem;
+    }
+
+    button{
+      background:var(--accent);
+      color:white;
+      border:none;
+      cursor:pointer;
+    }
+
+    button.secondary{
+      background:transparent;
+      color:var(--text-muted);
+      border:1px solid var(--border);
+      font-size:0.8rem;
+      padding:0.3rem 0.6rem;
+    }
+
+    #week{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:1rem;
+    }
+
     @media(max-width:900px){#week{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:600px){#week{grid-template-columns:1fr;}}
-    .day{background:var(--surface);border-radius:12px;padding:1rem;border:1px solid var(--border);}
-    .day h3{font-size:0.85rem;font-weight:500;margin:0 0 0.6rem;color:var(--text-muted);}
-    .entry{border:1px solid var(--border);border-radius:10px;padding:0.55rem 0.6rem;margin-bottom:0.5rem;background:#fafafa;}
-    .entry.expired{opacity:0.45;text-decoration:line-through;}
-    .entry small{color:var(--text-muted);}
-    footer{text-align:center;font-size:0.8rem;color:var(--text-muted);padding:2rem 1rem;}
+
+    .day{
+      background:var(--surface);
+      border-radius:12px;
+      padding:1rem;
+      border:1px solid var(--border);
+    }
+
+    .day h3{
+      font-size:0.85rem;
+      font-weight:500;
+      margin:0 0 0.6rem;
+      color:var(--text-muted);
+    }
+
+    .entry{
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:0.55rem 0.6rem;
+      margin-bottom:0.5rem;
+      background:#fafafa;
+    }
+
+    .entry.expired{
+      opacity:0.45;
+      text-decoration:line-through;
+    }
+
+    footer{
+      text-align:center;
+      font-size:0.8rem;
+      color:var(--text-muted);
+      padding:2rem 1rem;
+    }
   </style>
 </head>
+
 <body>
 
 <header><h1>Kindertreff</h1></header>
 
 <main>
-  <section>
-    <h2>Neue Verfügbarkeit</h2>
-    <div class="card">
-      <form id="entryForm">
-        <input id="name" placeholder="Name des Kindes" required />
-        <select id="group">
-          <option>Kindi</option>
-          <option>Turnen</option>
-          <option>Musik</option>
-          <option>Sonstiges</option>
-        </select>
-        <input id="date" type="date" required />
-        <input id="start" type="time" required />
-        <input id="end" type="time" required />
-        <input id="note" placeholder="Ort / Hinweis (optional)" />
-        <button type="submit">Eintragen</button>
-      </form>
-    </div>
-  </section>
+<section>
+<h2>Neue Verfügbarkeit</h2>
 
-  <section>
-    <h2>Diese Woche</h2>
-    <p style="font-size:0.8rem;color:var(--text-muted);margin-top:-0.5rem;">Ab heute · automatisch bereinigt</p>
-    <div id="week" class="week"></div>
-  </section>
+<div class="card">
+<form id="entryForm">
+
+<input id="name" placeholder="Name des Kindes" required />
+
+<select id="group">
+  <option>Kindi</option>
+  <option>Turnen</option>
+  <option>Musik</option>
+  <option>Sonstiges</option>
+</select>
+
+<label>Datum (TT.MM.JJJJ)</label>
+<input id="date" type="text" placeholder="z. B. 05.02.2026" required />
+
+<div class="time-grid">
+  <div>
+    <label>Startzeit</label>
+    <input id="start" type="time" required />
+  </div>
+  <div>
+    <label>Endzeit</label>
+    <input id="end" type="time" required />
+  </div>
+</div>
+
+<input id="note" placeholder="Ort / Hinweis (optional)" />
+<button type="submit">Eintragen</button>
+
+</form>
+</div>
+</section>
+
+<section>
+<h2>Diese Woche</h2>
+<p style="font-size:0.8rem;color:var(--text-muted);margin-top:-0.5rem;">
+Ab heute · automatisch bereinigt
+</p>
+<div id="week"></div>
+</section>
 </main>
 
 <footer>
-  Daten werden ausschließlich lokal im Browser gespeichert.<br>
-  Beim Löschen von Browserdaten gehen nur die eigenen Einträge verloren.
+Daten werden ausschließlich lokal im Browser gespeichert.
 </footer>
 
 <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     PocketBase Setup
-  ========================= */
-  const pb = new PocketBase("/api");
+const pb = new PocketBase("/api");
 
-  /* =========================
-     User Handling (lokaler Alias)
-  ========================= */
-  let currentUserId = localStorage.getItem("kindertreffUser");
-  if (!currentUserId) {
-    currentUserId = crypto.randomUUID();
-    localStorage.setItem("kindertreffUser", currentUserId);
-  }
+/* lokaler User */
+let currentUserId = localStorage.getItem("kindertreffUser");
+if(!currentUserId){
+  currentUserId = crypto.randomUUID();
+  localStorage.setItem("kindertreffUser", currentUserId);
+}
 
-  /* =========================
-     Date Helpers
-  ========================= */
-  function getNextDays() {
-    const days = [];
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    for(let i=0;i<7;i++){
-      const d = new Date(today);
-      d.setDate(today.getDate()+i);
-      days.push(d.toISOString().split("T")[0]);
-    }
-    return days;
-  }
+/* Helpers */
+function parseDate(input){
+  const p=input.split(".");
+  if(p.length!==3) return null;
+  return `${p[2]}-${p[1]}-${p[0]}`;
+}
 
-  function formatDay(dateStr,index){
-    if(index===0) return "Heute";
-    if(index===1) return "Morgen";
-    return new Date(dateStr).toLocaleDateString("de-DE", {
-      weekday: "short", day:"numeric", month:"numeric"
-    });
-  }
+function isExpired(e){
+  return new Date(e.date+"T"+e.end) < new Date();
+}
 
-  function isExpired(entry){
-    return new Date(entry.date + "T" + entry.end) < new Date();
-  }
+/* Woche rendern */
+const week=document.getElementById("week");
+const today=new Date(); today.setHours(0,0,0,0);
+const days={};
 
-  /* =========================
-     Render Tage sofort
-  ========================= */
-  const container = document.getElementById("week");
-  const days = getNextDays();
-  const dayEls = {};
-  days.forEach((date,index)=>{
-    const dayEl = document.createElement("div");
-    dayEl.className="day";
-    dayEl.innerHTML=`<h3>${formatDay(date,index)}</h3><small>Keine Einträge</small>`;
-    container.appendChild(dayEl);
-    dayEls[date]=dayEl;
+for(let i=0;i<7;i++){
+  const d=new Date(today);
+  d.setDate(today.getDate()+i);
+  const key=d.toISOString().split("T")[0];
+
+  const el=document.createElement("div");
+  el.className="day";
+  el.innerHTML=`<h3>${i===0?"Heute":i===1?"Morgen":d.toLocaleDateString("de-DE",{weekday:"short",day:"numeric",month:"numeric"})}</h3><small>Keine Einträge</small>`;
+  week.appendChild(el);
+  days[key]=el;
+}
+
+/* Laden */
+async function load(){
+  let entries=[];
+  try{
+    entries=await pb.collection("entries").getFullList({sort:"date,start"});
+  }catch{}
+
+  entries.forEach(e=>{
+    const day=days[e.date];
+    if(!day) return;
+
+    day.querySelector("small")?.remove();
+
+    const div=document.createElement("div");
+    div.className="entry"+(isExpired(e)?" expired":"");
+    div.innerHTML=`<strong>${e.name}</strong><br>
+    ${e.start}–${e.end}<br>
+    <small>${e.group}${e.note?" · "+e.note:""}</small>
+    ${e.localUserId===currentUserId?`<br><button class="secondary" data-id="${e.id}">Löschen</button>`:""}`;
+
+    day.appendChild(div);
   });
 
-  /* =========================
-     Load & Render Einträge
-  ========================= */
-  async function loadAndRenderEntries(){
-    let entries=[];
-    try{
-      entries=await pb.collection("entries").getFullList({sort:"date,start"});
-    }catch(e){
-      console.warn("Keine Einträge geladen (PB evtl. offline)");
-    }
+  document.querySelectorAll("button[data-id]").forEach(b=>{
+    b.onclick=async()=>{
+      await pb.collection("entries").delete(b.dataset.id);
+      location.reload();
+    };
+  });
+}
 
-    // clear "Keine Einträge" für Tage mit Einträgen
-    entries.forEach(e=>{
-      const date=e.date.split(" ")[0];
-      const dayEl=dayEls[date];
-      if(!dayEl) return;
-      const expired=isExpired(e);
-      const isOwn=e.localUserId===currentUserId;
-      const el=document.createElement("div");
-      el.className="entry"+(expired?" expired":"");
-      el.innerHTML=`<strong>${e.name}</strong>${expired?" <em>(inzwischen verplant)</em>":""}
-        <br>(${e.start}–${e.end})<br>
-        <small>${e.group}${e.note?" · "+e.note:""}</small>
-        ${isOwn?`<br><button class="secondary" data-id="${e.id}">Löschen</button>`:""}`;
-      if(dayEl.querySelector("small")) dayEl.querySelector("small").remove();
-      dayEl.appendChild(el);
-    });
+/* Form */
+document.getElementById("entryForm").addEventListener("submit",async e=>{
+  e.preventDefault();
 
-    document.querySelectorAll("button[data-id]").forEach(btn=>{
-      btn.addEventListener("click", async ()=>{
-        await pb.collection("entries").delete(btn.dataset.id);
-        loadAndRenderEntries();
-      });
-    });
-  }
+  const dateInput=document.getElementById("date").value.trim();
+  const parsed=parseDate(dateInput);
+  if(!parsed){ alert("Datum bitte als TT.MM.JJJJ eingeben"); return; }
 
-  /* =========================
-     Form Handling
-  ========================= */
-  const form=document.getElementById("entryForm");
-  form.addEventListener("submit", async e=>{
-    e.preventDefault();
-    const alias=document.getElementById("name").value.trim();
-    const group=document.getElementById("group").value;
-    const date=document.getElementById("date").value;
-    const start=document.getElementById("start").value;
-    const end=document.getElementById("end").value;
-    const note=document.getElementById("note").value;
-
-    if(!alias){ alert("Bitte gib einen Namen oder Alias an."); return; }
-
-    await pb.collection("entries").create({
-      name: alias,
-      group: group,
-      date: date,
-      start: start,
-      end: end,
-      note: note,
-      localUserId: currentUserId
-    });
-
-    form.reset();
-    loadAndRenderEntries();
+  await pb.collection("entries").create({
+    name: name.value.trim(),
+    group: group.value,
+    date: parsed,
+    start: start.value,
+    end: end.value,
+    note: note.value,
+    localUserId: currentUserId
   });
 
-  /* =========================
-     Init
-  ========================= */
-  loadAndRenderEntries();
+  e.target.reset();
+  location.reload();
+});
 
+load();
 });
 </script>
 
-
-
 </body>
 </html>
+
