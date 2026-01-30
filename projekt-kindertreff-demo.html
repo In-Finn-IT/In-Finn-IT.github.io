@@ -126,6 +126,12 @@
 <body>
 
 <header><h1>Kindertreff</h1></header>
+<p style="font-size:0.85rem;color:var(--text-muted);max-width:600px;margin:auto;">
+Trage hier ein, wann dein Kind Zeit zum Spielen hat.
+Alle sehen die Termine der aktuellen Woche, aber nur du kannst deinen eigenen Eintrag ändern oder löschen.
+Alte Termine verschwinden automatisch.
+</p>
+
 
 <main>
 <section>
@@ -144,7 +150,10 @@
 </select>
 
 <label>Datum (TT.MM.JJJJ)</label>
-<input id="date" type="text" placeholder="z. B. 05.02.2026" required />
+<input id="date" type="text"
+       placeholder="TT.MM.JJJJ oder auswählen"
+       inputmode="numeric" />
+
 
 <div class="time-grid">
   <div>
@@ -191,11 +200,26 @@ if(!currentUserId){
 }
 
 /* Helpers */
-function parseDate(input){
-  const p=input.split(".");
-  if(p.length!==3) return null;
-  return `${p[2]}-${p[1]}-${p[0]}`;
+function normalizeDate(input) {
+  input = input.trim();
+
+  // bereits ISO?
+  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
+    return input;
+  }
+
+  // deutsches Format?
+  const parts = input.split(".");
+  if (parts.length === 3) {
+    const [dd, mm, yyyy] = parts;
+    if (dd && mm && yyyy) {
+      return `${yyyy}-${mm.padStart(2,"0")}-${dd.padStart(2,"0")}`;
+    }
+  }
+
+  return null;
 }
+
 
 function isExpired(e){
   return new Date(e.date+"T"+e.end) < new Date();
@@ -250,29 +274,39 @@ async function load(){
 }
 
 /* Form */
-document.getElementById("entryForm").addEventListener("submit",async e=>{
+form.addEventListener("submit", async e => {
   e.preventDefault();
 
-  const dateInput=document.getElementById("date").value.trim();
-  const parsed=parseDate(dateInput);
-  if(!parsed){ alert("Datum bitte als TT.MM.JJJJ eingeben"); return; }
+  const nameEl = document.getElementById("name");
+  const dateEl = document.getElementById("date");
+
+  const alias = nameEl.value.trim();
+  const normalizedDate = normalizeDate(dateEl.value);
+
+  if (!alias) {
+    alert("Bitte einen Namen oder Alias eingeben.");
+    return;
+  }
+
+  if (!normalizedDate) {
+    alert("Bitte Datum als TT.MM.JJJJ eingeben oder auswählen.");
+    return;
+  }
 
   await pb.collection("entries").create({
-    name: name.value.trim(),
+    name: alias,
     group: group.value,
-    date: parsed,
+    date: normalizedDate,
     start: start.value,
     end: end.value,
     note: note.value,
     localUserId: currentUserId
   });
 
-  e.target.reset();
-  location.reload();
+  form.reset();
+  loadAndRenderEntries();
 });
 
-load();
-});
 </script>
 
 </body>
