@@ -10,29 +10,24 @@
   --bg:#f6f7f8; --surface:#fff; --text-main:#1f2933;
   --text-muted:#6b7280; --accent:#4f6ef7; --border:#e5e7eb; --radius:14px;
 }
-
 body {
   margin:0;
   font-family:system-ui,sans-serif;
   background:radial-gradient(1200px 600px at 50% -200px,rgba(79,110,247,0.06),transparent 70%),var(--bg);
   color:var(--text-main);
 }
-
 header {
   background:var(--surface);
   border-bottom:1px solid var(--border);
   padding:1.25rem;
   text-align:center;
 }
-
 main {
   max-width:760px;
   margin:auto;
   padding:1.5rem 1rem 4rem;
 }
-
 h2 { font-size:1rem;margin-bottom:0.75rem; }
-
 .card {
   background:var(--surface);
   border:1px solid var(--border);
@@ -40,35 +35,29 @@ h2 { font-size:1rem;margin-bottom:0.75rem; }
   padding:1rem;
   margin-bottom:1rem;
 }
-
 form { display:grid; gap:0.75rem; }
-
 label {
   font-size:0.75rem;
   color:var(--text-muted);
   margin-bottom:-0.3rem;
 }
-
 input, select, button {
   font-family:inherit;
   padding:0.6rem;
   border-radius:10px;
   border:1px solid var(--border);
 }
-
 .time-grid {
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:0.75rem;
 }
-
 button {
   background:var(--accent);
   color:white;
   border:none;
   cursor:pointer;
 }
-
 button.secondary {
   background:transparent;
   color:var(--text-muted);
@@ -76,35 +65,25 @@ button.secondary {
   font-size:0.8rem;
   padding:0.3rem 0.6rem;
 }
-
-button.secondary:hover {
-  background:#f3f4f6;
-  color:var(--text-main);
-}
-
 #week {
   display:grid;
   grid-template-columns:repeat(7,1fr);
   gap:1rem;
 }
-
 @media(max-width:900px){#week{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){#week{grid-template-columns:1fr;}}
-
 .day {
   background:var(--surface);
   border-radius:12px;
   padding:1rem;
   border:1px solid var(--border);
 }
-
 .day h3 {
   font-size:0.85rem;
   font-weight:500;
   margin:0 0 0.6rem;
   color:var(--text-muted);
 }
-
 .entry {
   border:1px solid var(--border);
   border-radius:10px;
@@ -112,14 +91,8 @@ button.secondary:hover {
   margin-bottom:0.5rem;
   background:#fafafa;
 }
-
 .entry.own { background:#e0f0ff; }
-
-.entry.expired {
-  opacity:0.45;
-  text-decoration:line-through;
-}
-
+.entry.expired { opacity:0.45; text-decoration:line-through; }
 footer {
   text-align:center;
   font-size:0.8rem;
@@ -135,8 +108,7 @@ footer {
 
 <p style="font-size:0.85rem;color:var(--text-muted);max-width:600px;margin:auto;">
 Trage hier ein, wann dein Kind Zeit zum Spielen hat.<br>
-Alle sehen die Termine der aktuellen Woche, aber nur du kannst deinen eigenen Eintrag ändern oder löschen.<br>
-Alte Termine verschwinden automatisch.
+Alle sehen die Termine der aktuellen Woche. Nur du kannst deine eigenen Einträge bearbeiten oder löschen.
 </p>
 
 <main>
@@ -144,6 +116,7 @@ Alte Termine verschwinden automatisch.
 <h2>Neue Verfügbarkeit</h2>
 <div class="card">
 <form id="entryForm">
+<input type="hidden" id="editId">
 
 <input id="name" placeholder="Name des Kindes" required />
 
@@ -154,8 +127,8 @@ Alte Termine verschwinden automatisch.
   <option>Sonstiges</option>
 </select>
 
-<label>Datum (TT.MM.JJJJ oder auswählen)</label>
-<input id="date" type="date" placeholder="TT.MM.JJJJ oder wählen">
+<label>Datum</label>
+<input id="date" type="date">
 
 <div class="time-grid">
   <div>
@@ -169,20 +142,19 @@ Alte Termine verschwinden automatisch.
 </div>
 
 <input id="note" placeholder="Ort / Hinweis (optional)">
-<button type="submit">Eintragen</button>
+<button type="submit">Speichern</button>
 </form>
 </div>
 </section>
 
 <section>
 <h2>Diese Woche</h2>
-<p style="font-size:0.8rem;color:var(--text-muted);margin-top:-0.5rem;">Ab heute · automatisch bereinigt</p>
 <div id="week"></div>
 </section>
 </main>
 
 <footer>
-Daten werden ausschließlich lokal im Browser gespeichert.
+Daten werden zentral gespeichert und automatisch nach Ablauf gelöscht.
 </footer>
 
 <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
@@ -191,116 +163,104 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const pb = new PocketBase("/api");
 
-/* lokaler User */
-let currentUserId = localStorage.getItem("kindertreffUser");
-if(!currentUserId){
-  currentUserId = crypto.randomUUID();
-  localStorage.setItem("kindertreffUser", currentUserId);
+/* User */
+let uid = localStorage.getItem("kindertreffUser");
+if(!uid){
+  uid = crypto.randomUUID();
+  localStorage.setItem("kindertreffUser", uid);
 }
 
-/* Hilfsfunktionen */
-function formatDay(d,i){
-  if(i===0) return "Heute";
-  if(i===1) return "Morgen";
-  return new Date(d).toLocaleDateString("de-DE",{weekday:"short",day:"numeric",month:"numeric"});
-}
-
-function normalizeDate(input){
-  if(!input) return null;
-  if(/\d{4}-\d{2}-\d{2}/.test(input)) return input;
-  const parts = input.split(".");
-  if(parts.length===3){
-    const [dd,mm,yyyy] = parts;
-    return `${yyyy}-${mm.padStart(2,"0")}-${dd.padStart(2,"0")}`;
-  }
-  return null;
-}
-
-function isExpired(e){
-  return new Date(e.date+"T"+e.end) < new Date();
-}
-
-/* Wochenübersicht */
+/* Woche */
 const weekEl = document.getElementById("week");
 const today = new Date(); today.setHours(0,0,0,0);
 const days = {};
+
 for(let i=0;i<7;i++){
   const d = new Date(today);
   d.setDate(today.getDate()+i);
   const key = d.toISOString().split("T")[0];
   const div = document.createElement("div");
   div.className="day";
-  div.innerHTML=`<h3>${formatDay(key,i)}</h3><small>Keine Einträge</small>`;
+  div.dataset.date = key;
+  div.innerHTML=`<h3>${i===0?"Heute":i===1?"Morgen":d.toLocaleDateString("de-DE",{weekday:"short"})}</h3><small>Keine Einträge</small>`;
   weekEl.appendChild(div);
   days[key]=div;
 }
 
-/* Laden & Rendern */
+/* Laden */
 async function loadEntries(){
-  let entries=[];
-  try{
-    entries = await pb.collection("entries").getFullList({sort:"date,start"});
-  }catch{console.warn("PocketBase offline?");}
+  Object.values(days).forEach(d=>d.innerHTML=d.querySelector("h3").outerHTML+"<small>Keine Einträge</small>");
 
-  // alte Inhalte löschen
-  Object.values(days).forEach(d=>{if(d.querySelectorAll(".entry").length===0 && !d.querySelector("small")){d.innerHTML+=`<small>Keine Einträge</small>`}});
-
+  const entries = await pb.collection("entries").getFullList({sort:"date,start"});
   entries.forEach(e=>{
-    const dayDiv = days[e.date];
-    if(!dayDiv) return;
-    dayDiv.querySelector("small")?.remove();
+    const day = days[e.date];
+    if(!day) return;
+    day.querySelector("small")?.remove();
 
-    const own = e.createdBy===currentUserId;
-    const expired = isExpired(e);
     const div = document.createElement("div");
-    div.className="entry"+(own?" own":"")+(expired?" expired":"");
-    div.innerHTML=`<strong>${e.name}</strong><br>(${e.start}–${e.end})<br><small>${e.group}${e.note?" · "+e.note:""}</small>
-      ${own?`<br><button class="secondary" data-id="${e.id}">Löschen</button>`:""}`;
-    dayDiv.appendChild(div);
-  });
+    div.className="entry"+(e.createdBy===uid?" own":"");
+    div.innerHTML=`<strong>${e.name}</strong><br>${e.start}–${e.end}<br><small>${e.group}${e.note?" · "+e.note:""}</small>`;
 
-  // Löschen mit Bestätigung
-  document.querySelectorAll("button[data-id]").forEach(btn=>{
-    btn.onclick=async ()=>{
-      if(confirm("Eintrag wirklich löschen?")){
-        await pb.collection("entries").delete(btn.dataset.id);
-        loadEntries();
-      }
-    };
+    if(e.createdBy===uid){
+      const edit=document.createElement("button");
+      edit.className="secondary";
+      edit.textContent="Bearbeiten";
+      edit.onclick=()=>{
+        editId.value=e.id;
+        name.value=e.name;
+        group.value=e.group;
+        date.value=e.date;
+        start.value=e.start;
+        end.value=e.end;
+        note.value=e.note||"";
+        window.scrollTo({top:0,behavior:"smooth"});
+      };
+
+      const del=document.createElement("button");
+      del.className="secondary";
+      del.textContent="Löschen";
+      del.onclick=async()=>{
+        if(confirm("Eintrag wirklich löschen?")){
+          await pb.collection("entries").delete(e.id);
+          loadEntries();
+        }
+      };
+      div.append(edit,del);
+    }
+    day.appendChild(div);
   });
 }
 
 /* Formular */
-const form = document.getElementById("entryForm");
-form.addEventListener("submit", async e=>{
+entryForm.onsubmit=async e=>{
   e.preventDefault();
-  const name = document.getElementById("name").value.trim();
-  const group = document.getElementById("group").value;
-  const date = normalizeDate(document.getElementById("date").value);
-  const start = document.getElementById("start").value;
-  const end = document.getElementById("end").value;
-  const note = document.getElementById("note").value;
+  const data={
+    name:name.value.trim(),
+    group:group.value,
+    date:date.value,
+    start:start.value,
+    end:end.value,
+    note:note.value,
+    createdBy:uid
+  };
 
-  if(!name){ alert("Bitte Name eingeben."); return;}
-  if(!date){ alert("Datum fehlt oder ungültig."); return;}
-  if(!start || !end){ alert("Bitte Start- und Endzeit angeben."); return;}
-
-  await pb.collection("entries").create({
-    name, group, date, start, end, note, createdBy: currentUserId
-  });
-
-  form.reset();
+  if(editId.value){
+    await pb.collection("entries").update(editId.value,data);
+  }else{
+    await pb.collection("entries").create(data);
+  }
+  entryForm.reset();
+  editId.value="";
   loadEntries();
-});
+};
 
-/* Init */
 loadEntries();
-
 });
 </script>
 
 </body>
 </html>
+
 
 
 
