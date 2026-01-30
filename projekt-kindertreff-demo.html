@@ -238,16 +238,29 @@ ${e.localUserId===userId?`<br><button data-id="${e.id}">Löschen</button>`:""}
 }
 
 /* Formular */
-document.getElementById("entryForm").onsubmit=async e=>{
+document.getElementById("entryForm").onsubmit = async e => {
   e.preventDefault();
 
+  const nameEl = document.getElementById("name");
+  const groupEl = document.getElementById("group");
+  const dateEl = document.getElementById("date");
+  const startEl = document.getElementById("start");
+  const endEl = document.getElementById("end");
+  const noteEl = document.getElementById("note");
+
+  const alias = nameEl.value.trim();
+  if (!alias) {
+    alert("Bitte einen Namen eingeben.");
+    return;
+  }
+
   await pb.collection("entries").create({
-    name: name.value.trim(),
-    group: group.value,
-    date: date.value,
-    start: start.value,
-    end: end.value,
-    note: note.value,
+    name: alias,
+    group: groupEl.value,
+    date: dateEl.value,
+    start: startEl.value,
+    end: endEl.value,
+    note: noteEl.value,
     localUserId: userId
   });
 
@@ -255,7 +268,6 @@ document.getElementById("entryForm").onsubmit=async e=>{
   load();
 };
 
-load();
 </script>
 
 </body>
