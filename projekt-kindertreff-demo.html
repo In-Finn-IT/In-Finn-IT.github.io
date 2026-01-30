@@ -1,184 +1,264 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Kindertreff – Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kindertreff</title>
 
-  <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+<style>
+:root{
+  --bg:#f6f7f8; --surface:#fff; --text:#1f2933;
+  --muted:#6b7280; --accent:#4f6ef7;
+  --border:#e5e7eb; --radius:14px;
+  --own:#e8ecff;
+}
 
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      max-width: 600px;
-      margin: auto;
-      padding: 1rem;
-    }
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-    h1 {
-      text-align: center;
-    }
+header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:1.2rem;
+  text-align:center;
+}
 
-    form {
-      display: grid;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
+main{
+  max-width:760px;
+  margin:auto;
+  padding:1.5rem 1rem 4rem;
+}
 
-    input, button {
-      padding: 0.6rem;
-      font-size: 1rem;
-    }
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1rem;
+  margin-bottom:1.2rem;
+}
 
-    button {
-      cursor: pointer;
-    }
+form{
+  display:grid;
+  gap:0.75rem;
+}
 
-    .entry {
-      padding: 0.6rem;
-      margin-bottom: 0.5rem;
-      border-radius: 6px;
-      background: #f1f1f1;
-    }
+label{
+  font-size:0.75rem;
+  color:var(--muted);
+}
 
-    .entry.mine {
-      background: #e0f4e6;
-      border-left: 4px solid #3ba55d;
-    }
+input, select, button{
+  font-family:inherit;
+  padding:0.6rem;
+  border-radius:10px;
+  border:1px solid var(--border);
+}
 
-    .actions button {
-      margin-right: 0.3rem;
-    }
-  </style>
+.time-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0.75rem;
+}
+
+button{
+  background:var(--accent);
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+#week{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:1rem;
+}
+
+@media(max-width:900px){#week{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){#week{grid-template-columns:1fr;}}
+
+.day{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1rem;
+}
+
+.day h3{
+  font-size:0.85rem;
+  color:var(--muted);
+  margin:0 0 0.5rem;
+}
+
+.entry{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:0.5rem;
+  margin-bottom:0.4rem;
+  background:#fafafa;
+}
+
+.entry.own{background:var(--own);}
+.entry.expired{opacity:0.45;text-decoration:line-through;}
+
+.entry button{
+  margin-top:0.3rem;
+  font-size:0.75rem;
+  background:transparent;
+  color:var(--muted);
+  border:1px solid var(--border);
+}
+
+footer{
+  text-align:center;
+  font-size:0.75rem;
+  color:var(--muted);
+  padding:2rem 1rem;
+}
+</style>
 </head>
 
 <body>
 
+<header>
 <h1>Kindertreff</h1>
-
-<p>
-  Trage ein, wann dein Kind Zeit zum Spielen hat.  
-  Dein Eintrag ist für alle sichtbar, aber <strong>nur du</strong> kannst ihn bearbeiten oder löschen.
+<p style="font-size:0.85rem;color:var(--muted);max-width:600px;margin:auto;">
+Trage ein, wann dein Kind Zeit zum Spielen hat.  
+Alle sehen die Woche – nur du kannst deinen Eintrag löschen.
 </p>
+</header>
 
+<main>
+
+<div class="card">
 <form id="entryForm">
-  <input id="alias" type="text" placeholder="Dein Name oder Alias" required>
+<input id="name" placeholder="Name des Kindes" required>
 
-  <input id="date" type="date">
+<select id="group">
+<option>Kindi</option>
+<option>Turnen</option>
+<option>Musik</option>
+<option>Sonstiges</option>
+</select>
 
-  <label>Startzeit</label>
-  <input id="startTime" type="time" required>
+<label>Datum (tippen oder Kalender)</label>
+<input id="date" type="date" required>
 
-  <label>Endzeit</label>
-  <input id="endTime" type="time" required>
+<div class="time-grid">
+<div>
+<label>Start</label>
+<input id="start" type="time" required>
+</div>
+<div>
+<label>Ende</label>
+<input id="end" type="time" required>
+</div>
+</div>
 
-  <button type="submit">Eintragen</button>
+<input id="note" placeholder="Ort / Hinweis (optional)">
+<button type="submit">Eintragen</button>
 </form>
+</div>
 
-<div id="entries"></div>
+<h2>Diese Woche</h2>
+<div id="week"></div>
 
+</main>
+
+<footer>
+Keine Anmeldung · Daten werden automatisch bereinigt
+</footer>
+
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script>
-  // 🔌 PocketBase verbinden
-  const pb = new PocketBase("/api");
+const pb = new PocketBase("/api");
 
-  const form = document.getElementById("entryForm");
-  const entriesDiv = document.getElementById("entries");
+/* lokaler Nutzer */
+let userId = localStorage.getItem("ktUser");
+if(!userId){
+  userId = crypto.randomUUID();
+  localStorage.setItem("ktUser", userId);
+}
 
-  let editId = null;
+/* Woche vorbereiten */
+const weekEl = document.getElementById("week");
+const today = new Date(); today.setHours(0,0,0,0);
+const days = {};
 
-  // 📥 Eintrag speichern / aktualisieren
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+for(let i=0;i<7;i++){
+  const d=new Date(today);
+  d.setDate(today.getDate()+i);
+  const key=d.toISOString().split("T")[0];
 
-    const alias = document.getElementById("alias").value.trim();
-    const date = document.getElementById("date").value;
-    const start = document.getElementById("startTime").value;
-    const end = document.getElementById("endTime").value;
+  const el=document.createElement("div");
+  el.className="day";
+  el.innerHTML=`<h3>${i===0?"Heute":i===1?"Morgen":d.toLocaleDateString("de-DE",{weekday:"short",day:"numeric",month:"numeric"})}</h3><small>Keine Einträge</small>`;
+  weekEl.appendChild(el);
+  days[key]=el;
+}
 
-    if (!alias || !date || !start || !end) {
-      alert("Bitte alle Felder ausfüllen");
-      return;
-    }
+/* Laden */
+async function load(){
+  Object.values(days).forEach(d=>d.querySelectorAll(".entry").forEach(e=>e.remove()));
 
-    localStorage.setItem("kindertreff_alias", alias);
+  let entries=[];
+  try{
+    entries=await pb.collection("entries").getFullList({sort:"date,start"});
+  }catch{return;}
 
-    const data = { alias, date, start, end };
+  entries.forEach(e=>{
+    const day=days[e.date];
+    if(!day) return;
 
-    try {
-      if (editId) {
-        await pb.collection("entries").update(editId, data);
-        editId = null;
-        form.querySelector("button").textContent = "Eintragen";
-      } else {
-        await pb.collection("entries").create(data);
-      }
+    day.querySelector("small")?.remove();
 
-      form.reset();
-      loadEntries();
-    } catch (err) {
-      console.error(err);
-      alert("Fehler beim Speichern");
-    }
+    const expired=new Date(e.date+"T"+e.end)<new Date();
+    const div=document.createElement("div");
+    div.className="entry"+(expired?" expired":"")+(e.localUserId===userId?" own":"");
+    div.innerHTML=`
+<strong>${e.name}</strong><br>
+${e.start}–${e.end}<br>
+<small>${e.group}${e.note?" · "+e.note:""}</small>
+${e.localUserId===userId?`<br><button data-id="${e.id}">Löschen</button>`:""}
+`;
+    day.appendChild(div);
   });
 
-  // 📋 Einträge laden
-  async function loadEntries() {
-    entriesDiv.innerHTML = "";
-
-    const myAlias = localStorage.getItem("kindertreff_alias");
-
-    const records = await pb.collection("entries").getFullList({
-      sort: "+date,+start"
-    });
-
-    records.forEach(entry => {
-      const div = document.createElement("div");
-      div.className = "entry";
-
-      if (entry.alias === myAlias) {
-        div.classList.add("mine");
+  document.querySelectorAll("button[data-id]").forEach(b=>{
+    b.onclick=async()=>{
+      if(confirm("Eintrag wirklich löschen?")){
+        await pb.collection("entries").delete(b.dataset.id);
+        load();
       }
+    };
+  });
+}
 
-      div.innerHTML = `
-        <strong>${entry.alias}</strong><br>
-        ${entry.date} | ${entry.start} – ${entry.end}
-        ${entry.alias === myAlias ? `
-          <div class="actions">
-            <button onclick="editEntry('${entry.id}')">✏️</button>
-            <button onclick="deleteEntry('${entry.id}')">🗑️</button>
-          </div>
-        ` : ""}
-      `;
+/* Formular */
+document.getElementById("entryForm").onsubmit=async e=>{
+  e.preventDefault();
 
-      entriesDiv.appendChild(div);
-    });
-  }
+  await pb.collection("entries").create({
+    name: name.value.trim(),
+    group: group.value,
+    date: date.value,
+    start: start.value,
+    end: end.value,
+    note: note.value,
+    localUserId: userId
+  });
 
-  // ✏️ Bearbeiten
-  async function editEntry(id) {
-    const entry = await pb.collection("entries").getOne(id);
+  e.target.reset();
+  load();
+};
 
-    document.getElementById("alias").value = entry.alias;
-    document.getElementById("date").value = entry.date;
-    document.getElementById("startTime").value = entry.start;
-    document.getElementById("endTime").value = entry.end;
-
-    editId = id;
-    form.querySelector("button").textContent = "Änderung speichern";
-  }
-
-  // 🗑️ Löschen
-  async function deleteEntry(id) {
-    if (!confirm("Willst du deinen Eintrag wirklich löschen?")) return;
-
-    await pb.collection("entries").delete(id);
-    loadEntries();
-  }
-
-  // 🚀 Initial laden
-  loadEntries();
+load();
 </script>
 
 </body>
 </html>
+
 
