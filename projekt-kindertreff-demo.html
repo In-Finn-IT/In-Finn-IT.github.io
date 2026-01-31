@@ -118,7 +118,7 @@ Alle sehen die Termine der aktuellen Woche. Nur du kannst deine eigenen Einträg
 <form id="entryForm">
 <input type="hidden" id="editId">
 
-<input id="name" placeholder="Name des Kindes" required />
+<input type="text" id="name" placeholder="Name des Kindes" required />
 
 <select id="group">
   <option>Kindi</option>
@@ -232,30 +232,33 @@ async function loadEntries(){
 }
 
 /* Formular */
-entryForm.onsubmit=async e=>{
+const form = document.getElementById("entryForm");
+form.addEventListener("submit", async e=>{
   e.preventDefault();
-  const data={
-    name:name.value.trim(),
-    group:group.value,
-    date:date.value,
-    start:start.value,
-    end:end.value,
-    note:note.value,
-    createdBy:uid
-  };
+  const name = document.getElementById("name").value.trim();
+  const group = document.getElementById("group").value;
+  const date = normalizeDate(document.getElementById("date").value);
+  const start = document.getElementById("start").value;
+  const end = document.getElementById("end").value;
+  const note = document.getElementById("note").value;
 
-  if(editId.value){
-    await pb.collection("entries").update(editId.value,data);
-  }else{
-    await pb.collection("entries").create(data);
-  }
-  entryForm.reset();
-  editId.value="";
+  if(!name){ alert("Bitte Name eingeben."); return;}
+  if(!date){ alert("Datum fehlt oder ungültig."); return;}
+  if(!start || !end){ alert("Bitte Start- und Endzeit angeben."); return;}
+
+  await pb.collection("entries").create({
+    name, group, date, start, end, note, createdBy: currentUserId
+  });
+
+  form.reset();
   loadEntries();
-};
-
-loadEntries();
 });
+
+/* Init */
+loadEntries();
+
+});
+
 </script>
 
 </body>
