@@ -142,7 +142,7 @@ Alle sehen die Termine der aktuellen Woche. Nur du kannst deine eigenen Einträg
 </div>
 
 <input id="note" placeholder="Ort / Hinweis (optional)">
-<button type="submit">Speichern</button>
+<button type="submit" id="submitBtn">Speichern</button>
 </form>
 </div>
 </section>
@@ -228,16 +228,20 @@ async function loadEntries(){
       const edit=document.createElement("button");
       edit.className="secondary";
       edit.textContent="Bearbeiten";
-      edit.onclick=()=>{
-        editId.value=e.id;
-        name.value=e.name;
-        group.value=e.group;
-        date.value=e.date;
-        start.value=e.start;
-        end.value=e.end;
-        note.value=e.note||"";
-        window.scrollTo({top:0,behavior:"smooth"});
+      edit.onclick = () => {
+        document.getElementById("editId").value = e.id;
+        document.getElementById("name").value = e.name;
+        document.getElementById("group").value = e.group;
+        document.getElementById("date").value = e.date;
+        document.getElementById("start").value = e.start;
+        document.getElementById("end").value = e.end;
+        document.getElementById("note").value = e.note || "";
+
+        document.getElementById("submitBtn").textContent = "Änderungen speichern";
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
       };
+
 
       const del=document.createElement("button");
       del.className="secondary";
@@ -269,11 +273,23 @@ form.addEventListener("submit", async e=>{
   if(!date){ alert("Datum fehlt oder ungültig."); return;}
   if(!start || !end){ alert("Bitte Start- und Endzeit angeben."); return;}
 
+  const editId = document.getElementById("editId").value;
+
+if (editId) {
+  // ✏️ UPDATE
+  await pb.collection("entries").update(editId, {
+    name, group, date, start, end, note
+  });
+} else {
+  // ➕ NEU
   await pb.collection("entries").create({
     name, group, date, start, end, note, createdBy: uid
   });
+}
 
   form.reset();
+  document.getElementById("editId").value = "";
+  document.getElementById("submitBtn").textContent = "Speichern";
   loadEntries();
 });
 
