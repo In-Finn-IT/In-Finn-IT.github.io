@@ -201,6 +201,16 @@ for(let i=0;i<7;i++){
 
 /* Laden */
 async function loadEntries(){
+    const now = new Date();
+
+    for (const e of entries) {
+      const endTime = new Date(`${e.date}T${e.end}`);
+      if (endTime < now) {
+        await pb.collection("entries").delete(e.id);
+      }
+    }
+
+
   Object.values(days).forEach(d=>d.innerHTML=d.querySelector("h3").outerHTML+"<small>Keine Einträge</small>");
 
   const entries = await pb.collection("entries").getFullList({sort:"date,start"});
