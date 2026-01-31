@@ -182,6 +182,12 @@ function normalizeDate(input){
   return null;
 }
 
+function toDateInput(value) {
+  if (!value) return "";
+  return value.split("T")[0]; // YYYY-MM-DD
+}
+
+
 /* Woche */
 const weekEl = document.getElementById("week");
 const today = new Date(); today.setHours(0,0,0,0);
@@ -232,7 +238,7 @@ async function loadEntries(){
         document.getElementById("editId").value = e.id;
         document.getElementById("name").value = e.name;
         document.getElementById("group").value = e.group;
-        document.getElementById("date").value = e.date;
+        document.getElementById("date").value = toDateInput(e.date);
         document.getElementById("start").value = e.start;
         document.getElementById("end").value = e.end;
         document.getElementById("note").value = e.note || "";
