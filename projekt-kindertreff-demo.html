@@ -184,7 +184,8 @@ function normalizeDate(input){
 
 function toDateInput(value) {
   if (!value) return "";
-  return value.split("T")[0]; // YYYY-MM-DD
+  // Datum kann "YYYY-MM-DD", "YYYY-MM-DD HH:MM" oder "YYYY-MM-DDTHH:MM:SSZ" sein
+  return value.split("T")[0].split(" ")[0]; // immer nur YYYY-MM-DD
 }
 
 
