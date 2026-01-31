@@ -170,6 +170,18 @@ if(!uid){
   localStorage.setItem("kindertreffUser", uid);
 }
 
+/* Hilfsfunktionen */
+function normalizeDate(input){
+  if(!input) return null;
+  if(/\d{4}-\d{2}-\d{2}/.test(input)) return input;
+  const parts = input.split(".");
+  if(parts.length===3){
+    const [dd,mm,yyyy] = parts;
+    return `${yyyy}-${mm.padStart(2,"0")}-${dd.padStart(2,"0")}`;
+  }
+  return null;
+}
+
 /* Woche */
 const weekEl = document.getElementById("week");
 const today = new Date(); today.setHours(0,0,0,0);
