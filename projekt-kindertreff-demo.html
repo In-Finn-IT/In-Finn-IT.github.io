@@ -259,7 +259,7 @@ form.addEventListener("submit", async e=>{
   if(!start || !end){ alert("Bitte Start- und Endzeit angeben."); return;}
 
   await pb.collection("entries").create({
-    name, group, date, start, end, note, createdBy: currentUserId
+    name, group, date, start, end, note, createdBy: uid
   });
 
   form.reset();
