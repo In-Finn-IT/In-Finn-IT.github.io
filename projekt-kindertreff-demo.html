@@ -190,7 +190,7 @@ const days = {};
 for(let i=0;i<7;i++){
   const d = new Date(today);
   d.setDate(today.getDate()+i);
-  const key = d.toISOString().split("T")[0];
+  const key = d.toLocaleDateString("sv-SE");
   const div = document.createElement("div");
   div.className="day";
   div.dataset.date = key;
@@ -205,7 +205,7 @@ async function loadEntries(){
 
   const entries = await pb.collection("entries").getFullList({sort:"date,start"});
   entries.forEach(e=>{
-    const day = days[e.date];
+    const day = days[e.date?.split(" ")[0]];
     if(!day) return;
     day.querySelector("small")?.remove();
 
