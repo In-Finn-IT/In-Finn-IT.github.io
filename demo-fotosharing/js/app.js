@@ -65,6 +65,8 @@ async function uploadPhoto() {
   const formData = new FormData();
   formData.append("image", fileInput.files[0]);
 
+  formData.append("owner", pb.authStore.model.id);
+
   try {
     await pb.collection("photos").create(formData);
 
