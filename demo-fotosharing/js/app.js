@@ -59,19 +59,23 @@ async function uploadPhoto() {
   const fileInput = document.getElementById("fileInput");
   if (!fileInput.files.length) return alert("Bitte Datei auswählen");
 
+  const status = document.getElementById("uploadStatus");
+  status.textContent = "⏳ Upload läuft…";
+
   const formData = new FormData();
   formData.append("image", fileInput.files[0]);
 
   try {
     await pb.collection("photos").create(formData);
+
+    status.textContent = "✅ Upload erfolgreich!";
     fileInput.value = "";
     loadPhotos();
   } catch (e) {
     console.error("Upload fehlgeschlagen:", e);
-    alert("Upload fehlgeschlagen, siehe Konsole");
+    status.textContent = "❌ Upload fehlgeschlagen";
   }
 }
-
 
 // 🖼️ Eigene Fotos laden
 async function loadPhotos() {
@@ -80,6 +84,8 @@ async function loadPhotos() {
   const photos = await pb.collection("photos").getFullList({
     sort: "-created"
   });
+
+  console.log("Geladene Fotos:", photos);
 
   photos.forEach(p => {
     const img = document.createElement("img");
