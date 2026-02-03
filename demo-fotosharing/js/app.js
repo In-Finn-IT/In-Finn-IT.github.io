@@ -91,7 +91,7 @@ async function loadPhotos() {
 
   photos.forEach(p => {
     const img = document.createElement("img");
-    img.src = pb.getFileUrl(p, p.image);
+    img.src = pb.files.getURL(p, p.image);
     img.title = "Zum Download: Rechtsklick";
     gallery.appendChild(img);
   });
