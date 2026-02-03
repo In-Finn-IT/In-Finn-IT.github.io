@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Foto-Sharing – Projektbeschreibung</title>
+
+  <meta name="description" content="Foto-Sharing – eine schlanke Web-Demo für private Kundengalerien mit Login, Upload und Galerieansicht.">
+  <link rel="stylesheet" href="../css/projektinfos.css">
+</head>
+<body>
+
+<main class="container">
+  <article class="project">
+
+    <h1>Foto-Sharing</h1>
+    <p class="subtitle">Private Kundengalerie – Upload & Galerie ohne Plattform-Zwang</p>
+
+    <p>
+      Foto-Sharing ist eine kompakte Web-Demo, die zeigt, wie sich Bilddateien in einem
+      klaren, datensparsamen Ablauf bereitstellen lassen: Nutzer können sich registrieren,
+      einloggen und Fotos hochladen, die anschließend in einer persönlichen Galerie angezeigt werden.
+    </p>
+
+    <p>
+      Der Fokus liegt auf einer ruhigen, einfachen Bedienung und einem nachvollziehbaren technischen
+      Aufbau – als Vorab-Version für reale Kundenanforderungen, z. B. aus dem Bereich Fotografie
+      (Auswahlgalerien, Übergabe, interne Projekte).
+    </p>
+
+    <h2>Ausgangssituation</h2>
+    <p>
+      Fotos werden häufig über Messenger, Cloud-Links oder Plattformen ausgetauscht. Das ist für viele
+      Anwendungsfälle unnötig umständlich: Zugriffsrechte sind unklar, Links verlieren sich, und die
+      Übergabe wirkt schnell unprofessionell oder „zusammengebastelt“.
+    </p>
+
+    <h2>Idee & Konzept</h2>
+    <p>
+      Die Idee ist bewusst einfach: Ein klarer Zugang (Login) und ein klarer Ablauf (Upload → Galerie).
+      Jede Person sieht nur die eigenen Inhalte. Dadurch entsteht eine private, reduzierte Umgebung,
+      in der Dateien strukturiert bereitgestellt werden können – ohne externe Plattform-Mechaniken.
+    </p>
+
+    <h2>Grundprinzip</h2>
+    <ul>
+      <li>Login statt Link-Chaos</li>
+      <li>Upload statt Umwege</li>
+      <li>Eigene Galerie statt unübersichtlicher Ablagen</li>
+    </ul>
+
+    <h2>Funktionen</h2>
+    <ul>
+      <li>Registrierung & Login (authentifizierte Nutzung)</li>
+      <li>Foto-Upload (Dateihochladen in eine Datenbank/Storage)</li>
+      <li>Galerieansicht der eigenen Uploads</li>
+      <li>Sofortiges Feedback nach Upload (Statusmeldung)</li>
+      <li>Logout / Session-Handling</li>
+    </ul>
+
+    <p>
+      Die Demo ist bewusst schlank gehalten, um den Kernablauf zuverlässig abzubilden.
+      Weitere Funktionen (Freigabelinks, Auswahlsets, Download-Pakete) können darauf aufbauen.
+    </p>
+
+    <h2>Fokus & Gestaltung</h2>
+    <ul>
+      <li>Reduziertes Interface ohne Ablenkung</li>
+      <li>Klarer Ablauf: Einloggen → Upload → Galerie</li>
+      <li>Direktes Feedback statt „unsichtbarer“ Aktionen</li>
+      <li>Saubere Trennung von Frontend und Datenspeicherung</li>
+    </ul>
+
+    <h2>Datenschutz & Haltung</h2>
+    <p>
+      Die Anwendung ist auf Datensparsamkeit ausgelegt: Es werden nur die für den Zugriff notwendigen
+      Nutzerdaten gespeichert (Login) und die hochgeladenen Dateien. Es gibt keine öffentlichen Profile,
+      keine sozialen Mechaniken und keine automatische Weitergabe an Dritte.
+    </p>
+
+    <h2>Technischer Ansatz</h2>
+    <ul>
+      <li>HTML5 & modernes, frameworkfreies CSS</li>
+      <li>Vanilla JavaScript (klare Logik, nachvollziehbare Struktur)</li>
+      <li>PocketBase als Backend (Auth, Collections, File-Uploads)</li>
+      <li>Auslieferung über NGINX (inkl. Upload-Limits/Proxy-Routing)</li>
+      <li>Frontend als eigenständige Demo-Seite innerhalb der Website</li>
+    </ul>
+
+    <h2>Ziel & Projektstatus</h2>
+    <p>
+      Ziel ist eine zuverlässige, funktionsfähige Vorab-Version, die als Grundlage für einen bezahlten
+      Auftrag dienen kann. Die Demo ist aktuell in der Aufbau- und Testphase und wird schrittweise
+      erweitert – mit Fokus auf Stabilität, klare Zugriffsregeln und eine saubere Benutzerführung.
+    </p>
+
+    <div class="back-wrapper">
+      <a href="../index.html#portfolio" class="back-button">
+        ← Zurück zu den Projekten
+      </a>
+    </div>
+
+  </article>
+</main>
+
+</body>
+</html>
