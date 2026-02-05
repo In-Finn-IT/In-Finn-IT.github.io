@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Foto-Demo – Login & Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/demo.css">
+</head>
+
+<body>
+  <main class="container">
+    <h1>📸 Foto-Sharing Demo</h1>
+
+    <!-- LOGIN / REGISTER -->
+    <section id="authSection">
+      <h2>Login / Registrierung</h2>
+
+      <label class="sr-only" for="email">E-Mail</label>
+      <input id="email" type="email" placeholder="E-Mail" autocomplete="email">
+
+      <label class="sr-only" for="password">Passwort</label>
+      <input id="password" type="password" placeholder="Passwort" autocomplete="current-password">
+
+      <div class="btn-row">
+        <button type="button" onclick="login()">Login</button>
+        <button type="button" class="btn-secondary" onclick="register()">Registrieren</button>
+      </div>
+    </section>
+
+    <!-- UPLOAD -->
+    <section id="uploadSection" class="hidden">
+      <h2>Foto hochladen</h2>
+
+      <input type="file" id="fileInput" accept="image/*">
+      <div class="btn-row">
+        <button type="button" onclick="uploadPhoto()">Upload</button>
+        <button type="button" class="btn-secondary" onclick="logout()">Logout</button>
+      </div>
+
+      <p id="uploadStatus" class="status"></p>
+
+      <h3>Meine Fotos</h3>
+      <div id="gallery"></div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+  <script src="/demos/fotosharing/fotosharing.js"></script>
+</body>
+</html>
+

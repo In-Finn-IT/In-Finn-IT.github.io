@@ -1,0 +1,128 @@
+/* =========================
+   Projekt-Info Pages
+========================= */
+
+
+
+/* Container wie bei legal-page */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Card-Look wie legal-card / project-card */
+.project {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding: 2.5rem;
+}
+
+/* Typografie */
+h1 {
+  margin: 0 0 1.2rem;
+  text-align: center;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 600;
+  color: var(--blue-main);
+}
+
+.subtitle {
+  margin-top: -0.6rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+h2 {
+  margin-top: 2.2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.25rem;
+  color: var(--blue-main);
+}
+
+p,
+li {
+  line-height: 1.7;
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.project p:first-of-type {
+  font-size: 1.05rem;
+  color: #374151;
+}
+
+ul {
+  margin: 0.5rem 0 1.2rem 1.2rem;
+  padding: 0;
+}
+
+/* Links wie Startseite */
+a {
+  color: var(--blue-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Navigation oben */
+.project-nav {
+  margin-bottom: 1.5rem;
+}
+
+/* "Zurück"-Bereich */
+.back-wrapper {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.back-button {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  text-decoration: none;
+
+  background: rgba(255,255,255,0.6);
+  border: 1px solid var(--card-border);
+  color: var(--blue-main);
+  font-weight: 600;
+
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+  background: rgba(255,255,255,0.85);
+  transform: translateY(-1px);
+}
+
+/* Optional: kleine Infobox */
+.site-notice {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  border-radius: 12px;
+  border: 1px solid rgba(146,64,14,0.2);
+  margin-bottom: 1rem;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  body {
+    padding: 1.5rem 1rem;
+  }
+
+  .project {
+    padding: 1.6rem;
+  }
+}
+
+
+
