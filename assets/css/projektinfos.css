@@ -1,8 +1,12 @@
 /* =========================
-   Projekt-Info Pages
+   PROJEKT-INFOS (projects/*.html)
+   Voraussetzung: tokens.css + style.css
 ========================= */
 
-
+/* Kleine Basis: Padding + Typo für Info-Seiten */
+body {
+  padding: 2rem 1rem;
+}
 
 /* Container wie bei legal-page */
 .container {
@@ -10,7 +14,7 @@
   margin: 0 auto;
 }
 
-/* Card-Look wie legal-card / project-card */
+/* Card-Look */
 .project {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -43,8 +47,7 @@ h2 {
   color: var(--blue-main);
 }
 
-p,
-li {
+p, li {
   line-height: 1.7;
   font-size: 1rem;
   color: var(--text-main);
@@ -60,23 +63,7 @@ ul {
   padding: 0;
 }
 
-/* Links wie Startseite */
-a {
-  color: var(--blue-accent);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* Navigation oben */
-.project-nav {
-  margin-bottom: 1.5rem;
-}
-
-/* "Zurück"-Bereich */
+/* Zurück-Button */
 .back-wrapper {
   margin-top: 2.5rem;
   text-align: center;
@@ -115,14 +102,10 @@ a:hover {
 
 /* Mobile */
 @media (max-width: 768px) {
-  body {
-    padding: 1.5rem 1rem;
-  }
-
-  .project {
-    padding: 1.6rem;
-  }
+  body { padding: 1.5rem 1rem; }
+  .project { padding: 1.6rem; }
 }
+
 
 
 

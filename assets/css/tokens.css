@@ -1,14 +1,24 @@
+/* =========================
+   Design Tokens (Farben, Abstände, Karten)
+   Wird von style.css / demo.css / projektinfos.css genutzt
+========================= */
+
 :root {
+  /* Brand Blues */
   --blue-main: #1e3a8a;
   --blue-hover: #1e40af;
   --blue-accent: #2563eb;
 
+  /* Text */
   --text-main: #1f2937;
   --text-muted: #4b5563;
 
+  /* Card System */
   --card-bg: rgba(255,255,255,0.75);
   --card-border: #e5e7eb;
   --shadow: 0 12px 30px rgba(0,0,0,0.08);
 
+  /* Radius */
   --radius: 16px;
 }
+

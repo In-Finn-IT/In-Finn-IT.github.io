@@ -1,38 +1,42 @@
 /* =========================
-   Global & Hintergrund
+   BASE / RESET
 ========================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text-main);
+}
+
+/* Hintergrund */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background:
-    linear-gradient(
-      rgba(255,255,255,0.3),
-      rgba(255,255,255,0.3)
-    ),
+    linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)),
     url("/assets/img/infinity4.png");
   background-size: cover;
   background-position: center;
   z-index: -1;
 }
 
-body {
-  color: var(--text-main);
-}
-
-
+/* Links */
 a {
-  color: var(--blue-accent);         
+  color: var(--blue-accent);
   text-decoration: none;
 }
-
 a:hover {
   text-decoration: underline;
 }
 
 /* Scroll-Anker unter Sticky Header */
 section {
-  scroll-margin-top: 120px;      
+  scroll-margin-top: 120px;
 }
 
 /* Fade-in Animation */
@@ -41,29 +45,28 @@ section {
   transform: translateY(20px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
-
 .fade-in.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
+/* Hinweisbanner */
 .site-notice {
-  background: #fef3c7;           
+  background: #fef3c7;
   color: #92400e;
   font-size: 0.9rem;
   padding: 0.6rem 1rem;
   text-align: center;
 }
 
-/* Button disabled */
+/* Deaktivierter Link/Button-Look */
 .demo-disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-
 /* =========================
-   Header & Navigation
+   HEADER & NAV
 ========================= */
 
 .site-header {
@@ -86,7 +89,7 @@ section {
   justify-content: center;
   align-items: center;
   position: relative;
-   
+
   max-width: 900px;
   margin: 0 auto;
   padding: 1.5rem;
@@ -110,27 +113,24 @@ section {
   display: inline-block;
   font-size: 1.2rem;
   font-weight: 600;
-   color: #1e3a8a;
+  color: var(--blue-main);
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* =========================
-   Hover nur für Mausgeräte
-========================= */
-
+/* Hover nur für Mausgeräte */
 @media (hover: hover) {
   .main-nav a {
     transform: rotate(-18deg);
   }
 
   .main-nav a:hover {
-    color: #1e40af;
+    color: var(--blue-hover);
     transform: rotate(-18deg) scale(1.05);
   }
 }
 
 /* =========================
-   Hero
+   HERO
 ========================= */
 
 .hero {
@@ -151,27 +151,23 @@ section {
   font-size: 1rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #4b5563;
+  color: var(--text-muted);
 }
 
 /* =========================
-   Über mich
+   ÜBER MICH
 ========================= */
 
 .ueber-mich {
   max-width: 1000px;
-  margin: 0 auto;
-   margin-top: 6rem;
+  margin: 6rem auto 0;
   padding: 2rem 1.5rem 3rem;
-  text-align: center;  
+  text-align: center;
 }
-
-.ueber-mich p {
-  line-height: 1.7;
-}
+.ueber-mich p { line-height: 1.7; }
 
 /* =========================
-   Angebot
+   ANGEBOT
 ========================= */
 
 .angebot {
@@ -192,13 +188,10 @@ section {
   display: grid;
   gap: 1rem;
 }
-
-.angebot-list li {
-  line-height: 1.6;
-}
+.angebot-list li { line-height: 1.6; }
 
 /* =========================
-   Arbeitsweise
+   ARBEITSWEISE
 ========================= */
 
 .arbeitsweise {
@@ -220,21 +213,11 @@ section {
   gap: 1.5rem;
   text-align: center;
 }
-
-.arbeitsweise-list li {
-  line-height: 1.6;
-}
+.arbeitsweise-list li { line-height: 1.6; }
 
 /* =========================
-   Portfolio
+   PORTFOLIO
 ========================= */
-.portfolio-einleitung {
-  max-width: 700px;
-  margin: 0 auto 2.5rem;
-  text-align: center;
-  color: #4b5563;
-}
-
 
 .portfolio {
   max-width: 1000px;
@@ -247,56 +230,22 @@ section {
   margin-bottom: 3rem;
 }
 
+.portfolio-einleitung {
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
 .portfolio-abschluss {
   margin-top: 3rem;
   text-align: center;
   font-style: italic;
-  color: #4b5563;
+  color: var(--text-muted);
 }
 
 /* =========================
-   Projekte
-========================= */
-
-.projekt {
-  background: rgba(255,255,255,0.65);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  border-radius: 1rem;              
-  padding: 3rem 1.5rem;
-  margin-bottom: 5rem;  
-}
-
-.projekt h3,
-.projekt h4 {
-  text-align: center;
-  margin-bottom: 1.2rem;
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-
-.projekt p {
-  margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.projekt-award {
-  margin-top: 1.5rem;
-  font-style: italic;
-}
-
-.projekt-details {
-  list-style: none;
-  padding: 0;
-  margin-top: 1.5rem;
-}
-
-.projekt-details li {
-  margin-bottom: 0.5rem;
-}
-
-/* =========================
-   Projekt Layout
+   PROJEKTE (Cards, Buttons, Layout)
 ========================= */
 
 .project-card {
@@ -320,7 +269,6 @@ section {
   box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-
 .projekt-main h3 {
   margin-top: 0;
   font-size: 1.6rem;
@@ -329,13 +277,15 @@ section {
 .project-subline {
   font-size: 1.05rem;
   margin-bottom: 1.5rem;
-  color: #374151;   
+  color: #374151;
 }
 
 .project-actions {
   margin-top: 1.5rem;
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .btn {
@@ -343,40 +293,65 @@ section {
   padding: 0.6rem 1.4rem;
   border-radius: 999px;
   text-decoration: none;
-  background: #2563eb;
+  background: var(--blue-accent);
   color: #fff;
   font-weight: 500;
 }
-
-.btn:hover {
-  background: #1e4fd6;
-}
+.btn:hover { background: #1e4fd6; }
 
 .btn-secondary {
   background: #e5e7eb;
   color: #111;
 }
+.btn-secondary:hover { background: #d1d5db; }
 
-.btn-secondary:hover {
-  background: #d1d5db;
+/* Alte Projekte */
+.projekt {
+  background: rgba(255,255,255,0.65);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  border-radius: 1rem;
+  padding: 3rem 1.5rem;
+  margin-bottom: 5rem;
 }
 
+.projekt h3,
+.projekt h4 {
+  text-align: center;
+  margin-bottom: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
 
-.projekt-layout {  
+.projekt p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.projekt-award {
+  margin-top: 1.5rem;
+  font-style: italic;
+}
+
+.projekt-details {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+.projekt-details li { margin-bottom: 0.5rem; }
+
+.projekt-layout {
   margin: 0 auto;
-  display: flex;       
+  display: flex;
   gap: 1.5rem;
-  align-items: center;  
+  align-items: center;
   text-align: left;
 }
 
-.projekt-text {
-  max-width: 650px;
-}
+.projekt-text { max-width: 650px; }
 
 .projekt-media {
   display: flex;
-   flex-shrink: 0;
+  flex-shrink: 0;
   justify-content: center;
 }
 
@@ -388,16 +363,10 @@ section {
   border-radius: 0.75rem;
   transition: transform 0.3s ease;
 }
-
 @media (hover: hover) {
-  .projekt-bild:hover {
-    transform: scale(1.02);
-  }
+  .projekt-bild:hover { transform: scale(1.02); }
 }
-
-.projekt-bild.klein {
-  max-height: 250px;
-}
+.projekt-bild.klein { max-height: 250px; }
 
 .projekt-neben {
   margin-top: 4rem;
@@ -406,7 +375,7 @@ section {
 }
 
 /* =========================
-   Kontakt
+   KONTAKT
 ========================= */
 
 .kontakt {
@@ -416,13 +385,7 @@ section {
   text-align: center;
 }
 
-.kontakt h2 {
-  margin-bottom: 1.5rem;
-}
-
-/* =========================
-   Formular
-========================= */
+.kontakt h2 { margin-bottom: 1.5rem; }
 
 .kontakt-form {
   max-width: 600px;
@@ -455,15 +418,12 @@ section {
   padding: 0.6rem 1.5rem;
   border: none;
   border-radius: 0.4rem;
-  background: #2563eb;
+  background: var(--blue-accent);
   color: white;
   font-size: 1rem;
   cursor: pointer;
 }
-
-.kontakt-form button:hover {
-  background: #1e40af;
-}
+.kontakt-form button:hover { background: var(--blue-hover); }
 
 .form-hinweis {
   max-width: 600px;
@@ -474,13 +434,13 @@ section {
 }
 
 /* =========================
-   Footer
+   FOOTER
 ========================= */
 
 .site-footer {
   text-align: center;
   padding: 2rem 1.5rem;
-  color: #1f2937;
+  color: var(--text-main);
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(6px);
 }
@@ -489,26 +449,23 @@ section {
   color: var(--blue-main);
   font-weight: 600;
 }
-
 .site-footer a:hover {
   color: var(--blue-hover);
   text-decoration: underline;
 }
 
-
 /* =========================
-   Mobile Anpassungen
+   MOBILE
 ========================= */
 
 @media (max-width: 768px) {
-
-   .nav-toggle {
+  .nav-toggle {
     display: block;
     background: none;
     border: none;
     font-size: 1.8rem;
     cursor: pointer;
-    color: #2563eb;
+    color: var(--blue-accent);
   }
 
   .nav-list {
@@ -527,20 +484,16 @@ section {
     opacity: 0;
     pointer-events: none;
 
-    transition:
-      opacity 0.25s ease,
-      transform 0.25s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease;
   }
-   
+
   .nav-list.open {
     opacity: 1;
     pointer-events: auto;
     transform: translateX(-50%) translateY(0);
   }
 
-   .main-nav a {
-      font-size: 1.05rem;
-   }
+  .main-nav a { font-size: 1.05rem; }
 
   .projekt-layout {
     flex-direction: column;
@@ -548,18 +501,12 @@ section {
     text-align: center;
   }
 
-  .projekt-text {
-    max-width: 100%;
-  }
-
-  .projekt-bild {
-    width: 80%;
-  }   
-
+  .projekt-text { max-width: 100%; }
+  .projekt-bild { width: 80%; }
 }
 
 /* =========================
-   Legal Pages (Datenschutz/Impressum)
+   LEGAL PAGES (Datenschutz/Impressum)
 ========================= */
 
 .legal-page {
@@ -605,9 +552,7 @@ section {
   line-height: 1.6;
 }
 
-.legal-card a {
-  font-weight: 600;
-}
+.legal-card a { font-weight: 600; }
 
 .legal-back {
   text-align: center;
@@ -622,11 +567,11 @@ section {
   border-radius: 999px;
   border: 1px solid #e5e7eb;
 }
-
 .legal-back a:hover {
   background: rgba(255,255,255,0.85);
   transform: translateY(-1px);
 }
+
 
 
 

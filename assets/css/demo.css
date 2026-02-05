@@ -1,13 +1,24 @@
 /* =========================
-   DEMOS – gemeinsames Styling (SimpleDoc, Kindertreff, Foto-Sharing)
-   Nutzt /assets/css/tokens.css
+   DEMOS (SimpleDoc, Kindertreff, Foto-Sharing)
+   Voraussetzung: /assets/css/tokens.css
 ========================= */
-/* Fix: verhindert, dass Padding/Borders die Breite sprengen */
+
+/* =========================
+   BASE / RESET
+========================= */
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-/* Hintergrund wie Hauptseite (dezenter Overlay) */
+body {
+  margin: 0;
+  padding: 2rem 1rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text-main);
+}
+
+/* Demo-Hintergrund (wie Hauptseite, leicht anderes Overlay) */
 body::before {
   content: "";
   position: fixed;
@@ -20,13 +31,6 @@ body::before {
   z-index: -1;
 }
 
-body {
-  margin: 0;
-  padding: 2rem 1rem;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: var(--text-main);
-}
-
 /* Links */
 a {
   color: var(--blue-accent);
@@ -35,37 +39,57 @@ a {
 }
 a:hover { text-decoration: underline; }
 
-/* Typo */
+/* =========================
+   TYPO
+========================= */
+
 h1 {
   margin: 0 0 1rem;
   text-align: center;
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   color: var(--blue-main);
 }
+
 h2 {
   margin: 1.2rem 0 0.6rem;
   font-size: 1.15rem;
   color: var(--blue-main);
 }
+
 h3 {
   margin: 1.2rem 0 0.6rem;
   font-size: 1.05rem;
   color: var(--text-main);
 }
+
 p { line-height: 1.7; }
 
-/* Gemeinsame Card/Container-Optik */
+/* Infotexte (Kindertreff oben/unten) */
+.demo-info,
+footer.demo-info {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* =========================
+   LAYOUT / CONTAINERS
+========================= */
+
 .container,
 main {
   max-width: 900px;
   margin: 0 auto;
 }
 
+/* Pages mit <main class="container"> (Foto-Sharing, SimpleDoc) */
 .container {
   background: rgba(255,255,255,0.75);
   border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
   padding: 2.25rem;
 }
@@ -74,8 +98,8 @@ main {
 main {
   background: rgba(255,255,255,0.65);
   border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
   padding: 1.5rem;
 }
@@ -89,28 +113,31 @@ header {
   border-bottom: 1px solid #e5e7eb;
 }
 
-.demo-info {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto 1rem;
-  font-size: 0.9rem;
-  color: var(--text-muted);
+/* =========================
+   SECTIONS / CARDS
+========================= */
+
+section,
+.card {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
 }
 
+section { margin-bottom: 1.25rem; }
 
-/* Hilfstexte */
-.hint,
-.demo-note,
-footer {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+/* Utilities */
+.hidden { display: none; }
+
+/* =========================
+   FORMS (gemeinsame Basis)
+========================= */
+
+form {
+  display: grid;
+  gap: 1.1rem;
 }
-.demo-note { margin-top: 1.5rem; }
-
-/* FORMULAR-BASIS (SimpleDoc + Kindertreff + Fotosharing) */
-form { display: grid; gap: 1.1rem; }
-
-.form-group { margin-bottom: 0.2rem; }
 
 label {
   display: block;
@@ -120,7 +147,6 @@ label {
   font-size: 0.95rem;
 }
 
-/* Inputs */
 input, select, textarea, button {
   font-family: inherit;
   font-size: 1rem;
@@ -143,17 +169,18 @@ textarea {
 
 textarea { resize: vertical; }
 
-/* Checkboxgruppen */
 .checkbox-group label {
   font-weight: 400;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin: 0.35rem 0;
-  color: var(--text-main);
 }
 
-/* Buttons */
+/* =========================
+   BUTTONS
+========================= */
+
 button {
   display: inline-flex;
   align-items: center;
@@ -164,7 +191,7 @@ button {
   border-radius: 999px;
   border: 1px solid transparent;
   background: var(--blue-accent);
-  color: white;
+  color: #fff;
   cursor: pointer;
 
   transition: transform 0.2s ease, background 0.2s ease;
@@ -174,10 +201,9 @@ button:hover {
   background: var(--blue-hover);
   transform: translateY(-1px);
 }
-
 button:active { transform: translateY(0); }
 
-/* Kindertreff Secondary Buttons */
+/* Secondary (z. B. Kindertreff Bearbeiten/Löschen) */
 button.secondary {
   background: rgba(255,255,255,0.75);
   color: var(--text-muted);
@@ -187,105 +213,46 @@ button.secondary {
 }
 button.secondary:hover {
   background: rgba(255,255,255,0.95);
-  transform: translateY(-1px);
 }
 
-/* Kindertreff: Start/Ende nebeneinander */
-.time-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.9rem;
-}
-
-/* Auf kleineren Displays untereinander */
-@media (max-width: 520px) {
-  .time-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-/* Kartenbereiche */
-.card,
-section {
-  background: rgba(255,255,255,0.85);
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 1.25rem;
-}
-
-/* Foto-Sharing: Section spacing */
-section { margin-bottom: 1.25rem; }
-
-/* Foto-Sharing: Hidden */
-.hidden { display: none; }
-
-/* Foto-Sharing: Uploadstatus */
-#uploadStatus {
-  min-height: 1.2em;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-/* Foto-Sharing: Abstand zwischen Inputs/Buttons */
+/* Foto-Sharing: Luft zwischen Inputs/Buttons */
 #authSection input,
 #authSection button,
 #uploadSection input,
 #uploadSection button {
   margin-top: 0.75rem;
 }
-
 #authSection button + button {
   margin-top: 0.5rem;
 }
 
+/* =========================
+   KINDERTREFF – Layout
+========================= */
 
-/* Galerie-Bilder (Foto-Sharing) */
-#gallery img {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  margin-top: 0.75rem;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+/* Start/Ende nebeneinander */
+.time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+@media (max-width: 520px) {
+  .time-grid { grid-template-columns: 1fr; }
 }
 
-/* SimpleDoc Notes */
-.note-card {
-  background: rgba(255,255,255,0.8);
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
-.note-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-main);
-}
-
-/* Kindertreff Week Grid */
+/* Woche */
 #week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 1rem;
 }
-
 @media (max-width: 900px) {
   #week { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (max-width: 600px) {
   #week { grid-template-columns: 1fr; }
-  body { padding: 1.5rem 1rem; }
-  .container, main { padding: 1.25rem; }
 }
 
-/* Kindertreff Day Boxes */
 .day {
   background: rgba(255,255,255,0.85);
   border-radius: 12px;
@@ -309,49 +276,54 @@ section { margin-bottom: 1.25rem; }
 }
 
 .entry.own {
-  background: rgba(37, 99, 235, 0.10); /* blue accent tint */
+  background: rgba(37, 99, 235, 0.10);
   border-color: rgba(37, 99, 235, 0.20);
 }
 
+/* =========================
+   SIMPLEDOC – Notes
+========================= */
 
-/* Screenreader-only Labels (optional, aber sauber) */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  white-space: nowrap;
-  border: 0;
+.note-card {
+  background: rgba(255,255,255,0.8);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
 }
 
-/* Buttons nebeneinander, mit Luft */
-.btn-row {
+.note-header {
   display: flex;
-  gap: 0.75rem;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* =========================
+   FOTO-SHARING – Galerie/Status
+========================= */
+
+#uploadStatus {
+  min-height: 1.2em;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+#gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
   margin-top: 0.75rem;
-}
-
-@media (max-width: 520px) {
-  .btn-row { flex-direction: column; }
-}
-
-/* Sekundär-Button-Stil für Foto-Sharing */
-.btn-secondary {
-  background: rgba(255,255,255,0.75);
-  color: var(--text-main);
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
 }
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.95);
+
+/* =========================
+   RESPONSIVE / SPACING
+========================= */
+
+@media (max-width: 600px) {
+  body { padding: 1.5rem 1rem; }
+  .container, main { padding: 1.25rem; }
 }
 
-/* Upload-Status ohne Inline-Style */
-.status {
-  margin-top: 0.6rem;
-  min-height: 1.2em;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
