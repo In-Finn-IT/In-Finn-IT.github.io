@@ -1,22 +1,47 @@
 const toggle = document.querySelector(".nav-toggle");
 const nav = document.querySelector(".nav-list");
 
+function openMenu() {
+  nav.classList.add("open");
+  toggle.setAttribute("aria-expanded", "true");
+  toggle.setAttribute("aria-label", "Menü schließen");
+
+  // Fokus auf ersten Link
+  const firstLink = nav.querySelector("a");
+  firstLink?.focus();
+}
+
+function closeMenu() {
+  nav.classList.remove("open");
+  toggle.setAttribute("aria-expanded", "false");
+  toggle.setAttribute("aria-label", "Menü öffnen");
+}
+
 toggle.addEventListener("click", () => {
-  const isOpen = nav.classList.toggle("open");
-  toggle.setAttribute("aria-expanded", isOpen);
-  toggle.setAttribute(
-    "aria-label",
-    isOpen ? "Menü schließen" : "Menü öffnen"
-  );
+  const isOpen = nav.classList.contains("open");
+  isOpen ? closeMenu() : openMenu();
 });
 
-
-document.querySelectorAll(".nav-list a").forEach((link) => {
-  link.addEventListener("click", () => {
-    nav.classList.remove("open");
-    toggle.setAttribute("aria-expanded", "false");
-  });
+// ESC schließt Menü
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && nav.classList.contains("open")) {
+    closeMenu();
+    toggle.focus();
+  }
 });
+
+// Klick auf Link schließt Menü
+nav.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => closeMenu());
+});
+
+// Klick außerhalb schließt Menü (mobile)
+document.addEventListener("click", (e) => {
+  if (!nav.classList.contains("open")) return;
+  const clickedInside = nav.contains(e.target) || toggle.contains(e.target);
+  if (!clickedInside) closeMenu();
+});
+
 
 // Scroll Fade-In Animation
 

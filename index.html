@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <link rel="icon" href="/assets/img/favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
-  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/img/site.webmanifest">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16x16.png">
+<link rel="icon" href="/assets/img/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/assets/img/site.webmanifest">
+<link rel="mask-icon" href="/assets/img/favicon.svg" color="#2563eb">
+<meta name="theme-color" content="#ffffff">0000
 
 
   <meta charset="UTF-8">
@@ -12,6 +15,14 @@
   <title>Katrin Mack – Softwareentwicklerin</title>
   <meta name="description" content="Portfolio von Katrin Mack – Softwareentwicklerin mit Fokus auf strukturierte Logik, eigenständiges Arbeiten und effiziente Remote-Zusammenarbeit.">
 
+  <!-- Open Graph / Social Preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Katrin Mack – Softwareentwicklerin">
+<meta property="og:description" content="Portfolio – klare Strukturen, reduzierte Web-Demos, eigenständige Umsetzung.">
+<meta property="og:url" content="https://www.in-finn-it.de/">
+<meta property="og:image" content="https://www.in-finn-it.de/assets/img/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 
     <link rel="stylesheet" href="/assets/css/tokens.css">
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -373,32 +384,32 @@
         <h2>Kontakt</h2>          
 
               <form
-                  class="kontakt-form"
-                  action="https://usebasin.com/f/6f609da8bc18"
-                  method="POST"
-                >
-                  <div class="form-field">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
-                  </div>
-              
-                  <div class="form-field">
-                    <label for="email">E-Mail</label>
-                    <input type="email" id="email" name="email" required>
-                  </div>
-              
-                  <div class="form-field">
-                    <label for="message">Nachricht</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                  </div>
-              
-                  <button type="submit">Nachricht senden</button>
-                </form>
+  class="kontakt-form"
+  action="https://usebasin.com/f/6f609da8bc18"
+  method="POST"
+>
+  <div class="form-field">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" autocomplete="name" required>
+  </div>
 
-      <p class="form-hinweis">
-        Mit dem Absenden des Formulars erklärst du dich mit der Verarbeitung
-        deiner Daten gemäß meiner <a href="datenschutz.html">Datenschutzerklärung</a> einverstanden.
-    </p>
+  <div class="form-field">
+    <label for="email">E-Mail</label>
+    <input type="email" id="email" name="email" autocomplete="email" required>
+  </div>
+
+  <div class="form-field">
+    <label for="message">Nachricht</label>
+    <textarea id="message" name="message" rows="5" required></textarea>
+  </div>
+
+  <button type="submit">Nachricht senden</button>
+</form>
+
+<p class="form-hinweis" id="form-hinweis">
+  Mit dem Absenden des Formulars erklärst du dich mit der Verarbeitung
+  deiner Daten gemäß meiner <a href="datenschutz.html">Datenschutzerklärung</a> einverstanden.
+</p>
 
       
         </section>

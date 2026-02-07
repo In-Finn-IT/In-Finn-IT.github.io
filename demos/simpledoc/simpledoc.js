@@ -1,4 +1,6 @@
 // SIMPLEDOC
+import { setStatus, setBusy, safeFetch } from "/assets/js/demo-utils.js";
+
 
   const form = document.getElementById("simpledoc-form");
   const output = document.getElementById("notes-output");

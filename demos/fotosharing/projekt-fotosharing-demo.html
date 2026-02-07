@@ -6,7 +6,7 @@
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
   <link rel="manifest" href="/assets/img/site.webmanifest">
-  
+
   <meta charset="UTF-8">
   <title>Foto-Demo – Login & Upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,10 @@
 </head>
 
 <body>
-  <main class="container">
+  <main class="container">   
+<nav class="demo-topbar" aria-label="Demo Navigation">
+  <a class="demo-back" href="/#portfolio">← Zurück zu den Projekten</a>
+</nav>
     <h1>📸 Foto-Sharing Demo</h1>
 
     <!-- LOGIN / REGISTER -->
@@ -31,8 +34,9 @@
       <input id="password" type="password" placeholder="Passwort" autocomplete="current-password">
 
       <div class="btn-row">
-        <button type="button" onclick="login()">Login</button>
-        <button type="button" class="btn-secondary" onclick="register()">Registrieren</button>
+        <button id="btnLogin" type="button">Login</button>
+        <button id="btnRegister" type="button" class="btn-secondary">Registrieren</button>
+        
       </div>
     </section>
 
@@ -42,19 +46,22 @@
 
       <input type="file" id="fileInput" accept="image/*">
       <div class="btn-row">
-        <button type="button" onclick="uploadPhoto()">Upload</button>
-        <button type="button" class="btn-secondary" onclick="logout()">Logout</button>
+        <button id="btnUpload" type="button">Upload</button>
+        <button id="btnLogout" type="button" class="btn-secondary">Logout</button>        
       </div>
 
-      <p id="uploadStatus" class="status"></p>
+      <p id="uploadStatus" class="status" aria-live="polite"></p>
 
       <h3>Meine Fotos</h3>
       <div id="gallery"></div>
     </section>
+    
   </main>
 
   <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
-  <script src="/demos/fotosharing/fotosharing.js"></script>
+ 
+  <script type="module" src="/demos/fotosharing/fotosharing.js"></script>
+
 </body>
 </html>
 

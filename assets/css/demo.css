@@ -18,6 +18,17 @@ body {
   color: var(--text-main);
 }
 
+.status {
+  margin-top: 0.6rem;
+  min-height: 1.2em;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.status[data-type="ok"] { color: #0f766e; }
+.status[data-type="error"] { color: #b91c1c; }
+
+
 /* Demo-Hintergrund (wie Hauptseite, leicht anderes Overlay) */
 body::before {
   content: "";
@@ -30,6 +41,29 @@ body::before {
   background-position: center;
   z-index: -1;
 }
+
+.demo-topbar {
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  padding: 0 0.25rem;
+  text-align: center;
+}
+
+.demo-back {
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid #e5e7eb;
+  color: var(--blue-main);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.demo-back:hover {
+  background: rgba(255,255,255,0.9);
+}
+
 
 /* Links */
 a {

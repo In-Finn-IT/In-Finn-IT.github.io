@@ -1,4 +1,5 @@
 //Fotosharing
+import { setStatus, asNiceErrorMessage } from "/assets/js/demo-utils.js";
 
 // 🔧 AUF SERVER:
 const pb = new PocketBase("/api");
@@ -59,27 +60,31 @@ function logout() {
 // ⬆️ Foto upload
 async function uploadPhoto() {
   const fileInput = document.getElementById("fileInput");
-  if (!fileInput.files.length) return alert("Bitte Datei auswählen");
-
   const status = document.getElementById("uploadStatus");
-  status.textContent = "⏳ Upload läuft…";
+
+  if (!fileInput.files.length) {
+    setStatus(status, "⚠️ Bitte zuerst eine Datei auswählen.", "error");
+    return;
+  }
+
+  setStatus(status, "⏳ Upload läuft…", "info");
 
   const formData = new FormData();
   formData.append("image", fileInput.files[0]);
-
   formData.append("owner", pb.authStore.model.id);
 
   try {
     await pb.collection("photos").create(formData);
 
-    status.textContent = "✅ Upload erfolgreich!";
+    setStatus(status, "✅ Upload erfolgreich!", "ok");
     fileInput.value = "";
     loadPhotos();
   } catch (e) {
-    console.error("Upload fehlgeschlagen:", e);
-    status.textContent = "❌ Upload fehlgeschlagen";
+    console.error(e);
+    setStatus(status, asNiceErrorMessage(e), "error");
   }
 }
+
 
 // 🖼️ Eigene Fotos laden
 async function loadPhotos() {
@@ -98,6 +103,12 @@ async function loadPhotos() {
     gallery.appendChild(img);
   });
 }
+
+// Buttons verdrahten (statt onclick=...)
+document.getElementById("btnLogin").addEventListener("click", login);
+document.getElementById("btnRegister").addEventListener("click", register);
+document.getElementById("btnUpload").addEventListener("click", uploadPhoto);
+document.getElementById("btnLogout").addEventListener("click", logout);
 
 // 🚀 Start
 updateUI();
