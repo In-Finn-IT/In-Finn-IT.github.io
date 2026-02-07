@@ -1,5 +1,5 @@
 // KINDERTREFF
-import { setStatus, setBusy, safeFetch } from "/assets/js/demo-utils.js";
+import { setStatus, asNiceErrorMessage } from "/assets/js/demo-utils.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
