@@ -52,6 +52,29 @@
 
       <p id="uploadStatus" class="status" aria-live="polite"></p>
 
+<h3>Freigabe erstellen</h3>
+
+<div class="share-bar">
+  <label class="share-label">
+    Ablauf:
+    <select id="shareExpiry">
+      <option value="1">1 Tag</option>
+      <option value="7" selected>7 Tage</option>
+      <option value="30">30 Tage</option>
+    </select>
+  </label>
+
+  <button id="btnShare" type="button" class="btn btn-secondary">
+    Link für Auswahl erstellen
+  </button>
+      </div>
+
+      <p id="shareLinkOut" class="status" aria-live="polite"></p>
+
+      <h3>Meine Fotos</h3>
+      <div id="gallery"></div>
+
+
       <h3>Meine Fotos</h3>
       <div id="gallery"></div>
     </section>

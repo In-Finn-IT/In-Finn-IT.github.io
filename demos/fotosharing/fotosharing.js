@@ -8,6 +8,12 @@ const authSection = document.getElementById("authSection");
 const uploadSection = document.getElementById("uploadSection");
 const gallery = document.getElementById("gallery");
 
+const shareBtn = document.getElementById("btnShare");
+const shareExpiry = document.getElementById("shareExpiry");
+const shareLinkOut = document.getElementById("shareLinkOut");
+
+const selectedPhotoIds = new Set();
+
 // 🔁 UI wechseln
 function updateUI() {
   if (pb.authStore.isValid) {
@@ -97,12 +103,70 @@ async function loadPhotos() {
   console.log("Geladene Fotos:", photos);
 
   photos.forEach(p => {
-    const img = document.createElement("img");
-    img.src = pb.files.getURL(p, p.image);
-    img.title = "Zum Download: Rechtsklick";
-    gallery.appendChild(img);
+  const wrap = document.createElement("div");
+  wrap.className = "gallery-item";
+
+  const topRow = document.createElement("div");
+  topRow.className = "gallery-top";
+
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  cb.className = "photo-select";
+  cb.checked = selectedPhotoIds.has(p.id);
+  cb.addEventListener("change", () => {
+    if (cb.checked) selectedPhotoIds.add(p.id);
+    else selectedPhotoIds.delete(p.id);
   });
+
+  const img = document.createElement("img");
+  img.src = pb.files.getURL(p, p.image);
+  img.alt = "Upload";
+  img.loading = "lazy";
+
+  topRow.append(cb);
+  wrap.append(topRow, img);
+
+  gallery.appendChild(wrap);
+});
+
 }
+
+// Freigabelink erstellen
+async function createShareLink() {
+  if (!pb.authStore.isValid) {
+    setStatus(shareLinkOut, "⚠️ Bitte zuerst einloggen.", "error");
+    return;
+  }
+
+  const ids = Array.from(selectedPhotoIds);
+  if (ids.length === 0) {
+    setStatus(shareLinkOut, "⚠️ Bitte mindestens ein Foto auswählen.", "error");
+    return;
+  }
+
+  const days = parseInt(shareExpiry?.value || "7", 10);
+  const expires = new Date();
+  expires.setDate(expires.getDate() + days);
+
+  const token = crypto.randomUUID();
+
+  setStatus(shareLinkOut, "⏳ Freigabe-Link wird erstellt…", "info");
+
+  try {
+    await pb.collection("shares").create({
+      token,
+      photos: ids,
+      expiresAt: expires.toISOString(),
+      createdBy: pb.authStore.model?.id || ""
+    });
+
+    const url = `${window.location.origin}/demos/fotosharing/share.html?t=${token}`;
+    setStatus(shareLinkOut, `✅ Link erstellt: ${url}`, "ok");
+  } catch (e) {
+    setStatus(shareLinkOut, asNiceErrorMessage(e), "error");
+  }
+}
+
 
 // Buttons verdrahten (statt onclick=...)
 document.getElementById("btnLogin").addEventListener("click", login);
@@ -110,5 +174,10 @@ document.getElementById("btnRegister").addEventListener("click", register);
 document.getElementById("btnUpload").addEventListener("click", uploadPhoto);
 document.getElementById("btnLogout").addEventListener("click", logout);
 
+
+shareBtn?.addEventListener("click", createShareLink);
+
 // 🚀 Start
 updateUI();
+
+

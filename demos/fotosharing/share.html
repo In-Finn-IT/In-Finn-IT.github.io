@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Foto-Galerie – Freigabe</title>
+
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/demo.css">
+</head>
+<body>
+  <main class="container">
+    <h1>📸 Freigabe-Galerie</h1>
+    <p id="shareStatus" class="status" aria-live="polite"></p>
+
+    <div id="shareMeta" class="hint"></div>
+    <div id="gallery"></div>
+
+    <p class="legal-back"><a href="/index.html#portfolio">← Zurück zur Startseite</a></p>
+  </main>
+
+  <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+  <script type="module" src="/demos/fotosharing/share.js"></script>
+</body>
+</html>
