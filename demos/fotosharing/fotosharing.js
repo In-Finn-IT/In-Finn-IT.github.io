@@ -1,18 +1,21 @@
-//Fotosharing
+// fotosharing.js
 import { setStatus, asNiceErrorMessage } from "/assets/js/demo-utils.js";
 
 // 🔧 AUF SERVER:
 const pb = new PocketBase("/api");
 
+// Sections / UI
 const authSection = document.getElementById("authSection");
 const uploadSection = document.getElementById("uploadSection");
 const gallery = document.getElementById("gallery");
+const authStatus = document.getElementById("authStatus");
 
-const shareBtn = document.getElementById("btnShare");
-const shareExpiry = document.getElementById("shareExpiry");
-const shareLinkOut = document.getElementById("shareLinkOut");
-
-const selectedPhotoIds = new Set();
+// Share UI 
+const btnShareAll = document.getElementById("btnShareAll");
+const shareResult = document.getElementById("shareResult");
+const shareLink = document.getElementById("shareLink");
+const btnCopyShare = document.getElementById("btnCopyShare");
+const shareHint = document.getElementById("shareHint");
 
 // 🔁 UI wechseln
 function updateUI() {
@@ -20,40 +23,46 @@ function updateUI() {
     authSection.classList.add("hidden");
     uploadSection.classList.remove("hidden");
     loadPhotos();
+    if (authStatus) setStatus(authStatus, "", "info");
   } else {
     authSection.classList.remove("hidden");
     uploadSection.classList.add("hidden");
+    if (authStatus) setStatus(authStatus, "", "info");
   }
 }
 
 // 🔐 Login
 async function login() {
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  if (authStatus) setStatus(authStatus, "⏳ Login läuft…", "info");
 
   try {
     await pb.collection("users").authWithPassword(email, password);
     updateUI();
   } catch (e) {
-    alert("Login fehlgeschlagen");
+    if (authStatus) setStatus(authStatus, asNiceErrorMessage(e), "error");
   }
 }
 
 // 🆕 Registrierung
 async function register() {
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  if (authStatus) setStatus(authStatus, "⏳ Registrierung läuft…", "info");
 
   try {
     await pb.collection("users").create({
       email,
       password,
-      passwordConfirm: password
+      passwordConfirm: password,
     });
 
-    alert("Registriert! Jetzt einloggen.");
+    if (authStatus) setStatus(authStatus, "✅ Registriert. Jetzt einloggen.", "ok");
   } catch (e) {
-    alert("Registrierung fehlgeschlagen");
+    if (authStatus) setStatus(authStatus, asNiceErrorMessage(e), "error");
   }
 }
 
@@ -61,6 +70,11 @@ async function register() {
 function logout() {
   pb.authStore.clear();
   updateUI();
+
+  // Share UI zurücksetzen
+  if (shareResult) shareResult.classList.add("hidden");
+  if (shareLink) shareLink.value = "";
+  if (shareHint) setStatus(shareHint, "", "info");
 }
 
 // ⬆️ Foto upload
@@ -70,6 +84,11 @@ async function uploadPhoto() {
 
   if (!fileInput.files.length) {
     setStatus(status, "⚠️ Bitte zuerst eine Datei auswählen.", "error");
+    return;
+  }
+
+  if (!pb.authStore.isValid) {
+    setStatus(status, "⚠️ Bitte zuerst einloggen.", "error");
     return;
   }
 
@@ -91,91 +110,101 @@ async function uploadPhoto() {
   }
 }
 
-
 // 🖼️ Eigene Fotos laden
 async function loadPhotos() {
   gallery.innerHTML = "";
 
-  const photos = await pb.collection("photos").getFullList({
-    sort: "-created"
-  });
+  try {
+    const photos = await pb.collection("photos").getFullList({
+      sort: "-created",
+    });
 
-  console.log("Geladene Fotos:", photos);
+    if (photos.length === 0) {
+      gallery.innerHTML = `<p class="hint">Noch keine Fotos hochgeladen.</p>`;
+      return;
+    }
 
-  photos.forEach(p => {
-  const wrap = document.createElement("div");
-  wrap.className = "gallery-item";
-
-  const topRow = document.createElement("div");
-  topRow.className = "gallery-top";
-
-  const cb = document.createElement("input");
-  cb.type = "checkbox";
-  cb.className = "photo-select";
-  cb.checked = selectedPhotoIds.has(p.id);
-  cb.addEventListener("change", () => {
-    if (cb.checked) selectedPhotoIds.add(p.id);
-    else selectedPhotoIds.delete(p.id);
-  });
-
-  const img = document.createElement("img");
-  img.src = pb.files.getURL(p, p.image);
-  img.alt = "Upload";
-  img.loading = "lazy";
-
-  topRow.append(cb);
-  wrap.append(topRow, img);
-
-  gallery.appendChild(wrap);
-});
-
+    photos.forEach((p) => {
+      const img = document.createElement("img");
+      img.src = pb.files.getURL(p, p.image);
+      img.alt = "Upload";
+      img.loading = "lazy";
+      img.title = "Zum Download: Rechtsklick";
+      gallery.appendChild(img);
+    });
+  } catch (e) {
+    console.error(e);
+    gallery.innerHTML = `<p class="hint">Fotos konnten nicht geladen werden.</p>`;
+  }
 }
 
-// Freigabelink erstellen
-async function createShareLink() {
+// 🔗 Freigabelink für ALLE Fotos erstellen
+async function createShareAllLink() {
   if (!pb.authStore.isValid) {
-    setStatus(shareLinkOut, "⚠️ Bitte zuerst einloggen.", "error");
+    if (shareHint) setStatus(shareHint, "⚠️ Bitte zuerst einloggen.", "error");
     return;
   }
 
-  const ids = Array.from(selectedPhotoIds);
-  if (ids.length === 0) {
-    setStatus(shareLinkOut, "⚠️ Bitte mindestens ein Foto auswählen.", "error");
-    return;
-  }
-
-  const days = parseInt(shareExpiry?.value || "7", 10);
-  const expires = new Date();
-  expires.setDate(expires.getDate() + days);
-
-  const token = crypto.randomUUID();
-
-  setStatus(shareLinkOut, "⏳ Freigabe-Link wird erstellt…", "info");
+  if (shareResult) shareResult.classList.add("hidden");
+  if (shareHint) setStatus(shareHint, "⏳ Freigabelink wird erstellt…", "info");
 
   try {
+    // Alle Fotos holen (IDs)
+    const photos = await pb.collection("photos").getFullList({ sort: "-created" });
+    const ids = photos.map((p) => p.id);
+
+    if (ids.length === 0) {
+      if (shareHint) setStatus(shareHint, "⚠️ Keine Fotos vorhanden.", "error");
+      return;
+    }
+
+    // Ablauf: erstmal fix 7 Tage (später UI dafür ergänzen)
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 7);
+
+    const token = crypto.randomUUID();
+
     await pb.collection("shares").create({
       token,
       photos: ids,
       expiresAt: expires.toISOString(),
-      createdBy: pb.authStore.model?.id || ""
+      createdBy: pb.authStore.model?.id || "",
     });
 
     const url = `${window.location.origin}/demos/fotosharing/share.html?t=${token}`;
-    setStatus(shareLinkOut, `✅ Link erstellt: ${url}`, "ok");
+
+    if (shareLink) shareLink.value = url;
+    if (shareResult) shareResult.classList.remove("hidden");
+    if (shareHint) setStatus(shareHint, "✅ Link erstellt (7 Tage gültig).", "ok");
   } catch (e) {
-    setStatus(shareLinkOut, asNiceErrorMessage(e), "error");
+    if (shareHint) setStatus(shareHint, asNiceErrorMessage(e), "error");
   }
 }
 
+// 📋 Copy
+async function copyShareLink() {
+  const url = shareLink?.value?.trim();
+  if (!url) return;
 
-// Buttons verdrahten (statt onclick=...)
-document.getElementById("btnLogin").addEventListener("click", login);
-document.getElementById("btnRegister").addEventListener("click", register);
-document.getElementById("btnUpload").addEventListener("click", uploadPhoto);
-document.getElementById("btnLogout").addEventListener("click", logout);
+  try {
+    await navigator.clipboard.writeText(url);
+    if (shareHint) setStatus(shareHint, "✅ Kopiert.", "ok");
+  } catch {
+    // Fallback: markieren
+    shareLink.focus();
+    shareLink.select();
+    if (shareHint) setStatus(shareHint, "⚠️ Konnte nicht automatisch kopieren – Link ist markiert.", "error");
+  }
+}
 
+// Buttons verdrahten
+document.getElementById("btnLogin")?.addEventListener("click", login);
+document.getElementById("btnRegister")?.addEventListener("click", register);
+document.getElementById("btnUpload")?.addEventListener("click", uploadPhoto);
+document.getElementById("btnLogout")?.addEventListener("click", logout);
 
-shareBtn?.addEventListener("click", createShareLink);
+btnShareAll?.addEventListener("click", createShareAllLink);
+btnCopyShare?.addEventListener("click", copyShareLink);
 
 // 🚀 Start
 updateUI();

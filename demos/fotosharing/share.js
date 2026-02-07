@@ -48,7 +48,7 @@ async function main() {
 
   try {
     // Wichtig: getFirstListItem nutzt LIST endpoint + filter
-    // Deine List-Rule sollte token/expiry prüfen (siehe oben).
+    // List-Rule sollte token/expiry prüfen (siehe oben).
     const share = await pb
       .collection("shares")
       .getFirstListItem(`token="${token}"`);

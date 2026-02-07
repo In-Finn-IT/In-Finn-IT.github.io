@@ -1,26 +1,67 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Foto-Galerie – Freigabe</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Foto-Sharing – Freigabe</title>
 
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/demo.css">
 </head>
 <body>
-  <main class="container">
-    <h1>📸 Freigabe-Galerie</h1>
-    <p id="shareStatus" class="status" aria-live="polite"></p>
 
-    <div id="shareMeta" class="hint"></div>
-    <div id="gallery"></div>
+<main class="container">
+  <h1>📸 Freigabe</h1>
+  <p class="hint">Diese Seite ist eine Demo-Freigabe (aktuell: zeigt alle Bilder).</p>
 
-    <p class="legal-back"><a href="/index.html#portfolio">← Zurück zur Startseite</a></p>
-  </main>
+  <div id="sharedGallery"></div>
 
-  <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
-  <script type="module" src="/demos/fotosharing/share.js"></script>
+  <p class="demo-note">
+    Hinweis: Später wird diese Ansicht nur ausgewählte Bilder und ein Ablaufdatum unterstützen.
+  </p>
+
+  <div class="back-wrapper">
+    <a class="back-button" href="/demos/fotosharing/projekt-fotosharing-demo.html">← Zurück</a>
+  </div>
+</main>
+
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+<script type="module">
+  const pb = new PocketBase("/api");
+
+  const gallery = document.getElementById("sharedGallery");
+
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  async function loadAll() {
+    gallery.innerHTML = "";
+    const photos = await pb.collection("photos").getFullList({ sort: "-created" });
+
+    if (!photos.length) {
+      gallery.innerHTML = "<p class='hint'>Keine Bilder vorhanden.</p>";
+      return;
+    }
+
+    photos.forEach(p => {
+      const img = document.createElement("img");
+      img.src = pb.files.getURL(p, p.image);
+      img.loading = "lazy";
+      gallery.appendChild(img);
+    });
+  }
+
+  // jetzt: all=1 -> alles laden
+  if (getParam("all") === "1") {
+    loadAll().catch(() => {
+      gallery.innerHTML = "<p class='hint'>Fehler beim Laden. Bitte später erneut versuchen.</p>";
+    });
+  } else {
+    gallery.innerHTML = "<p class='hint'>Ungültiger Link.</p>";
+  }
+</script>
+
 </body>
 </html>
