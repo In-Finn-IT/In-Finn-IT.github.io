@@ -14,13 +14,9 @@
 <main class="container">
   <h1>📸 Freigabe</h1>
 
-  <!-- Status/Fehler/OK -->
   <p id="shareStatus" class="status" aria-live="polite"></p>
-
-  <!-- optional: Ablaufdatum -->
   <p id="shareMeta" class="hint"></p>
 
-  <!-- hier rendert share.js die Fotos -->
   <div id="shareGallery"></div>
 
   <div class="back-wrapper">
@@ -28,7 +24,9 @@
   </div>
 </main>
 
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script type="module" src="/demos/fotosharing/share.js"></script>
+
 
 </body>
 </html>
