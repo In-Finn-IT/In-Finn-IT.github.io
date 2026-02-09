@@ -48,21 +48,34 @@ async function main() {
 
   try {
     const res = await fetch(`/api/shared-photos?t=${encodeURIComponent(token)}`);
-    if (!res.ok) {
-      if (res.status === 410) throw new Error("Diese Freigabe ist abgelaufen.");
-      if (res.status === 404) throw new Error("Freigabe nicht gefunden.");
-      throw new Error("Freigabe konnte nicht geladen werden.");
-    }
 
-    const data = await res.json();
+const raw = await res.text(); // <-- statt res.json()
 
-    if (metaEl && data.expiresAt) {
-      const exp = new Date(data.expiresAt);
-      metaEl.textContent = `Gültig bis: ${exp.toLocaleString("de-DE")}`;
-    }
+if (!res.ok) {
+  if (res.status === 410) throw new Error("Diese Freigabe ist abgelaufen.");
+  if (res.status === 404) throw new Error("Freigabe nicht gefunden.");
+  throw new Error(`Freigabe konnte nicht geladen werden. (${res.status})`);
+}
 
-    render(data.photos || []);
-    setStatus(statusEl, "✅ Freigabe aktiv.", "ok");
+if (!raw.trim()) {
+  throw new Error("API hat 200 geliefert, aber ohne Inhalt (leere Antwort).");
+}
+
+let data;
+try {
+  data = JSON.parse(raw);
+} catch {
+  throw new Error("API hat keine gültige JSON geliefert.");
+}
+
+if (metaEl && data.expiresAt) {
+  const exp = new Date(data.expiresAt);
+  metaEl.textContent = `Gültig bis: ${exp.toLocaleString("de-DE")}`;
+}
+
+render(data.photos || []);
+setStatus(statusEl, "✅ Freigabe aktiv.", "ok");
+
   } catch (e) {
     setStatus(statusEl, asNiceErrorMessage(e), "error");
   }

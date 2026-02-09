@@ -98,6 +98,10 @@ async function loadEntries(){
       del.onclick=async()=>{
         if(confirm("Eintrag wirklich löschen?")){
           await pb.collection("entries").delete(e.id);
+          document.getElementById("editId").value = "";
+          document.getElementById("submitBtn").textContent = "Speichern";
+          document.getElementById("entryForm").reset();
+
           loadEntries();
         }
       };
