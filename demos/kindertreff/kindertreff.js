@@ -3,7 +3,7 @@ import { setStatus, asNiceErrorMessage } from "/assets/js/demo-utils.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
-const pb = new PocketBase("/api");
+const pb = new PocketBase("/");
 
 /* User */
 let uid = localStorage.getItem("kindertreffUser");
