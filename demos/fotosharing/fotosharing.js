@@ -2,7 +2,7 @@
 import { setStatus, asNiceErrorMessage } from "/assets/js/demo-utils.js";
 
 // 🔧 AUF SERVER:
-const pb = new PocketBase("/api");
+const pb = new PocketBase("/");
 
 // Sections / UI
 const authSection = document.getElementById("authSection");
