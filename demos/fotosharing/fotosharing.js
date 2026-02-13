@@ -166,7 +166,7 @@ async function createShareAllLink() {
 
     await pb.collection("shares").create({
       token,
-      photos: ids,
+      photo: ids,
       expiresAt: expires.toISOString(),
       createdBy: pb.authStore.model?.id || "",
     });
