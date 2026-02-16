@@ -10,7 +10,7 @@ const uploadSection = document.getElementById("uploadSection");
 const gallery = document.getElementById("gallery");
 const authStatus = document.getElementById("authStatus");
 
-// Share UI 
+// Share UI
 const btnShareAll = document.getElementById("btnShareAll");
 const shareResult = document.getElementById("shareResult");
 const shareLink = document.getElementById("shareLink");
@@ -92,11 +92,17 @@ async function uploadPhoto() {
     return;
   }
 
+  const userId = pb.authStore.model?.id;
+  if (!userId) {
+    setStatus(status, "⚠️ Login-Status ungültig. Bitte neu einloggen.", "error");
+    return;
+  }
+
   setStatus(status, "⏳ Upload läuft…", "info");
 
   const formData = new FormData();
   formData.append("image", fileInput.files[0]);
-  formData.append("owner", pb.authStore.model.id);
+  formData.append("owner", userId);
 
   try {
     await pb.collection("photos").create(formData);
@@ -114,9 +120,21 @@ async function uploadPhoto() {
 async function loadPhotos() {
   gallery.innerHTML = "";
 
+  if (!pb.authStore.isValid) {
+    gallery.innerHTML = `<p class="hint">Bitte einloggen.</p>`;
+    return;
+  }
+
+  const userId = pb.authStore.model?.id;
+  if (!userId) {
+    gallery.innerHTML = `<p class="hint">Login-Status ungültig. Bitte neu einloggen.</p>`;
+    return;
+  }
+
   try {
     const photos = await pb.collection("photos").getFullList({
       sort: "-created",
+      filter: `owner = "${userId}"`,
     });
 
     if (photos.length === 0) {
@@ -145,12 +163,21 @@ async function createShareAllLink() {
     return;
   }
 
+  const userId = pb.authStore.model?.id;
+  if (!userId) {
+    if (shareHint) setStatus(shareHint, "⚠️ Login-Status ungültig. Bitte neu einloggen.", "error");
+    return;
+  }
+
   if (shareResult) shareResult.classList.add("hidden");
   if (shareHint) setStatus(shareHint, "⏳ Freigabelink wird erstellt…", "info");
 
   try {
-    // Alle Fotos holen (IDs)
-    const photos = await pb.collection("photos").getFullList({ sort: "-created" });
+    // Alle EIGENEN Fotos holen (IDs)
+    const photos = await pb.collection("photos").getFullList({
+      sort: "-created",
+      filter: `owner = "${userId}"`,
+    });
     const ids = photos.map((p) => p.id);
 
     if (ids.length === 0) {
@@ -208,5 +235,6 @@ btnCopyShare?.addEventListener("click", copyShareLink);
 
 // 🚀 Start
 updateUI();
+
 
 
