@@ -17,16 +17,45 @@ const shareLink = document.getElementById("shareLink");
 const btnCopyShare = document.getElementById("btnCopyShare");
 const shareHint = document.getElementById("shareHint");
 
+// Shares Verwaltung UI
+const sharesSection = document.getElementById("sharesSection");
+const sharesList = document.getElementById("sharesList");
+const sharesStatus = document.getElementById("sharesStatus");
+const btnReloadShares = document.getElementById("btnReloadShares");
+
+// ---------- Helper ----------
+function formatDateTime(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso || "";
+  return d.toLocaleString("de-DE");
+}
+
+function isExpired(iso) {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? true : d <= new Date();
+}
+
+function buildShareUrl(token) {
+  return `${window.location.origin}/demos/fotosharing/share.html?t=${encodeURIComponent(token)}`;
+}
+
+function clearSharesUI() {
+  if (sharesList) sharesList.innerHTML = "";
+  if (sharesStatus) setStatus(sharesStatus, "", "info");
+}
+
 // 🔁 UI wechseln
 function updateUI() {
   if (pb.authStore.isValid) {
     authSection.classList.add("hidden");
     uploadSection.classList.remove("hidden");
     loadPhotos();
+    loadShares();
     if (authStatus) setStatus(authStatus, "", "info");
   } else {
     authSection.classList.remove("hidden");
     uploadSection.classList.add("hidden");
+    clearSharesUI();
     if (authStatus) setStatus(authStatus, "", "info");
   }
 }
@@ -64,10 +93,8 @@ async function register() {
   } catch (e) {
     console.error(e);
 
-    // PocketBase Feldfehler sauber auslesen
     const fieldErrors = e?.data?.data || {};
     if (fieldErrors?.password) {
-      // typische PB Meldung: "The length must be between 8 and 72."
       setStatus(authStatus, "⚠️ Passwort muss mindestens 8 Zeichen lang sein.", "error");
       return;
     }
@@ -90,16 +117,6 @@ function logout() {
 // ⬆️ Foto upload
 async function uploadPhoto() {
   const fileInput = document.getElementById("fileInput");
-  const file = fileInput.files[0];
-
-// gleiche Grenze wie im Backend (hier 20 MB)
-const maxSize = 20 * 1024 * 1024;
-
-if (file.size > maxSize) {
-  setStatus(status, `⚠️ Datei zu groß. Bitte maximal ${Math.round(maxSize/1024/1024)} MB hochladen.`, "error");
-  return;
-}
-
   const status = document.getElementById("uploadStatus");
 
   if (!fileInput.files.length) {
@@ -118,10 +135,23 @@ if (file.size > maxSize) {
     return;
   }
 
+  const file = fileInput.files[0];
+
+  // gleiche Grenze wie im Backend (hier 20 MB) – bitte passend zu deinem PB-Feld setzen
+  const maxSize = 20 * 1024 * 1024;
+  if (file.size > maxSize) {
+    setStatus(
+      status,
+      `⚠️ Datei zu groß. Bitte maximal ${Math.round(maxSize / 1024 / 1024)} MB hochladen.`,
+      "error"
+    );
+    return;
+  }
+
   setStatus(status, "⏳ Upload läuft…", "info");
 
   const formData = new FormData();
-  formData.append("image", fileInput.files[0]);
+  formData.append("image", file);
   formData.append("owner", userId);
 
   try {
@@ -134,14 +164,13 @@ if (file.size > maxSize) {
     console.error("UPLOAD ERROR:", e);
 
     const code = e?.data?.data?.image?.code;
+    if (code === "validation_file_size_limit") {
+      const max = e?.data?.data?.image?.params?.maxSize;
+      const mb = max ? Math.round(max / 1024 / 1024) : 5;
+      setStatus(status, `⚠️ Datei zu groß. Maximal ${mb} MB.`, "error");
+      return;
+    }
 
-  if (code === "validation_file_size_limit") {
-    const max = e.data.data.image.params?.maxSize;
-    const mb = max ? Math.round(max / 1024 / 1024) : 5;
-    
-    setStatus(status, `⚠️ Datei zu groß. Maximal ${mb} MB.`, "error");
-    return;
-   }    
     setStatus(status, asNiceErrorMessage(e), "error");
   }
 }
@@ -215,7 +244,7 @@ async function createShareAllLink() {
       return;
     }
 
-    // Ablauf: erstmal fix 7 Tage (später UI dafür ergänzen)
+    // Ablauf: erstmal fix 7 Tage
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
 
@@ -228,11 +257,14 @@ async function createShareAllLink() {
       createdBy: pb.authStore.model?.id || "",
     });
 
-    const url = `${window.location.origin}/demos/fotosharing/share.html?t=${token}`;
+    const url = buildShareUrl(token);
 
     if (shareLink) shareLink.value = url;
     if (shareResult) shareResult.classList.remove("hidden");
     if (shareHint) setStatus(shareHint, "✅ Link erstellt (7 Tage gültig).", "ok");
+
+    // neu: Shares-Liste aktualisieren
+    loadShares();
   } catch (e) {
     if (shareHint) setStatus(shareHint, asNiceErrorMessage(e), "error");
   }
@@ -247,10 +279,98 @@ async function copyShareLink() {
     await navigator.clipboard.writeText(url);
     if (shareHint) setStatus(shareHint, "✅ Kopiert.", "ok");
   } catch {
-    // Fallback: markieren
     shareLink.focus();
     shareLink.select();
     if (shareHint) setStatus(shareHint, "⚠️ Konnte nicht automatisch kopieren – Link ist markiert.", "error");
+  }
+}
+
+// 📌 Shares laden
+async function loadShares() {
+  if (!sharesList) return;
+
+  if (!pb.authStore.isValid) {
+    clearSharesUI();
+    return;
+  }
+
+  sharesList.innerHTML = `<p class="hint">⏳ Lädt…</p>`;
+  if (sharesStatus) setStatus(sharesStatus, "", "info");
+
+  try {
+    const shares = await pb.collection("shares").getFullList({
+      sort: "-created",
+      // Keine filter nötig, wenn deine shares Rules gesetzt sind.
+    });
+
+    if (!shares.length) {
+      sharesList.innerHTML = `<p class="hint">Noch keine Freigaben.</p>`;
+      return;
+    }
+
+    sharesList.innerHTML = "";
+
+    shares.forEach((s) => {
+      const url = buildShareUrl(s.token);
+      const exp = s.expiresAt;
+      const expired = isExpired(exp);
+      const count = Array.isArray(s.photo) ? s.photo.length : 0;
+
+      const item = document.createElement("div");
+      item.className = "share-item";
+
+      item.innerHTML = `
+        <div class="share-line">
+          <strong>${expired ? "⛔ Abgelaufen" : "✅ Aktiv"}</strong>
+          <span class="muted">• Fotos: ${count}</span>
+        </div>
+
+        <div class="share-line">
+          <span class="muted">Gültig bis:</span> ${formatDateTime(exp)}
+        </div>
+
+        <div class="share-line">
+          <input type="text" class="share-url" value="${url}" readonly />
+        </div>
+
+        <div class="share-actions">
+          <button type="button" class="btnCopy">Link kopieren</button>
+          <button type="button" class="btnDelete">Löschen</button>
+        </div>
+      `;
+
+      item.querySelector(".btnCopy")?.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          if (sharesStatus) setStatus(sharesStatus, "✅ Link kopiert.", "ok");
+        } catch {
+          const inp = item.querySelector(".share-url");
+          inp?.focus();
+          inp?.select();
+          if (sharesStatus) setStatus(sharesStatus, "⚠️ Konnte nicht automatisch kopieren – Link ist markiert.", "error");
+        }
+      });
+
+      item.querySelector(".btnDelete")?.addEventListener("click", async () => {
+        const ok = confirm("Freigabe wirklich löschen?");
+        if (!ok) return;
+
+        try {
+          await pb.collection("shares").delete(s.id);
+          if (sharesStatus) setStatus(sharesStatus, "✅ Freigabe gelöscht.", "ok");
+          loadShares();
+        } catch (e) {
+          console.error(e);
+          if (sharesStatus) setStatus(sharesStatus, asNiceErrorMessage(e), "error");
+        }
+      });
+
+      sharesList.appendChild(item);
+    });
+  } catch (e) {
+    console.error(e);
+    sharesList.innerHTML = `<p class="hint">Freigaben konnten nicht geladen werden.</p>`;
+    if (sharesStatus) setStatus(sharesStatus, asNiceErrorMessage(e), "error");
   }
 }
 
@@ -263,8 +383,11 @@ document.getElementById("btnLogout")?.addEventListener("click", logout);
 btnShareAll?.addEventListener("click", createShareAllLink);
 btnCopyShare?.addEventListener("click", copyShareLink);
 
+btnReloadShares?.addEventListener("click", loadShares);
+
 // 🚀 Start
 updateUI();
+
 
 
 
