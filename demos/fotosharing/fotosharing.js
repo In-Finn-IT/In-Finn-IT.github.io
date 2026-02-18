@@ -90,6 +90,16 @@ function logout() {
 // ⬆️ Foto upload
 async function uploadPhoto() {
   const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
+
+// gleiche Grenze wie im Backend (hier 20 MB)
+const maxSize = 20 * 1024 * 1024;
+
+if (file.size > maxSize) {
+  setStatus(status, `⚠️ Datei zu groß. Bitte maximal ${Math.round(maxSize/1024/1024)} MB hochladen.`, "error");
+  return;
+}
+
   const status = document.getElementById("uploadStatus");
 
   if (!fileInput.files.length) {
@@ -121,7 +131,17 @@ async function uploadPhoto() {
     fileInput.value = "";
     loadPhotos();
   } catch (e) {
-    console.error(e);
+    console.error("UPLOAD ERROR:", e);
+
+    const code = e?.data?.data?.image?.code;
+
+  if (code === "validation_file_size_limit") {
+    const max = e.data.data.image.params?.maxSize;
+    const mb = max ? Math.round(max / 1024 / 1024) : 5;
+    
+    setStatus(status, `⚠️ Datei zu groß. Maximal ${mb} MB.`, "error");
+    return;
+   }    
     setStatus(status, asNiceErrorMessage(e), "error");
   }
 }
