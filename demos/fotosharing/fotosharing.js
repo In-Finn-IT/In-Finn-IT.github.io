@@ -62,7 +62,17 @@ async function register() {
 
     if (authStatus) setStatus(authStatus, "✅ Registriert. Jetzt einloggen.", "ok");
   } catch (e) {
-    if (authStatus) setStatus(authStatus, asNiceErrorMessage(e), "error");
+    console.error(e);
+
+    // PocketBase Feldfehler sauber auslesen
+    const fieldErrors = e?.data?.data || {};
+    if (fieldErrors?.password) {
+      // typische PB Meldung: "The length must be between 8 and 72."
+      setStatus(authStatus, "⚠️ Passwort muss mindestens 8 Zeichen lang sein.", "error");
+      return;
+    }
+
+    setStatus(authStatus, asNiceErrorMessage(e), "error");
   }
 }
 
