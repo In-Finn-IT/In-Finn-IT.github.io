@@ -253,8 +253,7 @@ async function createShareAllLink() {
     await pb.collection("shares").create({
       token,
       photo: ids,
-      expiresAt: expires.toISOString(),
-      createdBy: pb.authStore.model?.id || "",
+      expiresAt: expires.toISOString(),      
     });
 
     const url = buildShareUrl(token);
@@ -266,8 +265,20 @@ async function createShareAllLink() {
     // neu: Shares-Liste aktualisieren
     loadShares();
   } catch (e) {
-    if (shareHint) setStatus(shareHint, asNiceErrorMessage(e), "error");
-  }
+      console.error(e);
+
+      if (e?.status === 403) {
+        pb.authStore.clear();
+        updateUI();
+        if (shareHint) {
+          setStatus(shareHint, "⚠️ Sitzung abgelaufen. Bitte neu einloggen.", "error");
+        }
+        return;
+      }
+
+      if (shareHint) setStatus(shareHint, asNiceErrorMessage(e), "error");
+    }
+
 }
 
 // 📋 Copy
@@ -299,8 +310,7 @@ async function loadShares() {
 
   try {
     const shares = await pb.collection("shares").getFullList({
-      sort: "-created",
-      // Keine filter nötig, wenn deine shares Rules gesetzt sind.
+      sort: "-created",      
     });
 
     if (!shares.length) {
