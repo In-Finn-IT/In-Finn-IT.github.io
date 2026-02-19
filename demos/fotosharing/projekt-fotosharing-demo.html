@@ -56,19 +56,26 @@
       <p id="uploadStatus" class="status" aria-live="polite"></p>
 
       <!-- 📌 Share-Verwaltung -->
-      <section id="sharesSection" style="margin-top:1rem;">
-        <h3>Meine Freigaben</h3>
+      <details id="sharesSection" style="margin-top:1rem;">
+  <summary style="cursor:pointer;">
+    <strong>Meine Freigaben</strong>
+    <span id="sharesCount" class="hint" style="margin-left:0.5rem;"></span>
+  </summary>
 
-        <div class="btn-row">
-          <button id="btnReloadShares" type="button" class="btn-secondary">Aktualisieren</button>
-        </div>
+  <div style="margin-top:0.75rem;">
+    <div class="btn-row">
+      <button id="btnReloadShares" type="button" class="btn-secondary">Aktualisieren</button>
+      <button id="btnToggleShares" type="button" class="btn-secondary hidden">Alle anzeigen</button>
+    </div>
 
-        <div id="sharesList">
-          <p class="hint">Noch keine Freigaben.</p>
-        </div>
+    <div id="sharesList">
+      <p class="hint">Noch keine Freigaben.</p>
+    </div>
 
-        <p id="sharesStatus" class="status" aria-live="polite"></p>
-      </section>
+    <p id="sharesStatus" class="status" aria-live="polite"></p>
+  </div>
+</details>
+
 
       <h2>Meine Fotos</h2>
 
