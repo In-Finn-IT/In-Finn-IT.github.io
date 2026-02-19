@@ -202,18 +202,42 @@ async function loadPhotos() {
     }
 
     photos.forEach((p) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "photo-item";
+
       const img = document.createElement("img");
       img.src = pb.files.getURL(p, p.image);
       img.alt = "Upload";
       img.loading = "lazy";
-      img.title = "Zum Download: Rechtsklick";
-      gallery.appendChild(img);
+
+      const btnDelete = document.createElement("button");
+      btnDelete.type = "button";
+      btnDelete.className = "btn-secondary";
+      btnDelete.textContent = "Löschen";
+
+      btnDelete.addEventListener("click", async () => {
+        const ok = confirm("Foto wirklich löschen?");
+        if (!ok) return;
+
+        try {
+          await pb.collection("photos").delete(p.id);
+          loadPhotos();
+        } catch (e) {
+          console.error(e);
+          alert("Foto konnte nicht gelöscht werden.");
+        }
+      });
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(btnDelete);
+      gallery.appendChild(wrapper);
     });
   } catch (e) {
     console.error(e);
     gallery.innerHTML = `<p class="hint">Fotos konnten nicht geladen werden.</p>`;
   }
 }
+
 
 // 🔗 Freigabelink für ALLE Fotos erstellen
 async function createShareAllLink() {
