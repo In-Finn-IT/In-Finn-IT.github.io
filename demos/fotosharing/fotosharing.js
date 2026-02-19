@@ -16,12 +16,19 @@ const shareResult = document.getElementById("shareResult");
 const shareLink = document.getElementById("shareLink");
 const btnCopyShare = document.getElementById("btnCopyShare");
 const shareHint = document.getElementById("shareHint");
+const btnShareSelected = document.getElementById("btnShareSelected");
+const btnClearSelection = document.getElementById("btnClearSelection");
+const selectionInfo = document.getElementById("selectionInfo");
+
 
 // Shares Verwaltung UI
 const sharesSection = document.getElementById("sharesSection");
 const sharesList = document.getElementById("sharesList");
 const sharesStatus = document.getElementById("sharesStatus");
 const btnReloadShares = document.getElementById("btnReloadShares");
+
+const selectedPhotoIds = new Set();
+
 
 // ---------- Helper ----------
 function formatDateTime(iso) {
@@ -43,6 +50,15 @@ function clearSharesUI() {
   if (sharesList) sharesList.innerHTML = "";
   if (sharesStatus) setStatus(sharesStatus, "", "info");
 }
+
+function updateSelectionUI() {
+  const n = selectedPhotoIds.size;
+
+  if (selectionInfo) selectionInfo.textContent = `${n} ausgewählt`;
+  if (btnShareSelected) btnShareSelected.disabled = n === 0;
+  if (btnClearSelection) btnClearSelection.disabled = n === 0;
+}
+
 
 // 🔁 UI wechseln
 function updateUI() {
@@ -112,6 +128,10 @@ function logout() {
   if (shareResult) shareResult.classList.add("hidden");
   if (shareLink) shareLink.value = "";
   if (shareHint) setStatus(shareHint, "", "info");
+
+  selectedPhotoIds.clear();
+  updateSelectionUI();
+
 }
 
 // ⬆️ Foto upload
@@ -176,6 +196,7 @@ async function uploadPhoto() {
 }
 
 // 🖼️ Eigene Fotos laden
+// 🖼️ Eigene Fotos laden
 async function loadPhotos() {
   gallery.innerHTML = "";
 
@@ -198,10 +219,12 @@ async function loadPhotos() {
 
     if (photos.length === 0) {
       gallery.innerHTML = `<p class="hint">Noch keine Fotos hochgeladen.</p>`;
+      updateSelectionUI();   // ← WICHTIG
       return;
     }
 
     photos.forEach((p) => {
+
       const wrapper = document.createElement("div");
       wrapper.className = "photo-item";
 
@@ -209,6 +232,31 @@ async function loadPhotos() {
       img.src = pb.files.getURL(p, p.image);
       img.alt = "Upload";
       img.loading = "lazy";
+      img.title = "Klicken = auswählen";
+
+      // Wenn bereits ausgewählt → visuell markieren
+      if (selectedPhotoIds.has(p.id)) {
+        wrapper.classList.add("is-selected");
+      }
+
+      const badge = document.createElement("div");
+      badge.className = "photo-badge";
+      badge.textContent = "Ausgewählt";
+      badge.style.display = selectedPhotoIds.has(p.id) ? "block" : "none";
+
+      img.addEventListener("click", () => {
+        if (selectedPhotoIds.has(p.id)) {
+          selectedPhotoIds.delete(p.id);
+          wrapper.classList.remove("is-selected");
+          badge.style.display = "none";
+        } else {
+          selectedPhotoIds.add(p.id);
+          wrapper.classList.add("is-selected");
+          badge.style.display = "block";
+        }
+
+        updateSelectionUI();
+      });
 
       const btnDelete = document.createElement("button");
       btnDelete.type = "button";
@@ -221,6 +269,7 @@ async function loadPhotos() {
 
         try {
           await pb.collection("photos").delete(p.id);
+          selectedPhotoIds.delete(p.id);
           loadPhotos();
         } catch (e) {
           console.error(e);
@@ -229,14 +278,20 @@ async function loadPhotos() {
       });
 
       wrapper.appendChild(img);
+      wrapper.appendChild(badge);
       wrapper.appendChild(btnDelete);
       gallery.appendChild(wrapper);
     });
+    
+    updateSelectionUI();
+
   } catch (e) {
     console.error(e);
     gallery.innerHTML = `<p class="hint">Fotos konnten nicht geladen werden.</p>`;
+    updateSelectionUI();
   }
 }
+
 
 
 // 🔗 Freigabelink für ALLE Fotos erstellen
@@ -304,6 +359,62 @@ async function createShareAllLink() {
     }
 
 }
+
+async function createShareSelectedLink() {
+  if (!pb.authStore.isValid) {
+    if (shareHint) setStatus(shareHint, "⚠️ Bitte zuerst einloggen.", "error");
+    return;
+  }
+
+  const userId = pb.authStore.model?.id;
+  if (!userId) {
+    if (shareHint) setStatus(shareHint, "⚠️ Login-Status ungültig. Bitte neu einloggen.", "error");
+    return;
+  }
+
+  const ids = Array.from(selectedPhotoIds);
+  if (ids.length === 0) {
+    if (shareHint) setStatus(shareHint, "⚠️ Bitte zuerst Fotos auswählen.", "error");
+    return;
+  }
+
+  if (shareResult) shareResult.classList.add("hidden");
+  if (shareHint) setStatus(shareHint, "⏳ Freigabelink wird erstellt…", "info");
+
+  try {
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 7);
+
+    const token = crypto.randomUUID();
+
+    await pb.collection("shares").create({
+      token,
+      photo: ids,
+      expiresAt: expires.toISOString(),
+      // createdBy wird serverseitig gesetzt
+    });
+
+    const url = buildShareUrl(token);
+
+    if (shareLink) shareLink.value = url;
+    if (shareResult) shareResult.classList.remove("hidden");
+    if (shareHint) setStatus(shareHint, `✅ Link erstellt (${ids.length} Foto(s), 7 Tage gültig).`, "ok");
+
+    loadShares();
+  } catch (e) {
+    console.error(e);
+
+    if (e?.status === 403) {
+      pb.authStore.clear();
+      updateUI();
+      if (shareHint) setStatus(shareHint, "⚠️ Sitzung abgelaufen. Bitte neu einloggen.", "error");
+      return;
+    }
+
+    if (shareHint) setStatus(shareHint, asNiceErrorMessage(e), "error");
+  }
+}
+
 
 // 📋 Copy
 async function copyShareLink() {
@@ -418,9 +529,19 @@ btnShareAll?.addEventListener("click", createShareAllLink);
 btnCopyShare?.addEventListener("click", copyShareLink);
 
 btnReloadShares?.addEventListener("click", loadShares);
+btnShareSelected?.addEventListener("click", createShareSelectedLink);
+
+btnClearSelection?.addEventListener("click", () => {
+  selectedPhotoIds.clear();
+  updateSelectionUI();
+  loadPhotos(); // damit Rahmen/Badges weg sind
+});
+
 
 // 🚀 Start
 updateUI();
+updateSelectionUI();
+
 
 
 

@@ -88,7 +88,21 @@
       </section>
 
       <h2>Meine Fotos</h2>
+
+      <div class="btn-row" style="align-items:center; gap:0.75rem; flex-wrap:wrap;">
+        <button id="btnShareSelected" type="button" class="btn-secondary" disabled>
+          Ausgewählte teilen
+        </button>
+
+        <button id="btnClearSelection" type="button" class="btn-secondary" disabled>
+          Auswahl aufheben
+        </button>
+
+        <span id="selectionInfo" class="hint" style="margin-left:auto;">0 ausgewählt</span>
+      </div>
+
       <div id="gallery"></div>
+
     </section>
 
   </main>
