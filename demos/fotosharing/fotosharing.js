@@ -11,7 +11,7 @@ const gallery = document.getElementById("gallery");
 const authStatus = document.getElementById("authStatus");
 
 // Share UI
-const btnShareAll = document.getElementById("btnShareAll");
+
 const shareResult = document.getElementById("shareResult");
 const shareLink = document.getElementById("shareLink");
 const btnCopyShare = document.getElementById("btnCopyShare");
@@ -308,74 +308,6 @@ async function loadPhotos() {
   }
 }
 
-
-
-// 🔗 Freigabelink für ALLE Fotos erstellen
-async function createShareAllLink() {
-  if (!pb.authStore.isValid) {
-    if (shareHint) setStatus(shareHint, "⚠️ Bitte zuerst einloggen.", "error");
-    return;
-  }
-
-  const userId = pb.authStore.model?.id;
-  if (!userId) {
-    if (shareHint) setStatus(shareHint, "⚠️ Login-Status ungültig. Bitte neu einloggen.", "error");
-    return;
-  }
-
-  if (shareResult) shareResult.classList.add("hidden");
-  if (shareHint) setStatus(shareHint, "⏳ Freigabelink wird erstellt…", "info");
-
-  try {
-    // Alle EIGENEN Fotos holen (IDs)
-    const photos = await pb.collection("photos").getFullList({
-      sort: "-created",
-      filter: `owner = "${userId}"`,
-    });
-    const ids = photos.map((p) => p.id);
-
-    if (ids.length === 0) {
-      if (shareHint) setStatus(shareHint, "⚠️ Keine Fotos vorhanden.", "error");
-      return;
-    }
-
-    // Ablauf: erstmal fix 7 Tage
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 7);
-
-    const token = crypto.randomUUID();
-
-    await pb.collection("shares").create({
-      token,
-      photo: ids,
-      expiresAt: expires.toISOString(),      
-    });
-
-    const url = buildShareUrl(token);
-
-    if (shareLink) shareLink.value = url;
-    if (shareResult) shareResult.classList.remove("hidden");
-    if (shareHint) setStatus(shareHint, "✅ Link erstellt (7 Tage gültig).", "ok");
-
-    // neu: Shares-Liste aktualisieren
-    loadShares();
-  } catch (e) {
-      console.error(e);
-
-      if (e?.status === 403) {
-        pb.authStore.clear();
-        updateUI();
-        if (shareHint) {
-          setStatus(shareHint, "⚠️ Sitzung abgelaufen. Bitte neu einloggen.", "error");
-        }
-        return;
-      }
-
-      if (shareHint) setStatus(shareHint, asNiceErrorMessage(e), "error");
-    }
-
-}
-
 async function createShareSelectedLink() {
   if (!pb.authStore.isValid) {
     if (shareHint) setStatus(shareHint, "⚠️ Bitte zuerst einloggen.", "error");
@@ -541,7 +473,6 @@ document.getElementById("btnRegister")?.addEventListener("click", register);
 document.getElementById("btnUpload")?.addEventListener("click", uploadPhoto);
 document.getElementById("btnLogout")?.addEventListener("click", logout);
 
-btnShareAll?.addEventListener("click", createShareAllLink);
 btnCopyShare?.addEventListener("click", copyShareLink);
 
 btnReloadShares?.addEventListener("click", loadShares);
