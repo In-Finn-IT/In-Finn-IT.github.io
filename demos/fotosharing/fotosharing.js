@@ -196,7 +196,6 @@ async function uploadPhoto() {
 }
 
 // 🖼️ Eigene Fotos laden
-// 🖼️ Eigene Fotos laden
 async function loadPhotos() {
   gallery.innerHTML = "";
 
@@ -277,9 +276,26 @@ async function loadPhotos() {
         }
       });
 
+      const btnDownload = document.createElement("button");
+        btnDownload.type = "button";
+        btnDownload.className = "btn-secondary";
+        btnDownload.textContent = "Download";
+
+        btnDownload.addEventListener("click", () => {
+          const url = pb.files.getURL(p, p.image);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = p.image || "photo";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        });
+
+
       wrapper.appendChild(img);
       wrapper.appendChild(badge);
       wrapper.appendChild(btnDelete);
+      wrapper.appendChild(btnDownload);
       gallery.appendChild(wrapper);
     });
     

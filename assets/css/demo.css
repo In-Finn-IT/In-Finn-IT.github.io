@@ -410,23 +410,24 @@ button.secondary:hover {
   height: 18px;
 }
 
-.photo-item {
-  position: relative;
-  display: inline-block;
-}
+.photo-item { position: relative; }
 
-.photo-item img {
-  display: block;
-  width: 100%;
+.photo-item img{
+  display:block;
   border-radius: 10px;
-  border: 2px solid transparent;
+  border: 2px solid transparent !important; /* überschreibt vorhandene img borders */
   box-sizing: border-box;
   cursor: pointer;
 }
 
-.photo-item.is-selected img {
-  border-color: currentColor; 
+.photo-item.is-selected {
+  color: var(--accent, #111); /* nutzt Token, falls vorhanden */
 }
+
+.photo-item.is-selected img{
+  border-color: currentColor !important;
+}
+
 
 .photo-badge {
   position: absolute;
