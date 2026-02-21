@@ -11,7 +11,6 @@ const gallery = document.getElementById("gallery");
 const authStatus = document.getElementById("authStatus");
 
 // Share UI
-
 const shareResult = document.getElementById("shareResult");
 const shareLink = document.getElementById("shareLink");
 const btnCopyShare = document.getElementById("btnCopyShare");
@@ -20,6 +19,7 @@ const btnShareSelected = document.getElementById("btnShareSelected");
 const btnClearSelection = document.getElementById("btnClearSelection");
 const selectionInfo = document.getElementById("selectionInfo");
 const sharesCount = document.getElementById("sharesCount");
+const expiresDays = document.getElementById("expiresDays");
 
 // Shares Verwaltung UI
 const sharesSection = document.getElementById("sharesSection");
@@ -327,11 +327,18 @@ async function createShareSelectedLink() {
   }
 
   if (shareResult) shareResult.classList.add("hidden");
-  if (shareHint) setStatus(shareHint, "⏳ Freigabelink wird erstellt…", "info");
+  if (shareHint) setStatus(shareHint, `⏳ Erstelle Link für ${ids.length} Bild(er)…`, "info");
+
+  selectedPhotoIds.clear();
+  updateSelectionUI();
+  loadPhotos();
 
   try {
+    const days = Number(expiresDays?.value || 7);
+    const safeDays = Number.isFinite(days) && days > 0 ? days : 7;
+
     const expires = new Date();
-    expires.setDate(expires.getDate() + 7);
+    expires.setDate(expires.getDate() + safeDays);
 
     const token = crypto.randomUUID();
 
@@ -346,7 +353,7 @@ async function createShareSelectedLink() {
 
     if (shareLink) shareLink.value = url;
     if (shareResult) shareResult.classList.remove("hidden");
-    if (shareHint) setStatus(shareHint, `✅ Link erstellt (${ids.length} Foto(s), 7 Tage gültig).`, "ok");
+    if (shareHint) setStatus(shareHint, `✅ Link erstellt (${ids.length} Bild(er), ${safeDays} Tag(e) gültig).`, "ok");
 
     loadShares();
   } catch (e) {
