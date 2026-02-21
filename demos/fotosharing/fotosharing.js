@@ -20,9 +20,6 @@ const btnShareSelected = document.getElementById("btnShareSelected");
 const btnClearSelection = document.getElementById("btnClearSelection");
 const selectionInfo = document.getElementById("selectionInfo");
 const sharesCount = document.getElementById("sharesCount");
-const btnToggleShares = document.getElementById("btnToggleShares");
-
-let showAllShares = false;
 
 // Shares Verwaltung UI
 const sharesSection = document.getElementById("sharesSection");
@@ -382,12 +379,14 @@ async function copyShareLink() {
   }
 }
 
-// 📌 Shares laden
+// 📌 Shares laden (alle eigenen – über Rules begrenzt)
 async function loadShares() {
   if (!sharesList) return;
 
   if (!pb.authStore.isValid) {
-    clearSharesUI();
+    if (sharesList) sharesList.innerHTML = "";
+    if (sharesStatus) setStatus(sharesStatus, "", "info");
+    if (sharesCount) sharesCount.textContent = "";
     return;
   }
 
@@ -396,96 +395,79 @@ async function loadShares() {
 
   try {
     const shares = await pb.collection("shares").getFullList({
-      sort: "-created",      
+      sort: "-created",
     });
 
+    if (sharesCount) sharesCount.textContent = `(${shares.length})`;
+
     if (!shares.length) {
-  sharesList.innerHTML = `<p class="hint">Noch keine Freigaben.</p>`;
-  if (sharesCount) sharesCount.textContent = "(0)";
-  return;
-}
-
-if (sharesCount) sharesCount.textContent = `(${shares.length})`;
-
-sharesList.innerHTML = "";
-
-const limit = 2;
-const visibleShares = showAllShares ? shares : shares.slice(0, limit);
-
-if (btnToggleShares) {
-  if (shares.length > limit) {
-    btnToggleShares.classList.remove("hidden");
-    btnToggleShares.textContent = showAllShares
-      ? "Weniger anzeigen"
-      : `Alle anzeigen (${shares.length})`;
-  } else {
-    btnToggleShares.classList.add("hidden");
-  }
-}
-
-visibleShares.forEach((s) => {
-
-  const url = buildShareUrl(s.token);
-  const exp = s.expiresAt;
-  const expired = isExpired(exp);
-  const count = Array.isArray(s.photo) ? s.photo.length : 0;
-
-  const item = document.createElement("div");
-  item.className = "share-item";
-
-  item.innerHTML = `
-    <div class="share-line">
-      <strong>${expired ? "⛔ Abgelaufen" : "✅ Aktiv"}</strong>
-      <span class="muted">• Fotos: ${count}</span>
-      <span class="muted">• bis ${formatDateTime(exp)}</span>
-    </div>
-
-    <div class="share-line">
-      <input type="text" class="share-url" value="${url}" readonly />
-    </div>
-
-    <div class="share-actions">
-      <button type="button" class="btnCopy btn-secondary">Kopieren</button>
-      <button type="button" class="btnDelete btn-secondary">Löschen</button>
-    </div>
-  `;
-
-  item.querySelector(".btnCopy")?.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(url);
-      if (sharesStatus) setStatus(sharesStatus, "✅ Link kopiert.", "ok");
-    } catch {
-      const inp = item.querySelector(".share-url");
-      inp?.focus();
-      inp?.select();
-      if (sharesStatus)
-        setStatus(sharesStatus, "⚠️ Konnte nicht automatisch kopieren – Link ist markiert.", "error");
+      sharesList.innerHTML = `<p class="hint">Noch keine Freigaben.</p>`;
+      return;
     }
-  });
 
-  item.querySelector(".btnDelete")?.addEventListener("click", async () => {
-    const ok = confirm("Freigabe wirklich löschen?");
-    if (!ok) return;
+    sharesList.innerHTML = "";
 
-    try {
-      await pb.collection("shares").delete(s.id);
-      if (sharesStatus)
-        setStatus(sharesStatus, "✅ Freigabe gelöscht.", "ok");
-      loadShares();
-    } catch (e) {
-      console.error(e);
-      if (sharesStatus)
-        setStatus(sharesStatus, asNiceErrorMessage(e), "error");
-    }
-  });
+    shares.forEach((s) => {
+      const url = buildShareUrl(s.token);
+      const exp = s.expiresAt;
+      const expired = isExpired(exp);
+      const count = Array.isArray(s.photo) ? s.photo.length : 0;
 
-  sharesList.appendChild(item);
-});
+      const item = document.createElement("div");
+      item.className = "share-item";
 
+      item.innerHTML = `
+        <div class="share-line">
+          <strong>${expired ? "⛔ Abgelaufen" : "✅ Aktiv"}</strong>
+          <span class="muted">• Fotos: ${count}</span>
+          <span class="muted">• bis ${formatDateTime(exp)}</span>
+        </div>
+
+        <div class="share-line">
+          <input type="text" class="share-url" value="${url}" readonly />
+        </div>
+
+        <div class="share-actions">
+          <button type="button" class="btnCopy btn-secondary">Kopieren</button>
+          <button type="button" class="btnDelete btn-secondary">Löschen</button>
+        </div>
+      `;
+
+      item.querySelector(".btnCopy")?.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          if (sharesStatus) setStatus(sharesStatus, "✅ Link kopiert.", "ok");
+        } catch {
+          const inp = item.querySelector(".share-url");
+          inp?.focus();
+          inp?.select();
+          if (sharesStatus) {
+            setStatus(sharesStatus, "⚠️ Konnte nicht automatisch kopieren – Link ist markiert.", "error");
+          }
+        }
+      });
+
+      item.querySelector(".btnDelete")?.addEventListener("click", async () => {
+        const ok = confirm("Freigabe wirklich löschen?");
+        if (!ok) return;
+
+        try {
+          await pb.collection("shares").delete(s.id);
+          if (sharesStatus) setStatus(sharesStatus, "✅ Freigabe gelöscht.", "ok");
+          loadShares();
+        } catch (e) {
+          console.error(e);
+          if (sharesStatus) setStatus(sharesStatus, asNiceErrorMessage(e), "error");
+        }
+      });
+
+      sharesList.appendChild(item);
+    });
   } catch (e) {
     console.error(e);
     sharesList.innerHTML = `<p class="hint">Freigaben konnten nicht geladen werden.</p>`;
     if (sharesStatus) setStatus(sharesStatus, asNiceErrorMessage(e), "error");
+    if (sharesCount) sharesCount.textContent = "";
   }
 }
 
@@ -504,11 +486,6 @@ btnClearSelection?.addEventListener("click", () => {
   selectedPhotoIds.clear();
   updateSelectionUI();
   loadPhotos(); // damit Rahmen/Badges weg sind
-});
-
-btnToggleShares?.addEventListener("click", () => {
-  showAllShares = !showAllShares;
-  loadShares();
 });
 
 
