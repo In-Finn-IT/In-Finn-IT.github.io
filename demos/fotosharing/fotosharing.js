@@ -26,9 +26,13 @@ const sharesSection = document.getElementById("sharesSection");
 const sharesList = document.getElementById("sharesList");
 const sharesStatus = document.getElementById("sharesStatus");
 const btnReloadShares = document.getElementById("btnReloadShares");
+const btnToggleExpired = document.getElementById("btnToggleExpired");
+const btnOpenShare = document.getElementById("btnOpenShare");
 
 const selectedPhotoIds = new Set();
 
+let showExpiredShares = false;
+let lastShareUrl = "";
 
 // ---------- Helper ----------
 function formatDateTime(iso) {
@@ -122,14 +126,17 @@ async function register() {
 // 🚪 Logout
 function logout() {
   pb.authStore.clear();
-  updateUI();
+  lastShareUrl = "";
+  selectedPhotoIds.clear();
+  
+  updateUI(); 
 
   // Share UI zurücksetzen
   if (shareResult) shareResult.classList.add("hidden");
   if (shareLink) shareLink.value = "";
   if (shareHint) setStatus(shareHint, "", "info");
 
-  selectedPhotoIds.clear();
+  
   updateSelectionUI();
 
 }
@@ -351,7 +358,7 @@ async function createShareSelectedLink() {
 
     const url = buildShareUrl(token);
 
-    if (shareLink) shareLink.value = url;
+    lastShareUrl = url;
     if (shareResult) shareResult.classList.remove("hidden");
     if (shareHint) setStatus(shareHint, `✅ Link erstellt (${ids.length} Bild(er), ${safeDays} Tag(e) gültig).`, "ok");
 
@@ -373,16 +380,14 @@ async function createShareSelectedLink() {
 
 // 📋 Copy
 async function copyShareLink() {
-  const url = shareLink?.value?.trim();
+  const url = (lastShareUrl || "").trim();
   if (!url) return;
 
   try {
     await navigator.clipboard.writeText(url);
-    if (shareHint) setStatus(shareHint, "✅ Kopiert.", "ok");
+    if (shareHint) setStatus(shareHint, "✅ Link kopiert.", "ok");
   } catch {
-    shareLink.focus();
-    shareLink.select();
-    if (shareHint) setStatus(shareHint, "⚠️ Konnte nicht automatisch kopieren – Link ist markiert.", "error");
+    if (shareHint) setStatus(shareHint, "⚠️ Konnte nicht automatisch kopieren.", "error");
   }
 }
 
@@ -405,16 +410,20 @@ async function loadShares() {
       sort: "-created",
     });
 
-    if (sharesCount) sharesCount.textContent = `(${shares.length})`;
+    const filtered = showExpiredShares
+        ? shares
+        : shares.filter((s) => !isExpired(s.expiresAt));
 
-    if (!shares.length) {
-      sharesList.innerHTML = `<p class="hint">Noch keine Freigaben.</p>`;
-      return;
-    }
+      if (sharesCount) sharesCount.textContent = `(${filtered.length})`;
 
-    sharesList.innerHTML = "";
+      if (!filtered.length) {
+        sharesList.innerHTML = `<p class="hint">Noch keine Freigaben.</p>`;
+        return;
+      }
 
-    shares.forEach((s) => {
+      sharesList.innerHTML = "";
+
+    filtered.forEach((s) => {
       const url = buildShareUrl(s.token);
       const exp = s.expiresAt;
       const expired = isExpired(exp);
@@ -495,7 +504,16 @@ btnClearSelection?.addEventListener("click", () => {
   loadPhotos(); // damit Rahmen/Badges weg sind
 });
 
+btnToggleExpired?.addEventListener("click", () => {
+  showExpiredShares = !showExpiredShares;
+  btnToggleExpired.textContent = showExpiredShares ? "Abgelaufene ausblenden" : "Abgelaufene anzeigen";
+  loadShares();
+});
 
+btnOpenShare?.addEventListener("click", () => {
+  if (!lastShareUrl) return;
+  window.open(lastShareUrl, "_blank", "noopener");
+});
 
 // 🚀 Start
 updateUI();

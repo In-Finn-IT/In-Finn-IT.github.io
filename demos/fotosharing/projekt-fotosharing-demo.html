@@ -64,7 +64,8 @@
 
   <div style="margin-top:0.75rem;">
     <div class="btn-row">
-      <button id="btnReloadShares" type="button" class="btn-secondary">Aktualisieren</button>      
+      <button id="btnReloadShares" type="button" class="btn-secondary">Aktualisieren</button>
+      <button id="btnToggleExpired" type="button" class="btn-secondary">Abgelaufene anzeigen</button>      
     </div>
 
     <div id="sharesList">
@@ -101,11 +102,9 @@
 
       <!-- 👇 HIER kommt das rein -->
       <div id="shareResult" class="hidden" style="margin-top:0.75rem;">
-        <label for="shareLink" class="sr-only">Freigabelink</label>
-
         <div class="btn-row">
-          <input id="shareLink" type="text" readonly>
-          <button type="button" id="btnCopyShare" class="btn-secondary">Kopieren</button>
+          <button type="button" id="btnCopyShare" class="btn-secondary">Link kopieren</button>
+          <button type="button" id="btnOpenShare" class="btn-secondary">Link öffnen</button>
         </div>
 
         <p id="shareHint" class="hint" style="margin:0.5rem 0 0;"></p>
