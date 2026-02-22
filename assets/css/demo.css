@@ -410,7 +410,43 @@ button.secondary:hover {
   height: 18px;
 }
 
-.photo-item { position: relative; }
+.photo-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.photo-item:hover .photo-actions {
+  opacity: 1;
+}
+
+.photo-action-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.photo-action-icon:hover {
+  background: rgba(0,0,0,0.85);
+}
 
 .photo-item img{
   display:block;

@@ -128,7 +128,7 @@ function logout() {
   pb.authStore.clear();
   lastShareUrl = "";
   selectedPhotoIds.clear();
-  
+
   updateUI(); 
 
   // Share UI zurücksetzen
@@ -225,12 +225,11 @@ async function loadPhotos() {
 
     if (photos.length === 0) {
       gallery.innerHTML = `<p class="hint">Noch keine Fotos hochgeladen.</p>`;
-      updateSelectionUI();   // ← WICHTIG
+      updateSelectionUI();
       return;
     }
 
     photos.forEach((p) => {
-
       const wrapper = document.createElement("div");
       wrapper.className = "photo-item";
 
@@ -260,16 +259,22 @@ async function loadPhotos() {
           wrapper.classList.add("is-selected");
           badge.style.display = "block";
         }
-
         updateSelectionUI();
       });
 
+      // 🔘 Actions als kleine Icons im Bild
+      const actions = document.createElement("div");
+      actions.className = "photo-actions";
+
+      // ❌ Delete
       const btnDelete = document.createElement("button");
       btnDelete.type = "button";
-      btnDelete.className = "btn-secondary";
-      btnDelete.textContent = "Löschen";
+      btnDelete.className = "photo-action-icon";
+      btnDelete.title = "Löschen";
+      btnDelete.textContent = "✕";
 
-      btnDelete.addEventListener("click", async () => {
+      btnDelete.addEventListener("click", async (e) => {
+        e.stopPropagation(); // verhindert Auswahl-Toggle
         const ok = confirm("Foto wirklich löschen?");
         if (!ok) return;
 
@@ -277,37 +282,40 @@ async function loadPhotos() {
           await pb.collection("photos").delete(p.id);
           selectedPhotoIds.delete(p.id);
           loadPhotos();
-        } catch (e) {
-          console.error(e);
+        } catch (err) {
+          console.error(err);
           alert("Foto konnte nicht gelöscht werden.");
         }
       });
 
+      // ⬇ Download
       const btnDownload = document.createElement("button");
-        btnDownload.type = "button";
-        btnDownload.className = "btn-secondary";
-        btnDownload.textContent = "Download";
+      btnDownload.type = "button";
+      btnDownload.className = "photo-action-icon";
+      btnDownload.title = "Download";
+      btnDownload.textContent = "⬇";
 
-        btnDownload.addEventListener("click", () => {
-          const url = pb.files.getURL(p, p.image);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = p.image || "photo";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-        });
+      btnDownload.addEventListener("click", (e) => {
+        e.stopPropagation(); // verhindert Auswahl-Toggle
+        const url = pb.files.getURL(p, p.image);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = p.image || "photo";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
 
+      actions.appendChild(btnDelete);
+      actions.appendChild(btnDownload);
 
       wrapper.appendChild(img);
       wrapper.appendChild(badge);
-      wrapper.appendChild(btnDelete);
-      wrapper.appendChild(btnDownload);
+      wrapper.appendChild(actions);
       gallery.appendChild(wrapper);
     });
-    
-    updateSelectionUI();
 
+    updateSelectionUI();
   } catch (e) {
     console.error(e);
     gallery.innerHTML = `<p class="hint">Fotos konnten nicht geladen werden.</p>`;
