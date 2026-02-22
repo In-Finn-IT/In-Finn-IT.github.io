@@ -182,7 +182,8 @@ async function uploadPhoto() {
   //formData.append("owner", userId);
 
   try {
-    await pb.collection("photos").create(formData);
+    const created = await pb.collection("photos").create(formData);
+    console.log("CREATED PHOTO RECORD:", created);
 
     setStatus(status, "✅ Upload erfolgreich!", "ok");
     fileInput.value = "";
