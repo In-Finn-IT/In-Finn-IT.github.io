@@ -179,7 +179,7 @@ async function uploadPhoto() {
 
   const formData = new FormData();
   formData.append("image", file);
-  //formData.append("owner", userId);
+  formData.append("owner", userId);
 
   try {
     const created = await pb.collection("photos").create(formData);
