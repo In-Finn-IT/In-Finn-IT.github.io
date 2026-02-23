@@ -162,6 +162,22 @@ async function uploadPhoto() {
     return;
   }
 
+      // Demo-Limit: max 20 Fotos pro Benutzer (Frontend-Check)
+      try {
+        const existing = await pb.collection("photos").getFullList({
+          filter: `owner = "${userId}"`,
+          fields: "id",
+        });
+
+        if (existing.length >= 20) {
+          setStatus(status, "⚠️ Demo-Limit erreicht: maximal 20 Fotos pro Benutzer.", "error");
+          return;
+        }
+      } catch (err) {
+        // Falls der Check fehlschlägt: Upload nicht blockieren, nur loggen
+        console.error("Could not check photo limit:", err);
+      }
+
   const file = fileInput.files[0];
 
   // gleiche Grenze wie im Backend (hier 20 MB) – bitte passend zu deinem PB-Feld setzen
@@ -174,6 +190,22 @@ async function uploadPhoto() {
     );
     return;
   }
+
+      // Demo-Limit: max 20 Fotos pro User (Frontend-Check)
+      try {
+        const existing = await pb.collection("photos").getFullList({
+          filter: `owner = "${userId}"`,
+          fields: "id",
+        });
+
+        if (existing.length >= 20) {
+          setStatus(status, "⚠️ Demo-Limit erreicht: maximal 20 Fotos pro Benutzer.", "error");
+          return;
+        }
+      } catch (e) {
+        // Falls Laden fehlschlägt: Upload nicht blocken, nur loggen
+        console.error("Could not check photo limit:", e);
+      }
 
   setStatus(status, "⏳ Upload läuft…", "info");
 
