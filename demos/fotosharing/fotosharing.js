@@ -175,6 +175,7 @@ async function uploadPhoto() {
         }
       } catch (err) {
         // Falls der Check fehlschlägt: Upload nicht blockieren, nur loggen
+        console.log("PB error data:", e?.data);
         console.error("Could not check photo limit:", err);
       }
 
