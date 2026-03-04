@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Passwort zurücksetzen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/demo.css">
+</head>
+<body>
+  <main class="container">
+    <nav class="demo-topbar" aria-label="Demo Navigation">
+      <a class="demo-back" href="/demos/fotosharing/projekt-fotosharing-demo.html">← Zurück</a>
+    </nav>
+
+    <h1>🔐 Passwort zurücksetzen</h1>
+
+    <section class="card">
+      <p class="hint">Bitte neues Passwort vergeben (mind. 8 Zeichen).</p>
+
+      <label class="sr-only" for="newPassword">Neues Passwort</label>
+      <input id="newPassword" type="password" placeholder="Neues Passwort" autocomplete="new-password">
+
+      <label class="sr-only" for="newPassword2">Neues Passwort (wiederholen)</label>
+      <input id="newPassword2" type="password" placeholder="Neues Passwort wiederholen" autocomplete="new-password">
+
+      <div class="btn-row">
+        <button id="btnReset" type="button">Passwort setzen</button>
+      </div>
+
+      <p id="resetStatus" class="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+  <script type="module" src="/demos/fotosharing/reset.js"></script>
+</body>
+</html>
