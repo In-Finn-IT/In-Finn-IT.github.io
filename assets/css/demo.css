@@ -489,9 +489,3 @@ button.secondary:hover {
   body { padding: 1.5rem 1rem; }
   .container, main { padding: 1.25rem; }
 }
-
-
-.demo-info, footer.demo-info {
-  background: rgba(255, 0, 0, 0.12) !important;
-  outline: 2px solid red !important;
-}
