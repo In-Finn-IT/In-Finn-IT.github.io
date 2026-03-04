@@ -34,6 +34,25 @@
       <label class="sr-only" for="password">Passwort</label>
       <input id="password" type="password" placeholder="Passwort" autocomplete="current-password">
 
+<p class="hint" style="margin:0.35rem 0 0;">
+  Passwort: mindestens 8 Zeichen.
+</p>
+
+<button id="btnForgotPassword" type="button" class="btn-secondary" style="margin-top:0.5rem;">
+  Passwort vergessen?
+</button>
+
+<div id="forgotBox" class="hidden" style="margin-top:0.75rem;">
+  <label class="sr-only" for="forgotEmail">E-Mail</label>
+  <input id="forgotEmail" type="email" placeholder="E-Mail für Reset-Link" autocomplete="email">
+
+  <div class="btn-row">
+    <button id="btnSendReset" type="button">Reset-Link senden</button>
+  </div>
+
+  <p id="forgotStatus" class="status" aria-live="polite"></p>
+</div>
+
       <div class="btn-row">
         <button id="btnLogin" type="button">Login</button>
         <button id="btnRegister" type="button" class="btn-secondary">Registrieren</button>
@@ -66,7 +85,6 @@
   <div style="margin-top:0.75rem;">
     <div class="btn-row">
       <button id="btnReloadShares" type="button" class="btn-secondary">Aktualisieren</button>
-      <button id="btnToggleExpired" type="button" class="btn-secondary">Abgelaufene anzeigen</button>      
     </div>
 
     <div id="sharesList">

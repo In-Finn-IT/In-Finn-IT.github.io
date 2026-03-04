@@ -10,6 +10,13 @@ const uploadSection = document.getElementById("uploadSection");
 const gallery = document.getElementById("gallery");
 const authStatus = document.getElementById("authStatus");
 
+// Passwort Reset UI
+const btnForgotPassword = document.getElementById("btnForgotPassword");
+const forgotBox = document.getElementById("forgotBox");
+const forgotEmail = document.getElementById("forgotEmail");
+const btnSendReset = document.getElementById("btnSendReset");
+const forgotStatus = document.getElementById("forgotStatus");
+
 // Share UI
 const shareResult = document.getElementById("shareResult");
 const shareLink = document.getElementById("shareLink");
@@ -26,12 +33,10 @@ const sharesSection = document.getElementById("sharesSection");
 const sharesList = document.getElementById("sharesList");
 const sharesStatus = document.getElementById("sharesStatus");
 const btnReloadShares = document.getElementById("btnReloadShares");
-const btnToggleExpired = document.getElementById("btnToggleExpired");
 const btnOpenShare = document.getElementById("btnOpenShare");
 
 const selectedPhotoIds = new Set();
 
-let showExpiredShares = false;
 let lastShareUrl = "";
 
 // ---------- Helper ----------
@@ -100,6 +105,11 @@ async function register() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
+if (password.length < 8) {
+  if (authStatus) setStatus(authStatus, "⚠️ Passwort muss mindestens 8 Zeichen lang sein.", "error");
+  return;
+}
+
   if (authStatus) setStatus(authStatus, "⏳ Registrierung läuft…", "info");
 
   try {
@@ -120,6 +130,42 @@ async function register() {
     }
 
     setStatus(authStatus, asNiceErrorMessage(e), "error");
+  }
+}
+
+function toggleForgotBox() {
+  if (!forgotBox) return;
+  forgotBox.classList.toggle("hidden");
+  if (forgotStatus) setStatus(forgotStatus, "", "info");
+
+  // Vorbelegen mit Email aus Login-Feld, falls vorhanden
+  const email = document.getElementById("email")?.value?.trim();
+  if (email && forgotEmail) forgotEmail.value = email;
+}
+
+async function sendPasswordReset() {
+  const email = (forgotEmail?.value || "").trim();
+  if (!email) {
+    if (forgotStatus) setStatus(forgotStatus, "⚠️ Bitte E-Mail eingeben.", "error");
+    return;
+  }
+
+  if (forgotStatus) setStatus(forgotStatus, "⏳ Sende Reset-Link…", "info");
+
+  try {
+    await pb.collection("users").requestPasswordReset(email);
+
+    // absichtlich neutral (nicht verraten ob Konto existiert)
+    if (forgotStatus) {
+      setStatus(
+        forgotStatus,
+        "✅ Wenn ein Konto existiert, wurde ein Reset-Link per E-Mail gesendet.",
+        "ok"
+      );
+    }
+  } catch (e) {
+    console.error(e);
+    if (forgotStatus) setStatus(forgotStatus, asNiceErrorMessage(e), "error");
   }
 }
 
@@ -435,12 +481,12 @@ async function copyShareLink() {
   }
 }
 
-// 📌 Shares laden (alle eigenen – über Rules begrenzt)
+// 📌 Shares laden (nur eigene – abgelaufene werden serverseitig gelöscht)
 async function loadShares() {
   if (!sharesList) return;
 
   if (!pb.authStore.isValid) {
-    if (sharesList) sharesList.innerHTML = "";
+    sharesList.innerHTML = "";
     if (sharesStatus) setStatus(sharesStatus, "", "info");
     if (sharesCount) sharesCount.textContent = "";
     return;
@@ -454,66 +500,59 @@ async function loadShares() {
       sort: "-created",
     });
 
-    const filtered = showExpiredShares
-        ? shares
-        : shares.filter((s) => !isExpired(s.expiresAt));
+    if (sharesCount) sharesCount.textContent = `(${shares.length})`;
 
-      if (sharesCount) sharesCount.textContent = `(${filtered.length})`;
+    if (!shares.length) {
+      sharesList.innerHTML = `<p class="hint">Noch keine Freigaben.</p>`;
+      return;
+    }
 
-      if (!filtered.length) {
-        sharesList.innerHTML = `<p class="hint">Noch keine Freigaben.</p>`;
-        return;
-      }
+    sharesList.innerHTML = "";
 
-      sharesList.innerHTML = "";
-
-    filtered.forEach((s) => {
+    shares.forEach((s) => {
       const url = buildShareUrl(s.token);
-      const exp = s.expiresAt;
-      const expired = isExpired(exp);
       const count = Array.isArray(s.photo) ? s.photo.length : 0;
 
       const item = document.createElement("div");
-      item.className = "share-item";
+      item.className = "share-item compact";
 
       item.innerHTML = `
-        <div class="share-line">
-          <strong>${expired ? "⛔ Abgelaufen" : "✅ Aktiv"}</strong>
-          <span class="muted">• Fotos: ${count}</span>
-          <span class="muted">• bis ${formatDateTime(exp)}</span>
-        </div>
+        <div class="share-row">
+          <div class="share-meta">
+            <span class="share-count">${count} Bild(er)</span>
+            <span class="share-date">gültig bis ${formatDateTime(s.expiresAt)}</span>
+          </div>
 
-        <div class="share-line">
-          <input type="text" class="share-url" value="${url}" readonly />
-        </div>
-
-        <div class="share-actions">
-          <button type="button" class="btnCopy btn-secondary">Kopieren</button>
-          <button type="button" class="btnDelete btn-secondary">Löschen</button>
+          <div class="share-actions">
+            <button type="button" class="share-icon copy" title="Link kopieren">⧉</button>
+            <button type="button" class="share-icon open" title="Link öffnen">↗</button>
+            <button type="button" class="share-icon delete" title="Freigabe löschen">✕</button>
+          </div>
         </div>
       `;
 
-      item.querySelector(".btnCopy")?.addEventListener("click", async () => {
+      // Copy
+      item.querySelector(".copy")?.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(url);
-          if (sharesStatus) setStatus(sharesStatus, "✅ Link kopiert.", "ok");
+          if (sharesStatus) setStatus(sharesStatus, "Link kopiert.", "ok");
         } catch {
-          const inp = item.querySelector(".share-url");
-          inp?.focus();
-          inp?.select();
-          if (sharesStatus) {
-            setStatus(sharesStatus, "⚠️ Konnte nicht automatisch kopieren – Link ist markiert.", "error");
-          }
+          if (sharesStatus) setStatus(sharesStatus, "Kopieren nicht möglich.", "error");
         }
       });
 
-      item.querySelector(".btnDelete")?.addEventListener("click", async () => {
+      // Open
+      item.querySelector(".open")?.addEventListener("click", () => {
+        window.open(url, "_blank", "noopener");
+      });
+
+      // Delete
+      item.querySelector(".delete")?.addEventListener("click", async () => {
         const ok = confirm("Freigabe wirklich löschen?");
         if (!ok) return;
 
         try {
           await pb.collection("shares").delete(s.id);
-          if (sharesStatus) setStatus(sharesStatus, "✅ Freigabe gelöscht.", "ok");
           loadShares();
         } catch (e) {
           console.error(e);
@@ -523,6 +562,7 @@ async function loadShares() {
 
       sharesList.appendChild(item);
     });
+
   } catch (e) {
     console.error(e);
     sharesList.innerHTML = `<p class="hint">Freigaben konnten nicht geladen werden.</p>`;
@@ -548,18 +588,30 @@ btnClearSelection?.addEventListener("click", () => {
   loadPhotos(); // damit Rahmen/Badges weg sind
 });
 
-btnToggleExpired?.addEventListener("click", () => {
-  showExpiredShares = !showExpiredShares;
-  btnToggleExpired.textContent = showExpiredShares ? "Abgelaufene ausblenden" : "Abgelaufene anzeigen";
-  loadShares();
-});
-
 btnOpenShare?.addEventListener("click", () => {
   if (!lastShareUrl) return;
   window.open(lastShareUrl, "_blank", "noopener");
 });
 
+btnForgotPassword?.addEventListener("click", toggleForgotBox);
+btnSendReset?.addEventListener("click", sendPasswordReset);
+
+document.getElementById("email")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") login();
+});
+document.getElementById("password")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") login();
+});
+
 // 🚀 Start
+const params = new URLSearchParams(window.location.search);
+if (params.get("reset") === "1") {
+  const pw = document.getElementById("password");
+  if (pw) pw.value = "";
+  if (authStatus) setStatus(authStatus, "✅ Passwort geändert. Bitte mit dem neuen Passwort einloggen.", "ok");
+  history.replaceState({}, "", window.location.pathname);
+}
+
 updateUI();
 updateSelectionUI();
 
